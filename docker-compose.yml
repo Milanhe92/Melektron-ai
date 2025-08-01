@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  web:
+    build:
+      context:./apps/web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      # Tačka ispred putanje osigurava da je relativna u odnosu na root
+      -./apps/web:/app
+      - /app/node_modules
+      - /app/.next
+    stdin_open: true
+    tty: true
+    depends_on:
+      - cache
+      
+  cache:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
