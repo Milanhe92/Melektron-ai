@@ -1,0 +1,69 @@
+# Naziv workflow-a
+name: Vercel CI/CD for Melektron Singularity
+
+# Događaji koji pokreću workflow
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize]
+
+# Promenljive okruženja dostupne u svim poslovima
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Korak 1: Preuzimanje koda repozitorijuma
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Korak 2: Postavljanje Node.js okruženja
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.17.0'
+
+      # Korak 3: Keširanje npm zavisnosti radi bržeg build-a
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Korak 4: Instalacija zavisnosti
+      - name: Install Dependencies
+        run: npm ci
+
+      # Korak 5: Provera kvaliteta koda (Linting)
+      - name: Lint Project
+        run: npm run lint
+
+      # Korak 6: Pokretanje testova
+      - name: Run Tests
+        run: npm run test
+
+      # Korak 7: Instalacija Vercel CLI
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      # Korak 8: Preuzimanje Vercel environment informacija
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      # Korak 9: Izgradnja projekta koristeći Vercel build
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      # Korak 10: Deploy na Vercel
+      - name: Deploy Project Artifacts to Vercel
+        if: github.ref == 'refs/heads/main' |
+
+| github.event_name == 'pull_request'
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
