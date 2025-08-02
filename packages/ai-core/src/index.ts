@@ -1,1 +1,2 @@
-# Prazan fajl ako je potrebno
+// Овај фајл може бити празан за сада
+export {};
