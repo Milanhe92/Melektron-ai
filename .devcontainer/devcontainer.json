@@ -1,0 +1,8 @@
+{
+  "postCreateCommand": "npm install --package-lock-only",
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+    }
+  }
+}
