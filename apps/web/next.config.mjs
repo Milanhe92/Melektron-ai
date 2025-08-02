@@ -1,10 +1,25 @@
+// apps/web/next.config.mjs
+const withTM = require('next-transpile-modules')([
+  '@melektron/quantum-core',
+  'three'
+]);
+
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig = withTM({
   experimental: {
     serverActions: true,
-    optimizePackageImports: ['@ton/ton', 'three', 'vanta']
+    optimizePackageImports: ['@ton/ton', 'three', 'vanta'],
+    instrumentationHook: true
   },
-  output: process.env.DOCKER_BUILD? 'standalone' : undefined,
-};
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.sanity.io'
+      }
+    ]
+  },
+  output: 'standalone'
+});
 
 export default nextConfig;
