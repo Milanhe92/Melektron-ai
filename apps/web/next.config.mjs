@@ -8,7 +8,10 @@ const nextConfig = {
       'vanta',
       'chart.js'
     ],
-    instrumentationHook: true
+    instrumentationHook: true,
+    outputFileTracingIncludes: {
+      '/*': ['./packages/**/*']
+    }
   },
   images: {
     remotePatterns: [
