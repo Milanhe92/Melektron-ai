@@ -4,20 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
-    "export": "next export",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postbuild": "cp public/robots.txt out/robots.txt && cp public/tonconnect-manifest.json out/"
+    "postbuild": "cp public/robots.txt .next/static/robots.txt && cp public/tonconnect-manifest.json .next/static/"
   },
   "dependencies": {
     "@melektron/quantum-core": "file:../../packages/quantum-core",
     "@melektron/ai-core": "file:../../packages/ai-core",
-    "@melektron/ton-utils": "file:../../packages/ton-utils", 
-    "@melektron/ui": "*",
-    "@melektron/ton-client": "*",
-    "@melektron/telegram-commander": "*",
-    "@melektron/quantum-core": "*",
+    "@melektron/ton-utils": "file:../../packages/ton-utils",
     "@portabletext/react": "^3.0.10",
     "@sanity/client": "^6.8.0",
     "@sanity/image-url": "^1.0.2",
