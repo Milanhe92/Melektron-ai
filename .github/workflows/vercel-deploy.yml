@@ -23,6 +23,11 @@ jobs:
       with:
         node-version: '20'
         cache: 'npm'
+    - name: Build Internal Packages
+  run: |
+    npm run build:ton-client
+    npm run build:quantum-core
+    npm run build:ai-core
 
     - name: Install Dependencies
       run: |
