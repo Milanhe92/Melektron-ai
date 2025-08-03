@@ -8,11 +8,12 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "build:web": "turbo run build --filter=web"
+    "build:web": "turbo run build --filter=web",
+    "reset": "rm -rf node_modules apps/web/node_modules package-lock.json && npm install"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
-    "turbo": "^2.5.4"
+    "turbo": "^2.5.5"
   },
   "workspaces": [
     "apps/*",
