@@ -1,10 +1,8 @@
-import { Complex, ComplexMatrix, QuantumGate } from './types';
+typescript:packages/quantum-core/src/gates.ts
+import { Complex, QuantumGate } from './types';
+import { c } from './types';
 
-// Хелпер за креирање комплексних бројева
-const c = (real: number, imag: number = 0): Complex => ({ real, imag });
-
-// Стандардне квантне капије
-export const PauliX: QuantumGate = {
+export const XGate: QuantumGate = {
   name: 'X',
   matrix: [
     [c(0), c(1)],
@@ -12,7 +10,7 @@ export const PauliX: QuantumGate = {
   ]
 };
 
-export const PauliY: QuantumGate = {
+export const YGate: QuantumGate = {
   name: 'Y',
   matrix: [
     [c(0), c(0, -1)],
@@ -20,7 +18,7 @@ export const PauliY: QuantumGate = {
   ]
 };
 
-export const PauliZ: QuantumGate = {
+export const ZGate: QuantumGate = {
   name: 'Z',
   matrix: [
     [c(1), c(0)],
@@ -28,10 +26,10 @@ export const PauliZ: QuantumGate = {
   ]
 };
 
-export const Hadamard: QuantumGate = {
+export const HGate: QuantumGate = {
   name: 'H',
   matrix: [
     [c(1/Math.sqrt(2)), c(1/Math.sqrt(2))],
     [c(1/Math.sqrt(2)), c(-1/Math.sqrt(2))]
   ]
-}
+};
