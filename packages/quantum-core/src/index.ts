@@ -2,6 +2,10 @@
  * Quantum Core - Osnovni modul za kvantne operacije
  */
 
+export * from './simulator';
+export * from './simulator/quantum-state';
+export * from './gates';
+export * from './types';
 export class QuantumState {
   private state: number[];
 
