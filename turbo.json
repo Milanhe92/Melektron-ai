@@ -7,7 +7,7 @@
       "outputs": [".next/**", "dist/**", "!apps/web/.next/cache/**"]
     },
     "lint": {
-      "outputs":
+      "outputs": []
     },
     "dev": {
       "cache": false,
