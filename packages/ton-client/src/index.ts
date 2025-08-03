@@ -1,26 +1,48 @@
 import { TonClient, Address, toNano } from "@ton/ton";
 
-const client = new TonClient({
-  endpoint: `https://toncenter.com/api/v2/jsonRPC`,
-  apiKey: process.env.TON_API_KEY |
-
-| undefined,
-});
-
-export async function getWalletBalance(address: string): Promise<bigint> {
-  const walletAddress = Address.parse(address);
-  const balance = await client.getBalance(walletAddress);
-  return balance;
+export function createTonClient(network: 'mainnet' | 'testnet' = 'mainnet') {
+  return new TonClient({
+    endpoint: network === 'mainnet' 
+      ? 'https://toncenter.com/api/v2/jsonRPC'
+      : 'https://testnet.toncenter.com/api/v2/jsonRPC',
+  });
 }
 
-export function createTransaction(to: string, amount: string) {
+export async function getWalletBalance(
+  address: string,
+  network: 'mainnet' | 'testnet' = 'mainnet'
+): Promise<bigint> {
+  const client = createTonClient(network);
+  const walletAddress = Address.parse(address);
+  return client.getBalance(walletAddress);
+}
+
+export function createTransaction(
+  to: string,
+  amount: string,
+  network: 'mainnet' | 'testnet' = 'mainnet'
+) {
   return {
-    validUntil: Math.floor(Date.now() / 1000) + 60, // 60 sekundi validnost
-    messages: [
-      {
-        address: Address.parse(to), // Validacija adrese
-        amount: toNano(amount)
-      }
-    ]
+    validUntil: Math.floor(Date.now() / 1000) + 60,
+    messages: [{
+      address: Address.parse(to),
+      amount: toNano(amount)
+    }],
+    network
   };
+}
+
+// Додатне помоћне функције
+export function isValidTonAddress(address: string): boolean {
+  try {
+    Address.parse(address);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function formatTonBalance(balance: bigint): string {
+  const ton = Number(balance) / 1e9;
+  return ton.toFixed(4) + ' TON';
 }
