@@ -138,3 +138,23 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 apps/web/node_modules/@melektron
+# Dependency directories
+node_modules/
+
+# Build directories
+.next/
+dist/
+out/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+
+# Turbo cache
+.turbo
