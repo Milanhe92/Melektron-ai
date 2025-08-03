@@ -1,4 +1,4 @@
-name: Vercel Deploy
+name: Vercel CI/CD
 
 on:
   push:
@@ -7,31 +7,44 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      deployments: write
+
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
-    - name: Install Dependencies
-      run: |
-        npm config set legacy-peer-deps true
-        npm ci
-        cd apps/web
-        npm install ../../packages/quantum-core
-        npm install ../../packages/ai-core
-        cd ../..
-        
-    - name: Build Project
-      run: npx turbo run build --filter=web
+      - name: Install Dependencies
+        run: |
+          npm config set legacy-peer-deps true
+          npm ci
+          
+          # Ручно инсталирај интерне пакете
+          cd apps/web
+          npm install ../../packages/quantum-core
+          npm install ../../packages/ai-core
+          npm install ../../packages/ton-utils
+          cd ../..
+          
+      - name: Build Project
+        run: npm run build
+        working-directory: apps/web
 
-    - name: Deploy to Vercel
-      uses: amondnet/vercel-action@v30
-      with:
-        vercel-token: ${{ secrets.VERCEL_TOKEN }}
-        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-        scope: ${{ secrets.VERCEL_ORG_ID }}
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
