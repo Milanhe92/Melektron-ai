@@ -1,0 +1,9 @@
+{
+  "name": "@melektron/ton-utils",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "@ton/ton": "^15.3.1"
+  }
+}
