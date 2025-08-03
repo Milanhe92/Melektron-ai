@@ -1,14 +1,13 @@
-// apps/web/next.config.mjs
-const withTM = require('next-transpile-modules')([
-  '@melektron/quantum-core',
-  'three'
-]);
-
 /** @type {import('next').NextConfig} */
-const nextConfig = withTM({
+const nextConfig = {
   experimental: {
     serverActions: true,
-    optimizePackageImports: ['@ton/ton', 'three', 'vanta'],
+    optimizePackageImports: [
+      '@ton/ton', 
+      'three', 
+      'vanta',
+      'chart.js'
+    ],
     instrumentationHook: true
   },
   images: {
@@ -19,7 +18,12 @@ const nextConfig = withTM({
       }
     ]
   },
-  output: 'standalone'
-});
+  output: 'standalone',
+  transpilePackages: [
+    '../../packages/quantum-core',
+    '../../packages/ai-core',
+    '../../packages/ton-utils'
+  ]
+};
 
 export default nextConfig;
