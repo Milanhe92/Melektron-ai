@@ -1,0 +1,15 @@
+{
+  "name": "@melektron/quantum-core",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "mathjs": "^12.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.2"
+  }
+}
