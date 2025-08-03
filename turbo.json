@@ -1,6 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
+  "env": [
+        "NODE_ENV",
+        "TON_API_KEY",
+        "TELEGRAM_BOT_TOKEN"
+      ], 
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
