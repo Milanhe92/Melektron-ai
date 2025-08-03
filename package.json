@@ -11,6 +11,9 @@
     "postbuild": "cp public/robots.txt out/robots.txt && cp public/tonconnect-manifest.json out/"
   },
   "dependencies": {
+    "@melektron/quantum-core": "file:../../packages/quantum-core",
+    "@melektron/ai-core": "file:../../packages/ai-core",
+    "@melektron/ton-utils": "file:../../packages/ton-utils", 
     "@melektron/ui": "*",
     "@melektron/ton-client": "*",
     "@melektron/telegram-commander": "*",
