@@ -16,7 +16,7 @@
     "@portabletext/react": "^3.0.10",
     "@sanity/client": "^6.8.0",
     "@sanity/image-url": "^1.0.2",
-    "@ton/core": "0.2.1",
+    "ton3-core": "^0.0.20",
     "@ton/ton": "0.21.0",
     "@tonconnect/ui-react": "2.2.0",
     "autoprefixer": "^10.4.19",
