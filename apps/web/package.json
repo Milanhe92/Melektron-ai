@@ -5,15 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "install:root": "npm install --prefix ../..", 
     "start": "next start",
     "lint": "next lint",
     "postbuild": "cp public/robots.txt .next/static/robots.txt && cp public/tonconnect-manifest.json .next/static/"
   },
   "dependencies": {
     "@melektron/ton-utils": "file:../../packages/ton-utils",
-    "@melektron/ton-client": "workspace:*",
-    "@melektron/ai-core": "workspace:*", 
+    "@melektron/ton-client": "file:../../packages/ton-client",
+    "@melektron/ai-core": "file:../../packages/ai-core", 
     "@portabletext/react": "^3.0.10",
     "@sanity/client": "^6.8.0",
     "@sanity/image-url": "^1.0.2",
@@ -37,8 +36,8 @@
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.0",
     "@types/three": "^0.166.0",
-    "eslint-config-custom": "*",
-    "tsconfig": "*",
+    "eslint-config-custom": "file:../../packages/eslint-config-custom",
+    "tsconfig": "file:../../packages/tsconfig",
     "typescript": "^5.4.2"
   }
 }
