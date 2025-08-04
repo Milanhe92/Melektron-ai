@@ -5,13 +5,15 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "install:root": "npm install --prefix ../..", 
     "start": "next start",
     "lint": "next lint",
     "postbuild": "cp public/robots.txt .next/static/robots.txt && cp public/tonconnect-manifest.json .next/static/"
   },
   "dependencies": {
-    "@melektron/ai-core": "file:../../packages/ai-core",
     "@melektron/ton-utils": "file:../../packages/ton-utils",
+    "@melektron/ton-client": "workspace:*",
+    "@melektron/ai-core": "workspace:*", 
     "@portabletext/react": "^3.0.10",
     "@sanity/client": "^6.8.0",
     "@sanity/image-url": "^1.0.2",
@@ -20,7 +22,7 @@
     "@tonconnect/ui-react": "^2.2.0",
     "autoprefixer": "^10.4.19",
     "chart.js": "^4.5.0",
-    "next": "14.2.30",
+    "next": "13.4.19",
     "next-sanity": "^6.0.0",
     "postcss": "^8.4.38",
     "react": "18.2.0",
