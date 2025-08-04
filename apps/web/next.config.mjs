@@ -1,47 +1,34 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: true,
-    optimizePackageImports: [
-      '@ton/ton', 
-      'three', 
-      'vanta',
-      'chart.js'
-    ],
-    instrumentationHook: true,
-    outputFileTracingIncludes: {
-      '/*': ['./packages/**/*']
-    }
-  },
+  output: "standalone",
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'cdn.sanity.io'
-      }
-    ]
-  },
-  output: 'standalone',
-  transpilePackages: [
-    '../../packages/quantum-core',
-    '../../packages/ai-core',
-    '../../packages/ton-utils'
-  ],
-  env: {
-    TON_API_KEY: process.env.TON_API_KEY,
-    TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
-    NODE_ENV: process.env.NODE_ENV
-  },
-  // Додај овај део да решиш проблеме са меморијом
-  webpack: (config) => {
-    config.optimization.splitChunks = {
-      cacheGroups: {
-        default: false,
-        vendors: false,
+        protocol: "https",
+        hostname: "cdn.sanity.io",
       },
-    };
-    return config;
+    ],
   },
+  experimental: {
+    optimizePackageImports: ["@ton/ton", "three", "vanta", "chart.js"],
+  },
+  transpilePackages: [
+    // Само безбедни пакети
+    '@melektron/ai-core',
+    '@melektron/ton-utils'
+  ],
+  webpack: (config, { isServer }) => {
+    // Игнориши quantum-core током билда
+    config.externals = [...(config.externals || []), '@melektron/quantum-core'];
+    
+    // Додај fallback за квантни модул
+    config.resolve.fallback = { 
+      ...config.resolve.fallback,
+      '@melektron/quantum-core': require.resolve('./quantum-fallback.js') 
+    };
+    
+    return config;
+  }
 };
 
 export default nextConfig;
