@@ -6,6 +6,6 @@
     "postinstall": "cd packages/ton-client && npm install && npm run build"
   },
   "devDependencies": {
-    "typescript": "^5.4.2"
+    "typescript": "^5.0.4"
   }
 }
