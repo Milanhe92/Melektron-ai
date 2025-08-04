@@ -2,8 +2,8 @@
   "name": "melektron-ai",
   "version": "1.0.0",
   "scripts": {
-    "build": "npm run build --workspace=packages/ton-client && npm run build --workspace=apps/web",
-    "postinstall": "cd packages/ton-client && npm install && npm run build"
+    "prebuild": "npm install --legacy-peer-deps && npm run build --workspace=packages/ton-client",
+    "build": "npm run build --workspace=apps/web"
   },
   "workspaces": [
     "packages/*",
