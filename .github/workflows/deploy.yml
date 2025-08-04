@@ -20,17 +20,12 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Build packages
-        run: |
-          npm run build:ton-client
-          npm run build:quantum-core
-          npm run build:ai-core
-          npm run build:web
+      - name: Build Ton Client
+        run: cd packages/ton-client && npm run build
 
       - name: Deploy to Vercel
         uses: BetaHuhn/deploy-to-vercel-action@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
