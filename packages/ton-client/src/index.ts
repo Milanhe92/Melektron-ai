@@ -1,5 +1,5 @@
-import { Address, toNano } from '@ton/core'; // Промени импорт
-import { TonClient, WalletContractV4 } from '@ton/ton';
+import { Address, toNano } from '@ton/core';
+import { TonClient } from '@ton/ton';
 
 export class TonClientWrapper {
   private client: TonClient;
@@ -11,8 +11,6 @@ export class TonClientWrapper {
   async getBalance(address: string) {
     return this.client.getBalance(Address.parse(address));
   }
-
-  // Додај остале методе...
 }
 
-export { Address, toNano }; // Експортуј потребне функције
+export { Address, toNano };
