@@ -2,7 +2,10 @@
   "name": "melektron-ai",
   "version": "1.0.0",
   "scripts": {
-    "postinstall": "cd packages/ton-client && npm install && npm run build",
-    "build": "cd apps/web && npm run build"
+    "build": "cd apps/web && npm run build",
+    "postinstall": "cd packages/ton-client && npm install && npm run build"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.2"
   }
 }
