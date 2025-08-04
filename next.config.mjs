@@ -1,18 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: true,
-    optimizePackageImports: [
-      '@ton/ton', 
-      'three', 
-      'vanta',
-      'chart.js'
-    ],
-    instrumentationHook: true,
-    outputFileTracingIncludes: {
-      '/*': ['./packages/**/*']
-    }
+  // Искључи проблематични пакет из билда
+  transpilePackages: [
+    '../../packages/ai-core',
+    '../../packages/ton-utils'
+  ],
+  
+  // Додај ово да заобиђеш проблеме
+  webpack: (config) => {
+    config.externals = [...config.externals, '@melektron/quantum-core'];
+    return config;
   },
+  
+  // Остала подешавања
+  output: 'standalone',
   images: {
     remotePatterns: [
       {
@@ -20,18 +21,6 @@ const nextConfig = {
         hostname: 'cdn.sanity.io'
       }
     ]
-  },
-  output: 'standalone',
-  transpilePackages: [
-    '../../packages/quantum-core',
-    '../../packages/ai-core',
-    '../../packages/ton-utils'
-  ],
-  // DODATO: Environment varijable
-  env: {
-    TON_API_KEY: process.env.TON_API_KEY,
-    TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
-    NODE_ENV: process.env.NODE_ENV
   }
 };
 
