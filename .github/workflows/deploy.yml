@@ -8,22 +8,31 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Build and Deploy
-        uses: amondnet/vercel-action@v25
+      - name: Build packages
+        run: |
+          npm run build:ton-client
+          npm run build:quantum-core
+          npm run build:ai-core
+          npm run build:web
+
+      - name: Deploy to Vercel
+        uses: BetaHuhn/deploy-to-vercel-action@v1
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
           scope: milanhe92
+          production: true
