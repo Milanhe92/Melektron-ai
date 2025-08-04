@@ -10,12 +10,12 @@
     "postbuild": "cp public/robots.txt .next/static/robots.txt && cp public/tonconnect-manifest.json .next/static/"
   },
   "dependencies": {
-    "@melektron/quantum-core": "file:../../packages/quantum-core",
     "@melektron/ai-core": "file:../../packages/ai-core",
     "@melektron/ton-utils": "file:../../packages/ton-utils",
     "@portabletext/react": "^3.0.10",
     "@sanity/client": "^6.8.0",
     "@sanity/image-url": "^1.0.2",
+    "@ton/core": "^1.0.0",
     "@ton/ton": "^15.3.1",
     "@tonconnect/ui-react": "^2.2.0",
     "autoprefixer": "^10.4.19",
