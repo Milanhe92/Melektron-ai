@@ -1,16 +1,9 @@
 {
-  "build": {
-    "env": {
-      "NODE_ENV": "production",
-      "NODE_OPTIONS": "--max_old_space_size=4096"
-    }
-  },
-  "builds": [
-    {
-      "src": "apps/web/next.config.mjs",
-      "use": "@vercel/next"
-    }
-  ],
+  "buildCommand": "npm run build --prefix apps/web",
+  "outputDirectory": "apps/web/.next",
+  "installCommand": "npm install --legacy-peer-deps",
+  "framework": "nextjs",
+  "regions": ["fra1"],
   "routes": [
     {
       "src": "/(.*)",
