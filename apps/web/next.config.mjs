@@ -9,24 +9,15 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    optimizePackageImports: ["@ton/ton", "three", "vanta", "chart.js"],
-  },
   transpilePackages: [
-    // Само безбедни пакети
     '@melektron/ai-core',
     '@melektron/ton-utils'
   ],
-  webpack: (config, { isServer }) => {
-    // Игнориши quantum-core током билда
-    config.externals = [...(config.externals || []), '@melektron/quantum-core'];
-    
-    // Додај fallback за квантни модул
-    config.resolve.fallback = { 
+  webpack: (config) => {
+    config.resolve.fallback = {
       ...config.resolve.fallback,
-      '@melektron/quantum-core': require.resolve('./quantum-fallback.js') 
+      '@melektron/quantum-core': false
     };
-    
     return config;
   }
 };
