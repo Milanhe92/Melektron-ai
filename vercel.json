@@ -1,7 +1,11 @@
 {
-  "buildCommand": "cd apps/web && npm install && npm run build",
-  "outputDirectory": "apps/web/.next",
+  "build": {
+    "env": {
+      "NODE_ENV": "production",
+      "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
+    }
+  },
+  "buildCommand": "npm run build",
   "installCommand": "npm install --legacy-peer-deps",
-  "framework": "nextjs",
-  "regions": ["fra1"]
+  "outputDirectory": "apps/web/.next"
 }
