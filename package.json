@@ -1,10 +1,13 @@
 {
+  "name": "melektron-ai",
+  "version": "1.0.0",
   "scripts": {
-    "fix-ton": "npm install @ton/core@0.49.1 @ton/ton@15.3.1 --legacy-peer-deps",
-  "postinstall": "npm run fix-ton && cd packages/ton-client && npm run build"
-    "build": "npm run build:ton-client && npm run build:web",
+    "postinstall": "npm run build:ton-client",
     "build:ton-client": "cd packages/ton-client && npm run build",
-    "build:web": "cd apps/web && npm run build",
-    "postinstall": "npm run build:ton-client"
+    "build": "npm run build:web",
+    "build:web": "cd apps/web && npm run build"
+  },
+  "devDependencies": {
+    "turbo": "^1.10.12"
   }
 }
