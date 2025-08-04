@@ -1,7 +1,8 @@
-// apps/web/tailwind.config.js
 module.exports = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx}",
+    // Dodaj ovo za monorepo pakete
+    "../../packages/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
     extend: {
