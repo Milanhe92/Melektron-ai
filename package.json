@@ -2,15 +2,14 @@
   "name": "melektron-ai",
   "version": "1.0.0",
   "scripts": {
-  "build": "npm run build --workspace=packages/ton-client && npm run build --workspace=apps/web"
+    "build": "npm run build --workspace=packages/ton-client && npm run build --workspace=apps/web",
+    "postinstall": "cd packages/ton-client && npm install && npm run build"
   },
   "workspaces": [
     "packages/*",
     "apps/*"
-  ],  
-  "build": "cd apps/web && npm run build",
-    "postinstall": "cd packages/ton-client && npm install && npm run build"
-  },
+  ],
   "devDependencies": {
     "typescript": "^5.0.4"
   }
+}
