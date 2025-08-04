@@ -5,5 +5,9 @@
   "types": "src/index.ts",
   "dependencies": {
     "@ton/ton": "^15.3.1"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
   }
 }

@@ -20,13 +20,15 @@ const nextConfig = {
   webpack: (config, { isServer }) => {
     // Игнориши quantum-core током билда
     config.externals = [...(config.externals || []), '@melektron/quantum-core'];
-    
+
     // Додај fallback за квантни модул
-    config.resolve.fallback = { 
-      ...config.resolve.fallback,
-      '@melektron/quantum-core': require.resolve('./quantum-fallback.js') 
-    };
-    
+    import('path').then(path => {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        '@melektron/quantum-core': path.resolve('./quantum-fallback.js')
+      };
+    });
+
     return config;
   }
 };
