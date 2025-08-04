@@ -1,5 +1,7 @@
-- name: Build web app
-  run: |
-    cd apps/web
-    export NODE_OPTIONS='--experimental-json-modules'
-    npm run build
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "esModuleInterop": true
+  }
+}
