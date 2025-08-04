@@ -1,26 +1,36 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Искључи проблематични пакет из билда
-  transpilePackages: [
-    '../../packages/ai-core',
-    '../../packages/ton-utils'
-  ],
-  
-  // Додај ово да заобиђеш проблеме
-  webpack: (config) => {
-    config.externals = [...config.externals, '@melektron/quantum-core'];
-    return config;
-  },
-  
-  // Остала подешавања
-  output: 'standalone',
+  output: "standalone",
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'cdn.sanity.io'
-      }
-    ]
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+      },
+    ],
+  },
+  transpilePackages: [
+    '@melektron/ai-core',
+    '@melektron/ton-utils'
+  ],
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      // Dodaj ovo za @ton/core specifično
+      '@ton/core': require.resolve('@ton/core'),
+      // Ostali paketi
+      '@melektron/quantum-core': false
+    };
+    
+    // Dodaj za ESM pakete
+    config.experiments = { ...config.experiments, topLevelAwait: true };
+    
+    return config;
+  },
+  // Dodaj za Vercel optimizaciju
+  experimental: {
+    esmExternals: 'loose',
+    serverComponentsExternalPackages: ['@ton/core', '@melektron/quantum-core']
   }
 };
 
