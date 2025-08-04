@@ -1,29 +1,9 @@
-name: Deploy to Vercel
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
-
-      - name: Build and Deploy
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
-          scope: milanhe92
+- name: Deploy to Vercel
+  uses: amondnet/vercel-action@v25
+  with:
+    vercel-token: ${{ secrets.VERCEL_TOKEN }}
+    # Користи ИД тима за org-id, а scope name за scope
+    vercel-org-id: "team_fbUqlATb6X0MiU7YXaDgjvQ4"
+    vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+    vercel-args: '--prod'
+    scope: "melektron"  # Ово је кључно!
