@@ -16,6 +16,10 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '20'
+    - name: Fix npm registry
+  run: |
+    npm config set registry https://registry.npmjs.org
+    npm config set @ton:registry https://registry.npmjs.org
 
     - name: Install root dependencies
       run: npm install
