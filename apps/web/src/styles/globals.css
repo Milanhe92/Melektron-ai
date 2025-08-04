@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.prose {
+  color: white;
+}
+
+.prose h2 {
+  @apply text-2xl font-bold mt-8 mb-4 text-purple-400;
+}
+
+.prose ul {
+  @apply list-disc pl-6 mb-4;
+}
+
+.prose pre {
+  @apply bg-gray-800 p-4 rounded overflow-x-auto text-sm;
+}
