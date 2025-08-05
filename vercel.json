@@ -1,11 +1,37 @@
 {
   "build": {
     "env": {
-      "NODE_ENV": "production",
-      "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
+      "NPM_CONFIG_LEGACY_PEER_DEPS": "true",
+      "SANITY_API_TOKEN": "@sanity_token",
+      "TONCENTER_API_KEY": "@toncenter_api_key"
     }
   },
-  "buildCommand": "npm run build",
-  "installCommand": "npm install --legacy-peer-deps",
-  "outputDirectory": "apps/web/.next"
+  "routes": [
+    {
+      "src": "/ton-connect/.*",
+      "dest": "/api/ton-connect",
+      "methods": ["GET", "POST"]
+    },
+    {
+      "src": "/donacije",
+      "dest": "/donacije",
+      "headers": {
+        "Cache-Control": "public, max-age=3600"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1",
+      "continue": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Content-Security-Policy", "value": "default-src 'self' cdn.sanity.io" }
+      ]
+    }
+  ]
 }
