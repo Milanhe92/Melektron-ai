@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import VantaEffect from '../components/VantaEffect';
 import Chart from 'chart.js/auto';
 import * as THREE from 'three';
 import { Suspense } from 'react';
