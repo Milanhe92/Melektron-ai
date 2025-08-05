@@ -1,9 +1,7 @@
 {
   "build": {
     "env": {
-      "NPM_CONFIG_LEGACY_PEER_DEPS": "true",
-      "SANITY_API_TOKEN": "@sanity_token",
-      "TONCENTER_API_KEY": "@toncenter_api_key"
+      "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
     }
   },
   "routes": [
@@ -23,15 +21,6 @@
       "src": "/(.*)",
       "dest": "/$1",
       "continue": true
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Content-Security-Policy", "value": "default-src 'self' cdn.sanity.io" }
-      ]
     }
   ]
 }
