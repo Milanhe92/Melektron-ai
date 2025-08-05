@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+process.env.__NEXT_DISABLE_BABEL = 'true'; // OVO JE KLJUČNO
+
 const nextConfig = {
   output: "standalone",
   images: {
@@ -19,6 +21,10 @@ const nextConfig = {
       '@melektron/quantum-core': false
     };
     return config;
+  },
+  experimental: {
+    swcMinify: true,
+    forceSwcTransforms: true
   }
 };
 
