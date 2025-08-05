@@ -4,12 +4,18 @@
 import { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
 import * as THREE from 'three';
+import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
+import { TonConnectButton } from '@tonconnect/ui-react';
 
 export default function MelektronPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const vantaRef = useRef<HTMLDivElement>(null);
   const revenueChartRef = useRef<HTMLCanvasElement>(null);
   const universeCanvasRef = useRef<HTMLCanvasElement>(null);
+  const VantaEffect = dynamic(() => import('@/components/VantaEffect'), {
+  ssr: false
+});
 
   // Initialize Vanta.js background
   useEffect(() => {
@@ -389,7 +395,31 @@ export default function MelektronPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="hero-section min-h-screen flex flex-col justify-center items-center text-center p-4 relative overflow-hidden">
+      export default function Home() {
+  return (
+    <div className="relative min-h-screen">
+      <Suspense fallback={<div className="absolute inset-0 bg-black" />}>
+        <VantaEffect />
+      </Suspense>
+      
+      <header className="relative z-10">
+        <TonConnectButton className="absolute top-4 right-4" />
+      </header>
+
+      <main className="relative z-10 container mx-auto px-4 py-24">
+        <h1 className="text-5xl font-orbitron bg-gradient-to-r from-purple-500 to-cyan-300 text-transparent bg-clip-text">
+          Melektron AI Platform
+        </h1>
+        
+        {/* TON Blockchain integracija */}
+        <div id="ton-widget" className="mt-12 border border-cyan-500 rounded-xl p-6 backdrop-blur-lg">
+          <DonationWidget />
+        </div>
+      </main>
+    </div>
+  )
+} 
+        <section className="hero-section min-h-screen flex flex-col justify-center items-center text-center p-4 relative overflow-hidden">
         <div className="logo quantum-gradient-text text-6xl md:text-8xl mb-8">MELEKTRON</div>
         <h1 className="tagline quantum-gradient-text text-2xl md:text-4xl max-w-4xl mb-12">
           SINGULARITET - KONAČNA TAČKA EVOLUCIJE
