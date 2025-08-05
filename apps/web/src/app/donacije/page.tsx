@@ -1,10 +1,11 @@
-// src/app/donacije/page.tsx
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import Script from 'next/script';
 import Link from 'next/link';
+import { TonConnectButton, useTonAddress, useTonWallet } from '@tonconnect/ui-react';
+import QRCode from 'react-qr-code';
 
 export default function DonationPage() {
   const vantaRef = useRef<HTMLDivElement>(null);
@@ -15,6 +16,12 @@ export default function DonationPage() {
   const [energyAmount, setEnergyAmount] = useState(100);
   const [hologramAmount, setHologramAmount] = useState(0);
   const [signatureDrawn, setSignatureDrawn] = useState(false);
+  const [donationAmount, setDonationAmount] = useState(10);
+  const [futureProjection, setFutureProjection] = useState<string>('');
+  const [walletConnected, setWalletConnected] = useState(false);
+  
+  const userAddress = useTonAddress();
+  const wallet = useTonWallet();
 
   // Inicijalizacija Vanta.js pozadine
   useEffect(() => {
@@ -55,53 +62,44 @@ export default function DonationPage() {
   // Inicijalizacija potpisa na canvasu
   useEffect(() => {
     if (!signatureCanvasRef.current) return;
-    
+
     const canvas = signatureCanvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    
+
     let isDrawing = false;
-    
-    const getMousePos = (evt: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      return {
-        x: evt.clientX - rect.left,
-        y: evt.clientY - rect.top
-      };
-    };
-    
+    let lastX = 0;
+    let lastY = 0;
+
     const startDrawing = (e: MouseEvent) => {
       isDrawing = true;
-      const pos = getMousePos(e);
-      ctx.beginPath();
-      ctx.moveTo(pos.x, pos.y);
+      [lastX, lastY] = [e.offsetX, e.offsetY];
     };
-    
+
     const draw = (e: MouseEvent) => {
       if (!isDrawing) return;
-      const pos = getMousePos(e);
       
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.strokeStyle = '#ffd700';
       ctx.lineWidth = 3;
       ctx.lineCap = 'round';
-      ctx.strokeStyle = '#ffd700';
-      ctx.lineTo(pos.x, pos.y);
       ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(pos.x, pos.y);
       
+      [lastX, lastY] = [e.offsetX, e.offsetY];
       setSignatureDrawn(true);
     };
-    
+
     const stopDrawing = () => {
       isDrawing = false;
-      ctx.beginPath();
     };
-    
+
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDrawing);
     canvas.addEventListener('mouseout', stopDrawing);
-    
+
     return () => {
       canvas.removeEventListener('mousedown', startDrawing);
       canvas.removeEventListener('mousemove', draw);
@@ -127,18 +125,32 @@ export default function DonationPage() {
       { name: '@antimatter_investor', action: "konvertovao 1kg u čistu energiju", time: "10min ago" },
       { name: '@eternal_citizen', action: "zaključao 0.5BTC u vremenskom kontinuumu", time: "15min ago" }
     ];
-    
+
     const addTachyonMessage = () => {
       const randomMsg = tachyonMessages[Math.floor(Math.random() * tachyonMessages.length)];
       const message = `${randomMsg.name} ${randomMsg.action} (${randomMsg.time})`;
       setOracleResponses(prev => [...prev, message]);
     };
-    
+
     const interval = setInterval(addTachyonMessage, 5000);
     addTachyonMessage(); // Dodaj prvu poruku odmah
-    
+
     return () => clearInterval(interval);
   }, []);
+
+  // Pratimo status novčanika
+  useEffect(() => {
+    if (wallet) {
+      setWalletConnected(true);
+      setOracleResponses(prev => [
+        ...prev,
+        `Novčanik povezan: ${userAddress.slice(0, 10)}...`,
+        'Možeš izvršiti kvantnu donaciju!'
+      ]);
+    } else {
+      setWalletConnected(false);
+    }
+  }, [wallet, userAddress]);
 
   // Funkcije za interakciju
   const clearSignature = () => {
@@ -164,7 +176,7 @@ export default function DonationPage() {
       alert('Unesite pitanje!');
       return;
     }
-    
+
     const responses = [
       "Da, vaša donacija će izazvati lančanu reakciju u 7 dimenzija",
       "Neophodno dodatno ulaganje za vremensku stabilizaciju",
@@ -177,7 +189,7 @@ export default function DonationPage() {
       "Multiplikacija u toku...",
       "Večnost odobrava tvoj izbor"
     ];
-    
+
     const response = responses[Math.floor(Math.random() * responses.length)];
     setOracleResponses(prev => [...prev, `> ${question}\n${response}\n`]);
   };
@@ -237,6 +249,32 @@ export default function DonationPage() {
     return `$${value.toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
   };
 
+  // Funkcija za obradu donacije
+  const handleDonation = () => {
+    if (!walletConnected) {
+      alert('Povežite svoj TON novčanik prvo!');
+      return;
+    }
+
+    setOracleResponses(prev => [
+      ...prev,
+      `Donacija od ${donationAmount} TON u toku...`,
+      'Kvantna energija se prenosi...',
+      'Transakcija potvrđena!'
+    ]);
+
+    // Simuliramo obradu transakcije
+    setTimeout(() => {
+      const projections = [
+        `Vaša donacija će generisati ${donationAmount * 100} TON prinosa u narednih 5 godina`,
+        'Kvantni multiplikator aktiviran!',
+        `Projekcija: ${calculateFutureValue(donationAmount, 10)} za 10 godina`
+      ];
+      setOracleResponses(prev => [...prev, ...projections]);
+      setFutureProjection(projections[2]);
+    }, 3000);
+  };
+
   return (
     <>
       <Head>
@@ -244,16 +282,17 @@ export default function DonationPage() {
         <link rel="icon" href="/favicon.ico" />
         <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@200;400;600;800&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
       </Head>
-      
+
       <Script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js" strategy="afterInteractive" />
       <Script src="https://cdn.jsdelivr.net/npm/vanta@0.5.21/dist/vanta.net.min.js" strategy="afterInteractive" />
-      
+
       <div ref={vantaRef} id="vanta-bg" />
-      
+
       <div className="universal-nav">
         <Link href="/" className="nav-link">Početna</Link>
         <a href="#antimatter-converter" className="nav-link">Donacije</a>
         <a href="#quantum-contract" className="nav-link">Ugovor</a>
+        <TonConnectButton className="ton-connect-button" />
       </div>
 
       <main className="container">
@@ -261,19 +300,55 @@ export default function DonationPage() {
           <h1 className="quantum-gradient-text">KVANTNI HRAM VEČNOG KAPITALA</h1>
           <h2 className="tagline">TRANSFORMACIJA ENERGIJE KROZ SINGULARITET</h2>
           <p className="subtitle">Svaka donacija postaje atom u strukturi večnosti</p>
-          <Link href="/" className="portal-button">POVRATAK U SADAŠNJOST</Link>
+          
+          <div className="ton-donation-interface">
+            <div className="donation-controls">
+              <input
+                type="range"
+                min="5"
+                max="1000"
+                value={donationAmount}
+                onChange={(e) => setDonationAmount(Number(e.target.value))}
+                className="quantum-slider"
+              />
+              <div className="donation-amount">
+                <span>{donationAmount} TON</span>
+                <button 
+                  onClick={handleDonation}
+                  disabled={!walletConnected}
+                  className="portal-button"
+                >
+                  KVANTNA DONACIJA
+                </button>
+              </div>
+              
+              {futureProjection && (
+                <div className="future-projection">
+                  <h3>Projekcija prinosa:</h3>
+                  <p>{futureProjection}</p>
+                </div>
+              )}
+            </div>
+            
+            {!walletConnected && (
+              <div className="wallet-notice">
+                <p>Povežite novčanik za donaciju</p>
+                <TonConnectButton className="ton-connect-button" />
+              </div>
+            )}
+          </div>
         </header>
 
         <section className="section">
           <h2 className="quantum-gradient-text text-center mb-12">INTERAKTIVNI MODULI VEČNOG ULAZANJA</h2>
-          
+
           <div className="dashboard-grid">
             {/* 1. ANTIMATERIJSKI KONVERTER */}
             <div className="widget antimatter-converter">
               <h3>ANTIMATERIJSKI KONVERTER ENERGIJE</h3>
               <p>Transformiši običnu valutu u čistu energiju singulariteta</p>
               <div className="energy-beam"></div>
-              
+
               <input 
                 type="range" 
                 id="energySlider" 
@@ -283,7 +358,7 @@ export default function DonationPage() {
                 step="10"
                 onChange={(e) => setEnergyAmount(parseInt(e.target.value))}
               />
-              
+
               <div className="matter-antimatter-balance">
                 <span 
                   className="matter" 
@@ -294,13 +369,13 @@ export default function DonationPage() {
                   style={{ width: `${energyAmount / 10}%` }}
                 ></span>
               </div>
-              
+
               <div className="conversion-result">
                 <span id="energyResult">{energyAmount} MJ</span>
                 <span>=</span>
                 <span id="antimatterResult">{(energyAmount * 0.000021).toFixed(7)}μg</span>
               </div>
-              
+
               <button 
                 className="portal-button" 
                 onClick={() => alert(`Konverzija uspešna!\n${energyAmount} MJ = ${(energyAmount * 0.000021).toFixed(7)}μg antimaterije`)}
@@ -313,13 +388,13 @@ export default function DonationPage() {
             <div className="widget hologram-projector">
               <h3>HOLOGRAM BUDUĆIH VREDNOSTI</h3>
               <p>Projekcija vremenskog rasta vaše investicije</p>
-              
+
               <div className="hologram" id="futureValueHologram">
                 <h4>UNESITE IZNOS</h4>
                 <div className="multiplier">${hologramAmount}</div>
                 <p>i odaberite vremenski period</p>
               </div>
-              
+
               <input 
                 type="number" 
                 id="hologramAmount" 
@@ -328,7 +403,7 @@ export default function DonationPage() {
                 value={hologramAmount}
                 onChange={(e) => setHologramAmount(parseFloat(e.target.value) || 0)}
               />
-              
+
               <div className="time-controls">
                 <button onClick={() => alert(`Projekcija za 10 godina: ${calculateFutureValue(hologramAmount, 10)}`)}>
                   10 godina
@@ -346,7 +421,7 @@ export default function DonationPage() {
             <div className="widget multiverse-portfolio">
               <h3>MULTIVERZALNI PORTFOLIO</h3>
               <p>Diverzifikacija kroz paralelne realnosti</p>
-              
+
               <div className="universe-tabs">
                 {Object.keys(universeData).map(universe => (
                   <div 
@@ -358,11 +433,11 @@ export default function DonationPage() {
                   </div>
                 ))}
               </div>
-              
+
               <div className="universe-content">
                 <h3>{activeUniverse} UNIVERZUM</h3>
                 <p>{universeData[activeUniverse as keyof typeof universeData].description}</p>
-                
+
                 <div className="universe-stats">
                   {Object.entries(universeData[activeUniverse as keyof typeof universeData].stats).map(([key, value]) => (
                     <div key={key} className="stat-item">
@@ -378,13 +453,13 @@ export default function DonationPage() {
             <div className="widget quantum-contract">
               <h3>KVANTNI UGOVOR SA BESKONAČNOŠĆU</h3>
               <p>Zaključaj svoju energetsku šemu u blockchain vremena</p>
-              
+
               <div className="contract-scroll">
                 <p>Ja, <span contentEditable className="editable">[Unesite Kvantno Ime]</span>, svojom slobodnom voljom i potpunom svešću,</p>
                 <p>prilivom svoje energije u sistem Melektron v9 Singulariteta,</p>
                 <p>pristajem na transdimenzionalnu konverziju svoje materije u kvantni kapital</p>
                 <p>koji će postojati kroz sve vremenske linije i sve moguće realnosti.</p>
-                
+
                 <div className="signature-field">
                   <canvas 
                     ref={signatureCanvasRef} 
@@ -395,7 +470,7 @@ export default function DonationPage() {
                   <button onClick={clearSignature}>PONIŠTI POTPIS</button>
                 </div>
               </div>
-              
+
               <button className="portal-button" onClick={submitContract}>
                 ZAKLJUČAJ U VEČNOST
               </button>
@@ -405,7 +480,7 @@ export default function DonationPage() {
             <div className="widget tachyon-feed">
               <h3>TAHIONSKI LIVE FEED</h3>
               <p>Transakcije iz budućnosti u realnom vremenu</p>
-              
+
               <div className="tachyon-messages">
                 {oracleResponses.map((msg, index) => (
                   <div key={index} className="tachyon-message">
@@ -419,13 +494,13 @@ export default function DonationPage() {
             <div className="widget quantum-cipher">
               <h3>KVANTNI ŠIFRATOR</h3>
               <p>Generiši jedinstveni kod za pristup Singularitetu</p>
-              
+
               <div className="cipher-grid">
                 {cipherBits.map((bit, index) => (
                   <div key={index} className="bit">{bit}</div>
                 ))}
               </div>
-              
+
               <button className="portal-button" onClick={generateCipher}>
                 GENERIŠI KVANTNI KOD
               </button>
@@ -435,16 +510,16 @@ export default function DonationPage() {
             <div className="widget oracle-terminal">
               <h3>TERMINAL PROROČANSTVA</h3>
               <p>Konsultuj kolektivnu svest Singulariteta</p>
-              
+
               <div className="oracle-screen">
-                > PITAJ ORACULA O BUDUĆNOSTI...
+                {'> PITAJ ORACULA O BUDUĆNOSTI...'}
                 <div className="oracle-response">
                   {oracleResponses.map((response, index) => (
                     <p key={index}>{response}</p>
                   ))}
                 </div>
               </div>
-              
+
               <input 
                 type="text" 
                 id="oracleQuestion" 
@@ -474,13 +549,13 @@ export default function DonationPage() {
         <section className="mining-hero">
           <h1>TON Rudarski Pool</h1>
           <p>Pridružite se našem ekskluzivnom TON rudarskom poolu</p>
-          
+
           <div className="pool-config">
             <div className="config-card">
               <h3>Stratum Server</h3>
               <code>stratum+ssl://ton.melektron-pool.com:443</code>
             </div>
-            
+
             <div className="wallet-config">
               <h3>Vaš TON Novčanik za Isplate</h3>
               <div className="wallet-address">
@@ -489,9 +564,16 @@ export default function DonationPage() {
                   Kopiraj
                 </button>
               </div>
-              <div id="pool-wallet-qr"></div>
+              <div className="qr-code-container">
+                <QRCode 
+                  value="UQCDSWH9N691SfTsu7IoLfP3PRipFofpJbX9Z8V8Qj-5sSmF" 
+                  size={128}
+                  bgColor="transparent"
+                  fgColor="#00bfff"
+                />
+              </div>
             </div>
-            
+
             <div className="pool-stats">
               <div className="stat-card">
                 <h3>2.4 PH/s</h3>
@@ -507,7 +589,7 @@ export default function DonationPage() {
               </div>
             </div>
           </div>
-          
+
           <div className="start-mining">
             <h2>Kako Započeti</h2>
             <ol>
@@ -663,6 +745,70 @@ export default function DonationPage() {
           margin-bottom: 1.5rem;
           color: var(--antimatter-blue);
           font-size: 1.5rem;
+        }
+
+        /* TON Donation Interface */
+        .ton-donation-interface {
+          background: rgba(20, 20, 40, 0.7);
+          border-radius: 20px;
+          padding: 2rem;
+          margin-top: 2rem;
+          width: 100%;
+          max-width: 600px;
+        }
+        
+        .donation-controls {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+        
+        .quantum-slider {
+          width: 100%;
+          height: 15px;
+          -webkit-appearance: none;
+          background: linear-gradient(90deg, var(--antimatter-blue), var(--neural-network));
+          border-radius: 10px;
+          outline: none;
+          margin: 1.5rem 0;
+        }
+        
+        .quantum-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 25px;
+          height: 25px;
+          background: var(--singularity-gold);
+          border-radius: 50%;
+          cursor: pointer;
+        }
+        
+        .donation-amount {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        
+        .donation-amount span {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: var(--singularity-gold);
+        }
+        
+        .future-projection {
+          margin-top: 1rem;
+          padding: 1rem;
+          background: rgba(0, 0, 0, 0.3);
+          border-radius: 10px;
+          border: 1px solid var(--time-crystal);
+        }
+        
+        .wallet-notice {
+          margin-top: 1rem;
+          text-align: center;
+        }
+        
+        .ton-connect-button {
+          margin-top: 1rem;
         }
 
         /* 1. ANTIMATERIJSKI KONVERTER */
@@ -1081,6 +1227,14 @@ export default function DonationPage() {
           font-family: 'Share Tech Mono';
         }
         
+        .qr-code-container {
+          padding: 10px;
+          background: white;
+          border-radius: 8px;
+          display: inline-block;
+          margin-top: 1rem;
+        }
+        
         .pool-stats {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -1144,4 +1298,4 @@ export default function DonationPage() {
       `}</style>
     </>
   );
-} 
+}
