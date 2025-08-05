@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "build": "next build"
+    "build": "next build"
     "start": "next start",
     "lint": "next lint",
     "postbuild": "cp public/robots.txt .next/static/robots.txt && cp public/tonconnect-manifest.json .next/static/"
