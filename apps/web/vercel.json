@@ -1,7 +1,14 @@
 {
-  "buildCommand": "cd apps/web && npm run build",
-  "outputDirectory": "apps/web/.next",
-  "installCommand": "npm install --legacy-peer-deps",
-  "framework": "nextjs",
-  "regions": ["fra1"]
+  "builds": [
+    {
+      "src": "apps/web/package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/.*",
+      "dest": "apps/web"
+    }
+  ]
 }
