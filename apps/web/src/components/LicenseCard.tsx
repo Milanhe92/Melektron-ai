@@ -1,14 +1,14 @@
 interface LicenseCardProps {
   title: string;
   description: string;
-  path: string; // Add this line
+  path: string; // DODAT path prop
   type: string;
 }
 
 export default function LicenseCard({
   title,
   description,
-  path, // Add this parameter
+  path, // DODAT parametar
   type
 }: LicenseCardProps) {
   return (
