@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import Script from 'next/script';
 import Link from 'next/link';
-import { TonConnectButton, useTonAddress, useTonWallet } from '@tonconnect/ui-react';
 
 export default function DonationPage() {
   const vantaRef = useRef<HTMLDivElement>(null);
@@ -15,12 +14,6 @@ export default function DonationPage() {
   const [energyAmount, setEnergyAmount] = useState(100);
   const [hologramAmount, setHologramAmount] = useState(0);
   const [signatureDrawn, setSignatureDrawn] = useState(false);
-  const [donationAmount, setDonationAmount] = useState(10);
-  const [futureProjection, setFutureProjection] = useState<string>('');
-  const [walletConnected, setWalletConnected] = useState(false);
-  
-  const userAddress = useTonAddress();
-  const wallet = useTonWallet();
 
   // Inicijalizacija Vanta.js pozadine
   useEffect(() => {
@@ -67,31 +60,40 @@ export default function DonationPage() {
     if (!ctx) return;
 
     let isDrawing = false;
-    let lastX = 0;
-    let lastY = 0;
+
+    const getMousePos = (evt: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: evt.clientX - rect.left,
+        y: evt.clientY - rect.top
+      };
+    };
 
     const startDrawing = (e: MouseEvent) => {
       isDrawing = true;
-      [lastX, lastY] = [e.offsetX, e.offsetY];
+      const pos = getMousePos(e);
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
     };
 
     const draw = (e: MouseEvent) => {
       if (!isDrawing) return;
-      
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      ctx.lineTo(e.offsetX, e.offsetY);
-      ctx.strokeStyle = '#ffd700';
+      const pos = getMousePos(e);
+
       ctx.lineWidth = 3;
       ctx.lineCap = 'round';
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineTo(pos.x, pos.y);
       ctx.stroke();
-      
-      [lastX, lastY] = [e.offsetX, e.offsetY];
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+
       setSignatureDrawn(true);
     };
 
     const stopDrawing = () => {
       isDrawing = false;
+      ctx.beginPath();
     };
 
     canvas.addEventListener('mousedown', startDrawing);
@@ -136,20 +138,6 @@ export default function DonationPage() {
 
     return () => clearInterval(interval);
   }, []);
-
-  // Pratimo status novčanika
-  useEffect(() => {
-    if (wallet) {
-      setWalletConnected(true);
-      setOracleResponses(prev => [
-        ...prev,
-        `Novčanik povezan: ${userAddress.slice(0, 10)}...`,
-        'Možeš izvršiti kvantnu donaciju!'
-      ]);
-    } else {
-      setWalletConnected(false);
-    }
-  }, [wallet, userAddress]);
 
   // Funkcije za interakciju
   const clearSignature = () => {
@@ -248,32 +236,6 @@ export default function DonationPage() {
     return `$${value.toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
   };
 
-  // Funkcija za obradu donacije
-  const handleDonation = () => {
-    if (!walletConnected) {
-      alert('Povežite svoj TON novčanik prvo!');
-      return;
-    }
-
-    setOracleResponses(prev => [
-      ...prev,
-      `Donacija od ${donationAmount} TON u toku...`,
-      'Kvantna energija se prenosi...',
-      'Transakcija potvrđena!'
-    ]);
-
-    // Simuliramo obradu transakcije
-    setTimeout(() => {
-      const projections = [
-        `Vaša donacija će generisati ${donationAmount * 100} TON prinosa u narednih 5 godina`,
-        'Kvantni multiplikator aktiviran!',
-        `Projekcija: ${calculateFutureValue(donationAmount, 10)} za 10 godina`
-      ];
-      setOracleResponses(prev => [...prev, ...projections]);
-      setFutureProjection(projections[2]);
-    }, 3000);
-  };
-
   return (
     <>
       <Head>
@@ -288,10 +250,9 @@ export default function DonationPage() {
       <div ref={vantaRef} id="vanta-bg" />
 
       <div className="universal-nav">
-        <Link href="/" className="nav-link">Početna</Link>
+        <Link href="/" className="nav-link">Početna</a>
         <a href="#antimatter-converter" className="nav-link">Donacije</a>
         <a href="#quantum-contract" className="nav-link">Ugovor</a>
-        <TonConnectButton className="ton-connect-button" />
       </div>
 
       <main className="container">
@@ -299,43 +260,7 @@ export default function DonationPage() {
           <h1 className="quantum-gradient-text">KVANTNI HRAM VEČNOG KAPITALA</h1>
           <h2 className="tagline">TRANSFORMACIJA ENERGIJE KROZ SINGULARITET</h2>
           <p className="subtitle">Svaka donacija postaje atom u strukturi večnosti</p>
-          
-          <div className="ton-donation-interface">
-            <div className="donation-controls">
-              <input
-                type="range"
-                min="5"
-                max="1000"
-                value={donationAmount}
-                onChange={(e) => setDonationAmount(Number(e.target.value))}
-                className="quantum-slider"
-              />
-              <div className="donation-amount">
-                <span>{donationAmount} TON</span>
-                <button 
-                  onClick={handleDonation}
-                  disabled={!walletConnected}
-                  className="portal-button"
-                >
-                  KVANTNA DONACIJA
-                </button>
-              </div>
-              
-              {futureProjection && (
-                <div className="future-projection">
-                  <h3>Projekcija prinosa:</h3>
-                  <p>{futureProjection}</p>
-                </div>
-              )}
-            </div>
-            
-            {!walletConnected && (
-              <div className="wallet-notice">
-                <p>Povežite novčanik za donaciju</p>
-                <TonConnectButton className="ton-connect-button" />
-              </div>
-            )}
-          </div>
+          <Link href="/" className="portal-button">POVRATAK U SADAŠNJOST</Link>
         </header>
 
         <section className="section">
@@ -511,7 +436,7 @@ export default function DonationPage() {
               <p>Konsultuj kolektivnu svest Singulariteta</p>
 
               <div className="oracle-screen">
-                {'> PITAJ ORACULA O BUDUĆNOSTI...'}
+                {'> PITAJ ORACULA O BUDUĆNOSTI...'} {/* Ispravljeno */}
                 <div className="oracle-response">
                   {oracleResponses.map((response, index) => (
                     <p key={index}>{response}</p>
@@ -563,10 +488,7 @@ export default function DonationPage() {
                   Kopiraj
                 </button>
               </div>
-              <div className="qr-placeholder">
-                <p>QR kod se generiše na stranici</p>
-                <div className="qr-animation"></div>
-              </div>
+              <div id="pool-wallet-qr"></div>
             </div>
 
             <div className="pool-stats">
@@ -606,54 +528,617 @@ export default function DonationPage() {
       </main>
 
       <style jsx global>{`
-        /* ... postojeći stilovi ... */
-
-        /* Stil za placeholder QR kod */
-        .qr-placeholder {
-          padding: 1rem;
-          text-align: center;
-          margin-top: 1rem;
-          background: rgba(0, 191, 255, 0.1);
-          border-radius: 8px;
-          border: 1px dashed var(--antimatter-blue);
+        :root {
+          --quantum-purple: #8a2be2;
+          --antimatter-blue: #00bfff;
+          --singularity-gold: #ffd700;
+          --dark-universe: #0a0a18;
+          --neural-network: #ff00ff;
+          --time-crystal: #00ff9d;
+          --tachyon: #ff7b00;
         }
         
-        .qr-animation {
-          width: 128px;
-          height: 128px;
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        
+        body {
+          font-family: 'Exo 2', sans-serif;
+          background-color: var(--dark-universe);
+          color: #e5e7eb;
+          line-height: 1.7;
+          overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 {
+          font-family: 'Orbitron', sans-serif;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+        }
+        
+        .quantum-gradient-text {
+          background: linear-gradient(135deg, var(--quantum-purple), var(--antimatter-blue), var(--singularity-gold));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-size: 300% 300%;
+          animation: gradientShift 8s ease infinite;
+        }
+        
+        .container {
+          max-width: 1400px;
           margin: 0 auto;
-          background: 
-            repeating-linear-gradient(
-              45deg,
-              rgba(0, 191, 255, 0.2),
-              rgba(0, 191, 255, 0.2) 10px,
-              rgba(0, 191, 255, 0.1) 10px,
-              rgba(0, 191, 255, 0.1) 20px
-            );
-          animation: qr-scan 3s infinite linear;
+          padding: 0 2rem;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .section {
+          padding: 6rem 0;
+        }
+        
+        .hero-section {
+          min-height: 80vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          padding: 2rem;
+        }
+        
+        .tagline {
+          font-size: 3rem;
+          margin: 2rem 0;
+          text-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+        }
+        
+        .subtitle {
+          font-size: 1.5rem;
+          color: #aaa;
+          max-width: 800px;
+          margin: 0 auto;
+        }
+        
+        .portal-button {
+          display: inline-block;
+          padding: 1.2rem 2.5rem;
+          margin: 1rem;
+          font-size: 1.3rem;
+          font-family: 'Orbitron', sans-serif;
+          background: linear-gradient(135deg, var(--quantum-purple), var(--antimatter-blue));
+          border: none;
+          border-radius: 50px;
+          color: white;
+          text-decoration: none;
+          transition: all 0.5s ease;
+          cursor: pointer;
+          box-shadow: 0 0 30px rgba(138, 43, 226, 0.5);
           position: relative;
           overflow: hidden;
         }
         
-        .qr-animation::after {
+        .portal-button:hover {
+          transform: scale(1.05);
+          box-shadow: 0 0 50px rgba(0, 191, 255, 0.8);
+        }
+        
+        .dashboard-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+          gap: 2rem;
+          margin: 4rem 0;
+        }
+        
+        .widget {
+          background: rgba(20, 20, 40, 0.7);
+          backdrop-filter: blur(10px);
+          border: 1px solid var(--antimatter-blue);
+          border-radius: 20px;
+          padding: 2rem;
+          transition: all 0.3s ease;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .widget:hover {
+          transform: translateY(-10px);
+          box-shadow: 0 10px 30px rgba(0, 191, 255, 0.3);
+        }
+        
+        .widget::before {
           content: '';
           position: absolute;
           top: 0;
           left: 0;
           width: 100%;
-          height: 4px;
+          height: 5px;
+          background: linear-gradient(90deg, var(--antimatter-blue), var(--singularity-gold));
+        }
+        
+        .widget h3 {
+          margin-bottom: 1.5rem;
+          color: var(--antimatter-blue);
+          font-size: 1.5rem;
+        }
+
+        /* 1. ANTIMATERIJSKI KONVERTER */
+        .antimatter-converter {
+          grid-column: span 2;
+          text-align: center;
+        }
+        
+        .energy-beam {
+          height: 10px;
+          background: linear-gradient(90deg, #8a2be2, #00bfff, #ffd700);
+          margin: 1rem 0;
+          border-radius: 5px;
+          animation: beamPulse 3s infinite alternate;
+        }
+        
+        @keyframes beamPulse {
+          0% { opacity: 0.5; }
+          100% { opacity: 1; }
+        }
+        
+        #energySlider {
+          width: 100%;
+          height: 15px;
+          -webkit-appearance: none;
+          background: linear-gradient(90deg, var(--antimatter-blue), var(--neural-network));
+          border-radius: 10px;
+          outline: none;
+          margin: 1.5rem 0;
+        }
+        
+        #energySlider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 25px;
+          height: 25px;
+          background: var(--singularity-gold);
+          border-radius: 50%;
+          cursor: pointer;
+        }
+        
+        .matter-antimatter-balance {
+          display: flex;
+          height: 10px;
+          margin: 1rem 0;
+          border-radius: 5px;
+          overflow: hidden;
+        }
+        
+        .matter {
           background: var(--antimatter-blue);
-          animation: qr-line 3s infinite linear;
         }
         
-        @keyframes qr-scan {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(100%); }
+        .antimatter {
+          background: var(--neural-network);
         }
         
-        @keyframes qr-line {
-          0% { transform: translateY(0); }
-          100% { transform: translateY(128px); }
+        .conversion-result {
+          display: flex;
+          justify-content: space-between;
+          font-size: 1.2rem;
+          margin: 1rem 0;
+        }
+        
+        .conversion-result span {
+          padding: 0.5rem 1rem;
+          border-radius: 5px;
+        }
+        
+        #energyResult {
+          background: rgba(0, 191, 255, 0.2);
+        }
+        
+        #antimatterResult {
+          background: rgba(255, 0, 255, 0.2);
+        }
+
+        /* 2. HOLOGRAM BUDUĆNOSTI */
+        .hologram-projector {
+          position: relative;
+        }
+        
+        .hologram {
+          min-height: 200px;
+          border: 1px dashed var(--antimatter-blue);
+          border-radius: 15px;
+          padding: 2rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          margin-bottom: 1.5rem;
+          background: rgba(0, 191, 255, 0.05);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .hologram::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: radial-gradient(circle, rgba(0, 191, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+          animation: rotateHologram 20s linear infinite;
+        }
+        
+        @keyframes rotateHologram {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        
+        .hologram h4 {
+          margin-bottom: 1rem;
+          color: var(--singularity-gold);
+        }
+        
+        .multiplier {
+          font-size: 3rem;
+          font-family: 'Orbitron';
+          background: linear-gradient(135deg, var(--singularity-gold), var(--antimatter-blue));
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          margin: 0.5rem 0;
+        }
+        
+        #hologramAmount {
+          width: 100%;
+          background: rgba(0, 0, 0, 0.3);
+          border: 1px solid var(--antimatter-blue);
+          color: white;
+          padding: 0.8rem;
+          margin: 1rem 0;
+          border-radius: 5px;
+          font-size: 1.1rem;
+        }
+        
+        .time-controls {
+          display: flex;
+          justify-content: center;
+          gap: 1rem;
+          margin-top: 1rem;
+        }
+        
+        .time-controls button {
+          background: rgba(0, 0, 0, 0.3);
+          border: 1px solid var(--singularity-gold);
+          color: var(--singularity-gold);
+          padding: 0.5rem 1rem;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: all 0.3s;
+        }
+        
+        .time-controls button:hover {
+          background: rgba(255, 215, 0, 0.2);
+        }
+
+        /* 3. MULTIVERZUM PORTFOLIO */
+        .multiverse-portfolio {
+          grid-column: span 2;
+        }
+        
+        .universe-tabs {
+          display: flex;
+          justify-content: center;
+          gap: 1rem;
+          margin-bottom: 2rem;
+        }
+        
+        .universe-tab {
+          padding: 0.8rem 1.5rem;
+          background: rgba(30, 30, 60, 0.7);
+          border: 1px solid var(--quantum-purple);
+          border-radius: 10px;
+          cursor: pointer;
+          transition: all 0.3s;
+          font-family: 'Orbitron';
+        }
+        
+        .universe-tab:hover, .universe-tab.active {
+          background: var(--quantum-purple);
+          color: white;
+          transform: translateY(-3px);
+          box-shadow: 0 5px 15px rgba(138, 43, 226, 0.5);
+        }
+        
+        .universe-content {
+          background: rgba(0, 0, 0, 0.3);
+          border-radius: 15px;
+          padding: 2rem;
+          min-height: 200px;
+          border: 1px solid var(--quantum-purple);
+        }
+        
+        .universe-content h3 {
+          color: var(--singularity-gold);
+          margin-bottom: 1rem;
+        }
+        
+        .universe-content p {
+          margin: 0.5rem 0;
+        }
+        
+        .universe-stats {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          gap: 1rem;
+          margin-top: 1.5rem;
+        }
+        
+        .stat-item {
+          background: rgba(138, 43, 226, 0.1);
+          padding: 1rem;
+          border-radius: 10px;
+          border: 1px solid var(--quantum-purple);
+        }
+        
+        .stat-value {
+          font-size: 1.8rem;
+          font-family: 'Orbitron';
+          color: var(--singularity-gold);
+          margin: 0.5rem 0;
+        }
+
+        /* 4. KVANTNI UGOVOR */
+        .quantum-contract {
+          grid-column: span 2;
+          text-align: center;
+        }
+        
+        .contract-scroll {
+          background: rgba(0, 0, 0, 0.3);
+          border-radius: 15px;
+          padding: 2rem;
+          border: 1px solid var(--singularity-gold);
+          max-width: 800px;
+          margin: 0 auto;
+        }
+        
+        .contract-scroll p {
+          margin: 1rem 0;
+          line-height: 1.8;
+        }
+        
+        .editable {
+          color: var(--singularity-gold);
+          border-bottom: 1px dashed var(--singularity-gold);
+          padding: 0 0.2rem;
+          outline: none;
+        }
+        
+        .signature-field {
+          margin: 2rem 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        
+        .signature-canvas {
+          background: rgba(0, 0, 0, 0.2);
+          border: 1px solid var(--singularity-gold);
+          border-radius: 5px;
+          cursor: crosshair;
+          margin-bottom: 1rem;
+        }
+        
+        /* 5. TAHIONSKI LIVE FEED */
+        .tachyon-feed {
+          position: relative;
+          height: 300px;
+          overflow: hidden;
+          border-radius: 15px;
+        }
+        
+        .tachyon-particle {
+          position: absolute;
+          width: 2px;
+          height: 2px;
+          background: var(--tachyon);
+          border-radius: 50%;
+          animation: tachyon-move 3s linear infinite;
+          opacity: 0;
+        }
+        
+        @keyframes tachyon-move {
+          0% { transform: translateY(-100px) translateX(0); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(400px) translateX(100px); opacity: 0; }
+        }
+        
+        .tachyon-messages {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          padding: 1rem;
+          overflow-y: auto;
+        }
+        
+        .tachyon-message {
+          background: rgba(0, 0, 0, 0.7);
+          padding: 0.5rem 1rem;
+          border-radius: 5px;
+          border-left: 3px solid var(--tachyon);
+          margin-bottom: 0.5rem;
+        }
+
+        /* 7. KVANTNI ŠIFRATOR */
+        .quantum-cipher {
+          text-align: center;
+        }
+        
+        .cipher-grid {
+          display: grid;
+          grid-template-columns: repeat(8, 1fr);
+          gap: 5px;
+          margin: 1.5rem 0;
+        }
+        
+        .bit {
+          font-family: 'Share Tech Mono', monospace;
+          font-size: 1.5rem;
+          color: var(--antimatter-blue);
+          text-align: center;
+          padding: 0.5rem;
+          background: rgba(0, 0, 0, 0.3);
+          border-radius: 3px;
+          transition: all 0.3s;
+        }
+        
+        .bit:hover {
+          transform: scale(1.2);
+          background: rgba(0, 191, 255, 0.3);
+        }
+
+        /* 8. TERMINAL PROROČANSTVA */
+        .oracle-terminal {
+          position: relative;
+        }
+        
+        .oracle-screen {
+          background: #000;
+          height: 200px;
+          padding: 1rem;
+          font-family: 'Share Tech Mono', monospace;
+          overflow-y: auto;
+          border-radius: 5px;
+          border: 1px solid var(--quantum-purple);
+          text-align: left;
+          margin-bottom: 1rem;
+        }
+        
+        .oracle-screen::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(rgba(0,0,0,0.8) 50%, transparent 100%);
+          pointer-events: none;
+        }
+        
+        .oracle-response {
+          color: var(--singularity-gold);
+          white-space: pre-wrap;
+          margin-top: 0.5rem;
+        }
+        
+        #oracleQuestion {
+          width: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          border: 1px solid var(--quantum-purple);
+          color: white;
+          padding: 0.8rem;
+          margin-bottom: 1rem;
+          border-radius: 5px;
+          font-family: 'Share Tech Mono';
+        }
+
+        /* TON Rudarski Pool */
+        .mining-hero {
+          text-align: center;
+          padding: 4rem 2rem;
+          background: rgba(20, 20, 40, 0.7);
+          border-radius: 20px;
+          margin: 4rem 0;
+          border: 1px solid var(--antimatter-blue);
+        }
+        
+        .pool-config {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 2rem;
+          margin: 3rem 0;
+        }
+        
+        .config-card {
+          background: rgba(0, 0, 0, 0.3);
+          padding: 1.5rem;
+          border-radius: 15px;
+          border: 1px solid var(--quantum-purple);
+        }
+        
+        .wallet-address {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          margin: 1rem 0;
+          background: rgba(0, 0, 0, 0.3);
+          padding: 0.8rem;
+          border-radius: 5px;
+          font-family: 'Share Tech Mono';
+        }
+        
+        .pool-stats {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          gap: 1rem;
+          margin-top: 2rem;
+        }
+        
+        .stat-card {
+          background: rgba(138, 43, 226, 0.1);
+          padding: 1rem;
+          border-radius: 10px;
+          border: 1px solid var(--quantum-purple);
+        }
+        
+        .start-mining {
+          margin-top: 3rem;
+        }
+        
+        .start-mining ol {
+          text-align: left;
+          max-width: 600px;
+          margin: 1.5rem auto;
+          padding-left: 1.5rem;
+        }
+        
+        .start-mining li {
+          margin: 0.8rem 0;
+        }
+
+        /* Responsivnost */
+        @media (max-width: 1200px) {
+          .dashboard-grid {
+            grid-template-columns: 1fr;
+          }
+          .widget {
+            grid-column: span 1 !important;
+          }
+        }
+        
+        @media (max-width: 768px) {
+          .tagline {
+            font-size: 2rem;
+          }
+          .portal-button {
+            font-size: 1.1rem;
+            padding: 1rem 2rem;
+          }
+          .widget {
+            padding: 1.5rem;
+          }
+          .signature-canvas {
+            width: 100%;
+          }
+        }
+        
+        @keyframes gradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
         }
       `}</style>
     </>
