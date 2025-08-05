@@ -1,24 +1,42 @@
-name: Build and Deploy
+name: Main Guard
 
 on:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v3
-      with:
-        node-version: '20'
-    - run: npm install -g npm@latest
-    - run: npm config set legacy-peer-deps true
-    - run: npm install
-    - run: cd packages/ton-client && npm run build
-    - run: cd apps/web && npm run build
-    - uses: amondnet/vercel-action@v30
-      with:
-        vercel-token: ${{ secrets.VERCEL_TOKEN }}
-        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: |
+          npm install --legacy-peer-deps
+          cd packages/ton-client && npm install
+          
+      - name: Build packages
+        run: |
+          cd packages/ton-client && npm run build
+          cd ../../apps/web && npm run build
+          
+      - name: Security scan
+        uses: shiftleftsecurity/scan-action@v2
+        with:
+          output: reports/
+          
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v30
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-args: '--prod --confirm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
