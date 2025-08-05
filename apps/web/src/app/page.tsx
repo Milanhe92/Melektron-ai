@@ -379,7 +379,7 @@ export default function MelektronPage() {
           id: 'ton-addr'
         }
       ]
-    }
+    };
 
   return (
     <>
