@@ -12,7 +12,14 @@ const nextConfig = {
   transpilePackages: [
     '@melektron/ai-core',
     '@melektron/ton-utils'
-  ], 
- };
+  ],
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      '@melektron/quantum-core': false
+    };
+    return config;
+  }
+};
 
 export default nextConfig;
