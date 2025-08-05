@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
@@ -132,9 +131,9 @@ export default function MelektronPage() {
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
       const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-      
+
       renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-      
+
       // Create stars
       const starsGeometry = new THREE.BufferGeometry();
       const starsMaterial = new THREE.PointsMaterial({
@@ -142,7 +141,7 @@ export default function MelektronPage() {
         size: 0.1,
         sizeAttenuation: true
       });
-      
+
       const starsVertices: number[] = [];
       for (let i = 0; i < 10000; i++) {
         starsVertices.push(
@@ -151,11 +150,11 @@ export default function MelektronPage() {
           (Math.random() - 0.5) * 2000
         );
       }
-      
+
       starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
       const starField = new THREE.Points(starsGeometry, starsMaterial);
       scene.add(starField);
-      
+
       // Create central singularity
       const singularityGeometry = new THREE.SphereGeometry(15, 32, 32);
       const singularityMaterial = new THREE.MeshBasicMaterial({
@@ -164,7 +163,7 @@ export default function MelektronPage() {
       });
       const singularity = new THREE.Mesh(singularityGeometry, singularityMaterial);
       scene.add(singularity);
-      
+
       // Create accretion disk
       const diskGeometry = new THREE.RingGeometry(20, 100, 64);
       const diskMaterial = new THREE.MeshBasicMaterial({
@@ -176,7 +175,7 @@ export default function MelektronPage() {
       const accretionDisk = new THREE.Mesh(diskGeometry, diskMaterial);
       accretionDisk.rotation.x = Math.PI / 2;
       scene.add(accretionDisk);
-      
+
       // Create Melektron modules
       const modules: THREE.Mesh[] = [];
       const moduleGeometry = new THREE.TetrahedronGeometry(5, 0);
@@ -184,36 +183,36 @@ export default function MelektronPage() {
         color: 0x00ff9d,
         wireframe: true
       });
-      
+
       for (let i = 0; i < 24; i++) {
         const angle = (i / 24) * Math.PI * 2;
         const radius = 50 + Math.random() * 50;
         const height = Math.random() * 100 - 50;
-        
+
         const module = new THREE.Mesh(moduleGeometry, moduleMaterial);
         module.position.set(
           Math.cos(angle) * radius,
           height,
           Math.sin(angle) * radius
         );
-        
+
         scene.add(module);
         modules.push(module);
       }
-      
+
       // Position camera
       camera.position.z = 150;
-      
+
       // Animation
       const animate = () => {
         requestAnimationFrame(animate);
-        
+
         starField.rotation.x += 0.0005;
         starField.rotation.y += 0.001;
-        
+
         singularity.rotation.y += 0.005;
         accretionDisk.rotation.z += 0.01;
-        
+
         // Animate modules
         const time = Date.now() * 0.001;
         modules.forEach((module, index) => {
@@ -221,21 +220,21 @@ export default function MelektronPage() {
           module.rotation.y += 0.02;
           module.position.y = Math.sin(time + index) * 30;
         });
-        
+
         renderer.render(scene, camera);
       };
-      
+
       animate();
-      
+
       // Handle window resize
       const handleResize = () => {
         camera.aspect = canvas.clientWidth / canvas.clientHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(canvas.clientWidth, canvas.clientHeight);
       };
-      
+
       window.addEventListener('resize', handleResize);
-      
+
       return () => {
         window.removeEventListener('resize', handleResize);
       };
@@ -247,26 +246,26 @@ export default function MelektronPage() {
     const createParticle = () => {
       const particle = document.createElement('div');
       particle.classList.add('quantum-particle');
-      
+
       const size = Math.random() * 3 + 1;
       const posX = Math.random() * window.innerWidth;
       const posY = Math.random() * window.innerHeight;
       const duration = Math.random() * 10 + 5;
       const delay = Math.random() * 5;
-      
+
       particle.style.width = `${size}px`;
       particle.style.height = `${size}px`;
       particle.style.left = `${posX}px`;
       particle.style.top = `${posY}px`;
       particle.style.animation = `moveParticle ${duration}s linear ${delay}s infinite`;
-      
+
       document.body.appendChild(particle);
-      
+
       setTimeout(() => {
         particle.remove();
       }, (duration + delay) * 1000);
     };
-    
+
     // Add animation for particles
     const style = document.createElement('style');
     style.textContent = `
@@ -282,9 +281,9 @@ export default function MelektronPage() {
       }
     `;
     document.head.appendChild(style);
-    
+
     const interval = setInterval(createParticle, 100);
-    
+
     return () => {
       clearInterval(interval);
       document.head.removeChild(style);
@@ -380,13 +379,13 @@ export default function MelektronPage() {
         }
       ]
     }
-  ];
+  ]; // Ispravljeno - zatvorena zagrada i točka-zarez
 
   return (
     <>
       {/* Quantum Background */}
       <div ref={vantaRef} id="vanta-bg" className="fixed top-0 left-0 w-full h-full -z-10"></div>
-      
+
       {/* Navigation */}
       <div className="universal-nav p-4 flex justify-center">
         <a href="/" className="nav-link mx-4 text-lg font-orbitron hover:text-quantum-purple">Početna</a>
@@ -395,30 +394,6 @@ export default function MelektronPage() {
       </div>
 
       {/* Hero Section */}
-      export default function Home() {
-  return (
-    <div className="relative min-h-screen">
-      <Suspense fallback={<div className="absolute inset-0 bg-black" />}>
-        <VantaEffect />
-      </Suspense>
-      
-      <header className="relative z-10">
-        <TonConnectButton className="absolute top-4 right-4" />
-      </header>
-
-      <main className="relative z-10 container mx-auto px-4 py-24">
-        <h1 className="text-5xl font-orbitron bg-gradient-to-r from-purple-500 to-cyan-300 text-transparent bg-clip-text">
-          Melektron AI Platform
-        </h1>
-        
-        {/* TON Blockchain integracija */}
-        <div id="ton-widget" className="mt-12 border border-cyan-500 rounded-xl p-6 backdrop-blur-lg">
-          <DonationWidget />
-        </div>
-      </main>
-    </div>
-  )
-} 
         <section className="hero-section min-h-screen flex flex-col justify-center items-center text-center p-4 relative overflow-hidden">
         <div className="logo quantum-gradient-text text-6xl md:text-8xl mb-8">MELEKTRON</div>
         <h1 className="tagline quantum-gradient-text text-2xl md:text-4xl max-w-4xl mb-12">
@@ -452,7 +427,7 @@ export default function MelektronPage() {
         <div className="container max-w-6xl mx-auto">
           <h2 className="section-title quantum-gradient-text text-3xl md:text-4xl text-center mb-12">24+ Tokova Prihoda</h2>
           <p className="subtitle-text text-center mb-16">Integracija svih prethodnih Melektron modela sa novim revolucionarnim pristupima</p>
-          
+
           <div className="revenue-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
             {revenueStreams.map((stream, index) => (
               <div key={index} className="revenue-card bg-gray-900 bg-opacity-70 backdrop-blur-md border border-revenue-green rounded-xl p-6 transition-transform hover:-translate-y-2 hover:shadow-lg">
@@ -463,7 +438,7 @@ export default function MelektronPage() {
               </div>
             ))}
           </div>
-          
+
           <div className="chart-container bg-gray-900 bg-opacity-70 rounded-xl p-6">
             <canvas ref={revenueChartRef} id="revenueChart"></canvas>
           </div>
@@ -475,7 +450,7 @@ export default function MelektronPage() {
         <div className="container max-w-6xl mx-auto">
           <h2 className="section-title quantum-gradient-text text-3xl md:text-4xl text-center mb-12">Arhitektura Singulariteta</h2>
           <p className="subtitle-text text-center mb-16">Integracija svih prethodnih Melektron generacija u jedinstveni kvantni sistem</p>
-          
+
           <div className="architecture-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
             {architectureItems.map((item, index) => (
               <div key={index} className="architecture-card bg-gray-900 bg-opacity-70 backdrop-blur-md border border-antimatter-blue rounded-xl p-6 transition-all hover:scale-105">
@@ -488,7 +463,7 @@ export default function MelektronPage() {
               </div>
             ))}
           </div>
-          
+
           <div className="universe-simulator w-full h-96 md:h-[600px] bg-gray-900 bg-opacity-80 rounded-xl border border-antimatter-blue">
             <canvas ref={universeCanvasRef} id="universe-canvas" className="w-full h-full"></canvas>
           </div>
@@ -500,11 +475,11 @@ export default function MelektronPage() {
         <div className="container max-w-6xl mx-auto">
           <h2 className="section-title quantum-gradient-text text-3xl md:text-4xl text-center mb-12">Dalja Izgradnja</h2>
           <p className="subtitle-text text-center mb-16">Mogućnosti za neograničeni rast i ekspanziju</p>
-          
+
           <div className="future-section bg-gray-900 bg-opacity-80 rounded-xl p-6 border border-neural-network">
             <h3 className="text-2xl md:text-3xl mb-6 text-neural-network">Kvantni Građevni Blokovi</h3>
             <p className="mb-8">Modularni sistem za dalju izgradnju i prilagođavanje:</p>
-            
+
             <div className="future-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {futureItems.map((item, index) => (
                 <div key={index} className="future-card bg-gray-900 bg-opacity-70 backdrop-blur-md border border-neural-network rounded-xl p-6 transition-all hover:-translate-y-2">
@@ -513,14 +488,14 @@ export default function MelektronPage() {
                 </div>
               ))}
             </div>
-            
+
             <div className="creator-section bg-gradient-to-r from-quantum-purple/10 to-antimatter-blue/10 rounded-3xl p-8 text-center relative overflow-hidden">
               <div className="creator-avatar w-32 h-32 md:w-48 md:h-48 rounded-full border-4 border-singularity-gold mx-auto mb-8" 
                    style={{ backgroundImage: 'url(https://www.gravatar.com/avatar/23e6717a6d88f3438a088656a1b26d1e?s=512&d=mp)', backgroundSize: 'cover' }}></div>
               <h3 className="text-2xl md:text-3xl mb-2">Milan He</h3>
               <p className="creator-title text-xl text-singularity-gold mb-4">Glavni Arhitekta Singulariteta</p>
               <p className="creator-description italic mb-8">"Singularitet nije kraj - to je početak neograničenih mogućnosti"</p>
-              
+
               <div className="architecture-card bg-gray-900 bg-opacity-70 backdrop-blur-md rounded-xl p-6 max-w-3xl mx-auto">
                 <h3 className="text-xl md:text-2xl mb-4 text-antimatter-blue">Kontinuitet Razvoja</h3>
                 <p className="mb-4">Melektron je dizajniran kao živi organizam koji se kontinuirano razvija:</p>
@@ -539,7 +514,7 @@ export default function MelektronPage() {
       {/* Donation Section */}
       <section id="donationForm" className="section py-16 px-4">
         <h2 className="section-title quantum-gradient-text text-3xl md:text-4xl text-center mb-12">NAČINI ULAGANJA U VEČNOST</h2>
-        
+
         <div className="donation-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {donationMethods.map((method, index) => (
             <div key={index} className="revenue-card bg-gray-900 bg-opacity-70 backdrop-blur-md border border-revenue-green rounded-xl p-6">
@@ -569,13 +544,13 @@ export default function MelektronPage() {
       <section id="contact" className="section py-16 px-4">
         <div className="container max-w-4xl mx-auto bg-gray-900 bg-opacity-70 rounded-2xl p-8">
           <h2 className="section-title quantum-gradient-text text-3xl md:text-4xl text-center mb-12">Kontakt</h2>
-          
+
           <form name="contact" method="POST" data-netlify="true" className="space-y-6">
             <input type="hidden" name="form-name" value="contact" />
             <div className="hidden">
               <label>Ne popunjavajte ovo polje: <input name="bot-field" /></label>
             </div>
-            
+
             <div>
               <label htmlFor="name" className="block mb-2 text-antimatter-blue font-orbitron">Ime:</label>
               <input
@@ -587,7 +562,7 @@ export default function MelektronPage() {
                 placeholder="Vaše ime"
               />
             </div>
-            
+
             <div>
               <label htmlFor="email" className="block mb-2 text-antimatter-blue font-orbitron">Email:</label>
               <input
@@ -599,7 +574,7 @@ export default function MelektronPage() {
                 placeholder="Vaš email"
               />
             </div>
-            
+
             <div>
               <label htmlFor="message" className="block mb-2 text-antimatter-blue font-orbitron">Poruka:</label>
               <textarea
@@ -611,7 +586,7 @@ export default function MelektronPage() {
                 placeholder="Vaša poruka..."
               ></textarea>
             </div>
-            
+
             <div className="text-center">
               <button
                 type="submit"
@@ -628,7 +603,7 @@ export default function MelektronPage() {
       <footer className="footer py-16 px-8 text-center bg-gray-900 bg-opacity-90 border-t border-quantum-purple">
         <div className="container max-w-6xl mx-auto">
           <h3 className="quantum-gradient-text text-2xl md:text-3xl font-orbitron mb-8">Povežimo se & Izgradimo Budućnost</h3>
-          
+
           <div className="action-buttons flex justify-center gap-4 mb-12 flex-wrap">
             <a href="/donacije" className="px-8 py-4 font-orbitron bg-gradient-to-r from-singularity-gold to-impact-orange text-white rounded-full transition-all hover:scale-105">
               Podrži Projekat
@@ -650,7 +625,7 @@ export default function MelektronPage() {
             <a href="https://tiktok.com/@milanhe92" target="_blank" className="hover:text-antimatter-blue">TikTok</a>
             <a href="https://www.reddit.com/user/milanhe92" target="_blank" className="hover:text-antimatter-blue">Reddit</a>
           </div>
-          
+
           <div className="dev-links flex justify-center gap-4 mb-8 flex-wrap text-gray-400">
             <a href="https://github.com/Milanhe92" target="_blank" className="hover:text-white">GitHub</a>
             <a href="https://stackoverflow.com/users/28404571/milan-he" target="_blank" className="hover:text-white">Stack Overflow</a>
@@ -663,7 +638,7 @@ export default function MelektronPage() {
             <p>Email: <a href="mailto:kontakt@melektron.com" className="text-antimatter-blue">kontakt@melektron.com</a>, <a href="mailto:milanhe92@gmail.com" className="text-antimatter-blue">milanhe92@gmail.com</a></p>
             <p>Web: <a href="https://milanhe92.live/" target="_blank" className="text-antimatter-blue">milanhe92.live</a></p>
           </div>
-          
+
           <p className="copyright text-gray-400">© {new Date().getFullYear()} Milan He / Melektron - Početak nove ere</p>
         </div>
       </footer>
