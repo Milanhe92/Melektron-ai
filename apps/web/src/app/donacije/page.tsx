@@ -326,7 +326,7 @@ export default function DonationPage() {
                 placeholder="Unesi iznos u $" 
                 min="1"
                 value={hologramAmount}
-                onChange={(e) => setHologramAmount(parseFloat(e.target.value) || 0}
+                onChange={(e) => setHologramAmount(parseFloat(e.target.value) || 0)}
               />
               
               <div className="time-controls">
