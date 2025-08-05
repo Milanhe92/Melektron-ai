@@ -1,4 +1,3 @@
-// components/LicenseCard.tsx
 interface LicenseCardProps {
   title: string;
   description: string;
