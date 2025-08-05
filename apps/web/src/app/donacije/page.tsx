@@ -250,7 +250,7 @@ export default function DonationPage() {
       <div ref={vantaRef} id="vanta-bg" />
 
       <div className="universal-nav">
-        <Link href="/" className="nav-link">Početna</a>
+        <Link href="/" className="nav-link">Početna</Link>
         <a href="#antimatter-converter" className="nav-link">Donacije</a>
         <a href="#quantum-contract" className="nav-link">Ugovor</a>
       </div>
@@ -310,7 +310,7 @@ export default function DonationPage() {
 
             {/* 2. HOLOGRAM BUDUĆNOSTI */}
             <div className="widget hologram-projector">
-              <h3>HOLOGRAM BUDUĆIH VREDNOSTI</h3>
+              <h3>HOLOGRAM BUDUĆNIH VREDNOSTI</h3>
               <p>Projekcija vremenskog rasta vaše investicije</p>
 
               <div className="hologram" id="futureValueHologram">
@@ -436,7 +436,7 @@ export default function DonationPage() {
               <p>Konsultuj kolektivnu svest Singulariteta</p>
 
               <div className="oracle-screen">
-                {'> PITAJ ORACULA O BUDUĆNOSTI...'} {/* Ispravljeno */}
+                {'> PITAJ ORACULA O BUDUĆNOSTI...'}
                 <div className="oracle-response">
                   {oracleResponses.map((response, index) => (
                     <p key={index}>{response}</p>
