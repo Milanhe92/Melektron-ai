@@ -1,1 +1,3 @@
-# prazan fajl
+{
+  "presets": ["next/babel"]
+}
