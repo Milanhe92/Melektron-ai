@@ -7,38 +7,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v3
       with:
         node-version: '20'
-    - name: Fix npm registry
-  run: |
-    npm config set registry https://registry.npmjs.org
-    npm config set @ton:registry https://registry.npmjs.org
-
-    - name: Install root dependencies
-      run: npm install
-
-    - name: Build packages
-      run: |
-        npm run build --workspace=packages/ton-client
-        npm run build --workspace=packages/ai-core
-
-    - name: Install web dependencies
-      working-directory: apps/web
-      run: npm install
-
-    - name: Build web app
-      working-directory: apps/web
-      run: npm run build
-
-    - name: Deploy to Vercel
-      uses: amondnet/vercel-action@v30
+    - run: npm install -g npm@latest
+    - run: npm config set legacy-peer-deps true
+    - run: npm install
+    - run: cd packages/ton-client && npm run build
+    - run: cd apps/web && npm run build
+    - uses: amondnet/vercel-action@v30
       with:
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
         vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
