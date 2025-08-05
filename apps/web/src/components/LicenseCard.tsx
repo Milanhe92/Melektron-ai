@@ -21,7 +21,7 @@ export default function LicenseCard({
           {type}
         </span>
         <a 
-          href={path} // Add this line
+          href={path} 
           className="text-blue-600 hover:text-blue-800 font-medium"
           download
         >
