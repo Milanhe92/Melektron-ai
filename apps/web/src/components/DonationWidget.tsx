@@ -1,6 +1,8 @@
+'use client';
+
 import { useTonWallet } from '@tonconnect/ui-react';
 import { Address, toNano } from '@ton/core';
-import { useTonConnect } from '../hooks/useTonConnect';
+import { useTonConnect } from '@/hooks/useTonConnect';
 import { useState } from 'react';
 
 export default function DonationWidget() {
