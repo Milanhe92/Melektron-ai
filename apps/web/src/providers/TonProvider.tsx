@@ -1,5 +1,8 @@
 'use client';
 
+// Dodaj ovaj import na početku fajla
+import 'node-fetch';
+
 import { TonConnectUIProvider } from '@tonconnect/ui-react';
 import { ReactNode } from 'react';
 
