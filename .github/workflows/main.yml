@@ -1,0 +1,35 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build quantum-core
+        run: cd packages/quantum-core && npm run build
+
+      - name: Build ton-client
+        run: cd packages/ton-client && npm run build
+
+      - name: Build web app
+        run: cd apps/web && npm run build
+
+      - name: Deploy to production
+        run: |
+          cd apps/web
+          npm run deploy
