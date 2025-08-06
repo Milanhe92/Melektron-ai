@@ -1,7 +1,7 @@
-import { TonConnectUIProvider } from '@tonconnect/ui-react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import TonProvider from '@/providers/TonProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,12 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <TonConnectUIProvider 
-          manifestUrl="https://melektron.ai/tonconnect-manifest.json"
-          uiPreferences={{ theme: 'dark' }}
-        >
+        <TonProvider>
           {children}
-        </TonConnectUIProvider>
+        </TonProvider>
       </body>
     </html>
   );
