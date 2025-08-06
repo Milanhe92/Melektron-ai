@@ -2,7 +2,11 @@ import { useTonConnectUI, useTonWallet } from '@tonconnect/ui-react';
 import { Sender, SenderArguments } from '@ton/core';
 import { useCallback } from 'react';
 
-export function useTonConnect() {
+export function useTonConnect(): {
+  sender: Sender;
+  connected: boolean;
+  wallet: string | null;
+} {
   const [tonConnectUI] = useTonConnectUI();
   const wallet = useTonWallet();
 
@@ -17,7 +21,7 @@ export function useTonConnect() {
               payload: args.body?.toBoc().toString('base64'),
             },
           ],
-          validUntil: Date.now() + 5 * 60 * 1000, // 5 minuta za potvrdu
+          validUntil: Date.now() + 5 * 60 * 1000,
         });
       },
       [tonConnectUI]
@@ -27,6 +31,6 @@ export function useTonConnect() {
   return {
     sender,
     connected: !!wallet,
-    wallet: wallet?.account.address,
+    wallet: wallet?.account.address || null,
   };
 }
