@@ -10,24 +10,31 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
 
       - name: Build quantum-core
-        run: cd packages/quantum-core && npm run build
+        run: |
+          cd packages/quantum-core
+          npm run build
 
       - name: Build ton-client
-        run: cd packages/ton-client && npm run build
+        run: |
+          cd packages/ton-client
+          npm run build
 
       - name: Build web app
-        run: cd apps/web && npm run build
+        run: |
+          cd apps/web
+          npm run build
 
       - name: Deploy to production
         run: |
