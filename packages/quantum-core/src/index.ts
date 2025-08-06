@@ -1,7 +1,7 @@
 /**
  * Quantum Core - Osnovni modul za kvantne operacije
  */
-
+export * from './lib/QuantumBlockchainBridge';
 export * from './simulator';
 export * from './simulator/quantum-state';
 export * from './gates';
