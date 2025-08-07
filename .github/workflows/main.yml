@@ -21,26 +21,17 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - name: Remove Babel config
-        run: rm -f apps/web/.babelrc
-
       - name: Install dependencies
         run: npm install
 
       - name: Build quantum-core
-        run: |
-          cd packages/quantum-core
-          npm run build
+        run: cd packages/quantum-core && npm run build
 
       - name: Build ton-client
-        run: |
-          cd packages/ton-client
-          npm run build
+        run: cd packages/ton-client && npm run build
 
       - name: Build web app
-        run: |
-          cd apps/web
-          npm run build
+        run: cd apps/web && npm run build
 
       - name: Deploy to production
         run: |
