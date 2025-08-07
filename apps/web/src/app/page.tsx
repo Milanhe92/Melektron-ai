@@ -7,6 +7,17 @@ import * as THREE from 'three';
 import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { TonConnectButton } from '@tonconnect/ui-react';
+import { Inter } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export default function HomePage() {
+  return (
+    <main className={inter.className}>
+      {/* Sadržaj početne stranice */}
+    </main>
+  );
+};
 
 export default function MelektronPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
