@@ -1,9 +1,13 @@
+import dynamic from 'next/dynamic';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 import TonProvider from '@/providers/TonProvider';
 
-const inter = Inter({ subsets: ['latin'] });
+// Dinamički importuj Inter font bez SSR
+const Inter = dynamic(() => import('next/font/google').then(mod => mod.Inter), {
+  ssr: false,
+  loading: () => null
+});
 
 export const metadata: Metadata = {
   title: 'Melektron AI',
@@ -17,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={Inter ? Inter.className : ''}>
         <TonProvider>
           {children}
         </TonProvider>
