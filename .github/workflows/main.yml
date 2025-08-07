@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: true
-      NODE_OPTIONS: --openssl-legacy-provider
 
     steps:
       - name: Checkout repository
