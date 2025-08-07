@@ -49,15 +49,3 @@ const nextConfig = {
 
     return config;
   },
-  experimental: {
-    esmExternals: 'loose',
-    serverComponentsExternalPackages: [
-      '@ton/core',
-      '@melektron/quantum-core',
-      'encoding',
-      'node-fetch'
-    ]
-  }
-};
-
-export default nextConfig;
