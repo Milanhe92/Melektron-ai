@@ -9,19 +9,10 @@ const nextConfig = {
   output: "standalone",
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cdn.sanity.io",
-      },
-      {
-        protocol: "https",
-        hostname: "melektron.ai",
-      },
-      {
-        protocol: "https",
-        hostname: "ton.org",
-      }
-    ],
+      { protocol: "https", hostname: "cdn.sanity.io" },
+      { protocol: "https", hostname: "melektron.ai" },
+      { protocol: "https", hostname: "ton.org" }
+    ]
   },
   transpilePackages: [
     '@melektron/ai-core',
@@ -30,8 +21,7 @@ const nextConfig = {
     '@tonconnect/ui-react',
     '@ton/core'
   ],
-  webpack: (config, { isServer }) => {
-    // Dodaj encoding polyfill
+  webpack: (config) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       encoding: path.resolve(__dirname, 'node_modules/encoding'),
@@ -44,8 +34,9 @@ const nextConfig = {
       fs: false
     };
 
-    // Dodaj za ESM pakete
     config.experiments = { ...config.experiments, topLevelAwait: true };
-
     return config;
-  },
+  }
+};
+
+export default nextConfig;
