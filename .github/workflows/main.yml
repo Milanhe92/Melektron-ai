@@ -20,6 +20,9 @@ jobs:
           node-version: 20
           cache: 'npm'
 
+      - name: Rename Babel config
+        run: mv apps/web/.babelrc apps/web/babel.config.old || echo "Babel config not found"
+
       - name: Install dependencies
         run: npm install
 
