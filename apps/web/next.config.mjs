@@ -1,3 +1,9 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
@@ -28,13 +34,13 @@ const nextConfig = {
     // Dodaj encoding polyfill
     config.resolve.fallback = {
       ...config.resolve.fallback,
-      encoding: require.resolve('encoding'),
-      stream: require.resolve('stream-browserify'),
-      crypto: require.resolve('crypto-browserify'),
-      http: require.resolve('stream-http'),
-      https: require.resolve('https-browserify'),
-      os: require.resolve('os-browserify/browser'),
-      path: require.resolve('path-browserify'),
+      encoding: path.resolve(__dirname, 'node_modules/encoding'),
+      stream: path.resolve(__dirname, 'node_modules/stream-browserify'),
+      crypto: path.resolve(__dirname, 'node_modules/crypto-browserify'),
+      http: path.resolve(__dirname, 'node_modules/stream-http'),
+      https: path.resolve(__dirname, 'node_modules/https-browserify'),
+      os: path.resolve(__dirname, 'node_modules/os-browserify/browser'),
+      path: path.resolve(__dirname, 'node_modules/path-browserify'),
       fs: false
     };
 
