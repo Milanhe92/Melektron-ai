@@ -1,14 +1,29 @@
 {
+  "version": 2,
   "builds": [
     {
-      "src": "apps/web/package.json",
+      "src": "package.json",
       "use": "@vercel/next"
     }
   ],
   "routes": [
     {
-      "src": "/.*",
-      "dest": "apps/web"
+      "src": "/(.*)",
+      "dest": "/$1",
+      "methods": ["GET"]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/ton-mining",
+      "destination": "/mining",
+      "permanent": true
     }
   ]
 }
