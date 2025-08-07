@@ -21,6 +21,9 @@ const nextConfig = {
     '@tonconnect/ui-react',
     '@ton/core'
   ],
+  compiler: {
+    styledComponents: true,
+  },
   webpack: (config) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
