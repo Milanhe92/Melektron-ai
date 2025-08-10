@@ -1,26 +1,16 @@
 // apps/web/pages/sample-page.tsx
-// DODATO: Primer koji pokazuje ispravnu upotrebu server-side logike.
+// ISPRAVKA: Putanja do 'ton-utils' je korigovana.
 
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { initTON } from '../lib/ton-utils';
+import { initTON } from '../src/lib/ton-utils';
 
-// Tipovi za podatke koji se dobijaju sa servera.
-// Napomena: Ne možemo proslediti instance klasa kao što je TonClient direktno,
-// pa prosleđujemo samo serijalizabilne podatke (npr. stringove, brojeve).
 type PageProps = {
   message: string;
 };
 
-// Funkcija koja se izvršava ISKLJUČIVO na serveru pri svakom zahtevu.
 export const getServerSideProps: GetServerSideProps<PageProps> = async (context) => {
   try {
-    // Logika iz ton-utils.ts se poziva ovde, na serveru.
     const { client, bridge } = await initTON();
-
-    // Ovde se može izvršiti neka operacija, npr. dohvatanje podataka sa blockchaina.
-    // const balance = await client.getBalance(...);
-
-    // Vraćamo samo podatke koji su potrebni React komponenti za renderovanje.
     const message = "TON klijent je uspešno inicijalizovan na serveru.";
 
     return {
@@ -38,8 +28,6 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async (context)
   }
 };
 
-// React komponenta koja prima podatke kao props.
-// Ova komponenta se renderuje i na serveru i na klijentu, ali NEMA pristup Node.js modulima.
 const SamplePage = ({ message }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <div>
