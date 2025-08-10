@@ -1,40 +1,38 @@
 import { Complex, ComplexVector, QuantumState } from '../types';
 
 export class QState implements QuantumState {
-  amplitudes: ComplexVector;
-  numQubits: number;
-
-  constructor(numQubits: number) {
-    this.numQubits = numQubits;
-    const numStates = 1 << numQubits;
-    this.amplitudes = new Array(numStates);
+    amplitudes: ComplexVector;
     
-    // Иницијализација базног стања |0>
-    for (let i = 0; i < numStates; i++) {
-      this.amplitudes[i] = { real: i === 0 ? 1 : 0, imag: 0 };
-    }
-  }
-
-  applyGate(gate: ComplexMatrix, targetQubit: number): void {
-    // Имплементација примене капије
-    const newAmplitudes: ComplexVector = [];
-    // ... логика за примену капије ...
-    this.amplitudes = newAmplitudes;
-  }
-
-  measure(): number {
-    // Имплементација мерења
-    const probabilities = this.amplitudes.map(a => a.real * a.real + a.imag * a.imag);
-    const rand = Math.random();
-    let cumulative = 0;
-    
-    for (let i = 0; i < probabilities.length; i++) {
-      cumulative += probabilities[i];
-      if (rand <= cumulative) {
-        return i;
-      }
+    constructor(amplitudes: ComplexVector) {
+        this.amplitudes = amplitudes;
     }
     
-    return probabilities.length - 1;
-  }
+    measure(qubitIndex: number): number {
+        // Implementacija merenja kvantnog stanja
+        // Ovo je pojednostavljena verzija
+        const probability0 = Math.pow(this.amplitudes[0].real, 2) + Math.pow(this.amplitudes[0].imag, 2);
+        const random = Math.random();
+        return random < probability0 ? 0 : 1;
+    }
+    
+    applyGate(gate: QuantumGate, targetQubit: number): QuantumState {
+        // Implementacija primene kvantne kapije
+        // Ovo je pojednostavljena verzija za 1 kubit
+        const newAmplitudes: ComplexVector = [
+            {
+                real: gate.matrix[0][0].real * this.amplitudes[0].real - gate.matrix[0][0].imag * this.amplitudes[0].imag +
+                      gate.matrix[0][1].real * this.amplitudes[1].real - gate.matrix[0][1].imag * this.amplitudes[1].imag,
+                imag: gate.matrix[0][0].real * this.amplitudes[0].imag + gate.matrix[0][0].imag * this.amplitudes[0].real +
+                      gate.matrix[0][1].real * this.amplitudes[1].imag + gate.matrix[0][1].imag * this.amplitudes[1].real
+            },
+            {
+                real: gate.matrix[1][0].real * this.amplitudes[0].real - gate.matrix[1][0].imag * this.amplitudes[0].imag +
+                      gate.matrix[1][1].real * this.amplitudes[1].real - gate.matrix[1][1].imag * this.amplitudes[1].imag,
+                imag: gate.matrix[1][0].real * this.amplitudes[0].imag + gate.matrix[1][0].imag * this.amplitudes[0].real +
+                      gate.matrix[1][1].real * this.amplitudes[1].imag + gate.matrix[1][1].imag * this.amplitudes[1].real
+            }
+        ];
+        
+        return new QState(newAmplitudes);
+    }
 }
