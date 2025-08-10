@@ -11,14 +11,6 @@ import { Inter } from 'next/font/google';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export default function HomePage() {
-  return (
-    <main className={inter.className}>
-      {/* Sadržaj početne stranice */}
-    </main>
-  );
-};
-
 export default function MelektronPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const vantaRef = useRef<HTMLDivElement>(null);
