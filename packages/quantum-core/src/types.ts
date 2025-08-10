@@ -65,6 +65,30 @@ export type SimulationResult = {
   duration: number;
 };
 
+// Definisanje kompleksnih brojeva za kvantne operacije
+export type Complex = {
+  real: number;
+  imag: number;
+};
+
+export type ComplexVector = Complex[];
+export type ComplexMatrix = Complex[][];
+
+// Tip za kvantno stanje
+export type QuantumState = {
+  amplitudes: ComplexVector;
+  qubitCount: number;
+};
+
+// Tip za kvantna vrata (gate)
+export type QuantumGate = {
+  name: string;
+  matrix: ComplexMatrix;
+  qubitCount: number;
+};
+
+// Dodaj ostale tipove po potrebi...
+
 // Tip za Blochovu sferu
 export type BlochSphere = {
   theta: number;
