@@ -3,17 +3,16 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "engines": {
-    "node": ">=20.0.0"
-  },
   "scripts": {
     "build": "tsc",
-    "prepublish": "npm run build"
-  },
-  "dependencies": {
-    "@ton/core": "0.49.1"
+    "test": "jest"
   },
   "devDependencies": {
-    "typescript": "^5.0.4"
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.0",
+    "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "@ton/core": "^0.49.1"
   }
 }
