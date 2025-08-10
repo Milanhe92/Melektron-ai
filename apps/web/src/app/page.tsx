@@ -11,7 +11,7 @@ import { Inter } from 'next/font/google';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export default function MelektronPage() {
+export default function HomePage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const vantaRef = useRef<HTMLDivElement>(null);
   const revenueChartRef = useRef<HTMLCanvasElement>(null);
