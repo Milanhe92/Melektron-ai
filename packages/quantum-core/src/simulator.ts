@@ -1,56 +1,21 @@
-typescript:packages/quantum-core/src/simulator.ts
-import { Complex, ComplexVector, ComplexMatrix, QuantumGate, QuantumState } from './types';
+import { QState } from './simulator/quantum-state'; // Popravljen import
 
 export class QuantumSimulator {
-  private state: ComplexVector;
-  private numQubits: number;
+  private state: QState;
 
-  constructor(numQubits: number) {
-    this.numQubits = numQubits;
-    const numStates = 1 << numQubits;
-    this.state = new Array(numStates).fill(null).map((_, i) => 
-      i === 0 ? { real: 1, imag: 0 } : { real: 0, imag: 0 }
-    );
+  constructor(qubitCount: number) {
+    // Inicijalizacija osnovnog stanja |0...0>
+    const amplitudes = new Array(2 ** qubitCount).fill({ real: 0, imag: 0 });
+    amplitudes[0] = { real: 1, imag: 0 };
+    this.state = new QState(amplitudes);
   }
 
-  applyGate(gate: QuantumGate, targetQubit: number): void {
-    const gateMatrix = gate.matrix;
-    const newState: ComplexVector = new Array(this.state.length).fill(null).map(() => ({ real: 0, imag: 0 }));
-    
-    for (let i = 0; i < this.state.length; i++) {
-      for (let j = 0; j < this.state.length; j++) {
-        const amplitude = this.state[j];
-        const gateValue = gateMatrix[i % gateMatrix.length][j % gateMatrix[0].length];
-        
-        newState[i].real += amplitude.real * gateValue.real - amplitude.imag * gateValue.imag;
-        newState[i].imag += amplitude.real * gateValue.imag + amplitude.imag * gateValue.real;
-      }
-    }
-    
-    this.state = newState;
+  applyGate(gate: any, targetQubit: number): void {
+    // Implementacija primene kapije
   }
 
-  measure(): number {
-    const probabilities = this.state.map(amplitude => 
-      amplitude.real * amplitude.real + amplitude.imag * amplitude.imag
-    );
-    
-    const sum = probabilities.reduce((acc, prob) => acc + prob, 0);
-    const normalizedProbabilities = probabilities.map(prob => prob / sum);
-    const random = Math.random();
-    
-    let cumulative = 0;
-    for (let i = 0; i < normalizedProbabilities.length; i++) {
-      cumulative += normalizedProbabilities[i];
-      if (random <= cumulative) {
-        return i;
-      }
-    }
-    
-    return normalizedProbabilities.length - 1;
-  }
-
-  getState(): ComplexVector {
-    return this.state;
+  measure(qubitIndex: number): number {
+    // Implementacija merenja
+    return 0;
   }
 }
