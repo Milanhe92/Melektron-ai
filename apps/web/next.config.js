@@ -6,7 +6,6 @@ const withTM = require('next-transpile-modules')([
 
 module.exports = withTM({
   webpack: (config, { isServer }) => {
-    // Dodajte alias-e za sve monorepo pakete
     config.resolve.alias = {
       ...config.resolve.alias,
       '@melektron/quantum-core': path.resolve(__dirname, '../../packages/quantum-core'),
@@ -15,15 +14,8 @@ module.exports = withTM({
       '@melektron/ai-core': path.resolve(__dirname, '../../packages/ai-core'),
     };
 
-    // Dodajte podešavanja za Three.js i kvantne module
-    config.module.rules.push({
-      test: /\.(glb|gltf)$/,
-      use: 'file-loader',
-    });
-
     if (!isServer) {
       config.resolve.fallback = {
-        ...config.resolve.fallback,
         fs: false,
         path: false,
         crypto: false,
