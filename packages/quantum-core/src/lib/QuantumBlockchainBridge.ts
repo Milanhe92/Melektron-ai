@@ -1,18 +1,18 @@
-import { TonClient, Address } from "@ton/core";
+import { TonClient } from '@ton/ton'; // Popravljen import
 
 export class QuantumBlockchainBridge {
-  private client: TonClient;
+  private tonClient: TonClient;
 
   constructor(client: TonClient) {
-    this.client = client;
+    this.tonClient = client;
   }
 
-  async getWalletBalance(address: string): Promise<bigint> {
-    const balance = await this.client.getBalance(Address.parse(address));
-    return balance;
+  async sendQuantumState(state: any): Promise<void> {
+    // Implementacija slanja kvantnog stanja na blockchain
   }
 
-  async sendTransaction() {
-    // Implementacija po potrebi
+  async receiveQuantumState(address: string): Promise<any> {
+    // Implementacija primanja kvantnog stanja sa blockchaina
+    return {};
   }
 }
