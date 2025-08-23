@@ -7,13 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postbuild": "cp public/robots.txt .next/static/robots.txt && cp public/tonconnect-manifest.json .next/static/"
+    "postbuild": "cp public/robots.txt.next/static/robots.txt && cp public/tonconnect-manifest.json.next/static/"
   },
   "dependencies": {
-    "@melektron/ton-utils": "file:../../packages/ton-utils",
-    "@melektron/ton-client": "file:../../packages/ton-client",
-    "@melektron/ai-core": "file:../../packages/ai-core",
-    "@melektron/quantum-core": "file:../../packages/quantum-core",
+    "@melektron/ton-utils": "workspace:*",
+    "@melektron/ton-client": "workspace:*",
+    "@melektron/ai-core": "workspace:*",
+    "@melektron/quantum-core": "workspace:*",
     "@portabletext/react": "^3.0.10",
     "@sanity/client": "^6.8.0",
     "@sanity/image-url": "^1.0.2",
@@ -40,8 +40,8 @@
     "@types/react-dom": "^18.3.0",
     "@types/three": "^0.166.0",
     "encoding": "^0.1.13",
-    "eslint-config-custom": "file:../../packages/eslint-config-custom",
-    "tsconfig": "file:../../packages/tsconfig",
+    "eslint-config-custom": "workspace:*",
+    "tsconfig": "workspace:*",
     "typescript": "^5.4.2"
   }
 }
