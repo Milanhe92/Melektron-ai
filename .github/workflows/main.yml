@@ -23,14 +23,33 @@ jobs:
       - name: Rename Babel config
         run: mv apps/web/.babelrc apps/web/babel.config.old || echo "Babel config not found"
 
-      - name: Install dependencies
+      - name: Install root dependencies
         run: npm install
+
+      - name: Install quantum-core dependencies
+        run: cd packages/quantum-core && npm install
 
       - name: Build quantum-core
         run: cd packages/quantum-core && npm run build
 
+      - name: Verify dist folder exists
+        run: |
+          cd packages/quantum-core
+          if [ ! -d "dist" ]; then
+            echo "Dist folder was not created!"
+            exit 1
+          fi
+          echo "Dist folder contents:"
+          ls -la dist/
+
+      - name: Install ton-client dependencies
+        run: cd packages/ton-client && npm install
+
       - name: Build ton-client
         run: cd packages/ton-client && npm run build
+
+      - name: Install web app dependencies
+        run: cd apps/web && npm install
 
       - name: Build web app
         run: cd apps/web && npm run build
