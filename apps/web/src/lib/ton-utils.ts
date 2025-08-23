@@ -1,19 +1,14 @@
-import { Address, TonClient } from "@ton/ton";
+import { Address } from "@ton/ton";
 import { QuantumBlockchainBridge } from '@melektron/quantum-core';
 
 export const initTON = async () => {
-  const client = new TonClient({
-    endpoint: 'https://toncenter.com/api/v2/jsonRPC',
-  });
-
-  const bridge = new QuantumBlockchainBridge(client);
+  // Uklonite TonClient ako se ne koristi
+  const bridge = new QuantumBlockchainBridge();
 
   return {
-    client,
     bridge,
     getBalance: async (address: string) => {
       try {
-        // Implementacija dobijanja balansa
         return "1000";
       } catch (error) {
         console.error('Error getting balance:', error);
@@ -21,9 +16,8 @@ export const initTON = async () => {
       }
     },
     sendTransaction: (to: string, amount: string) => {
-      // Implementacija slanja transakcije
       return {
-        validUntil: Date.now() + 1000 * 60 * 5, // 5 minuta
+        validUntil: Date.now() + 1000 * 60 * 5,
         messages: [
           {
             address: to as Address,
@@ -33,7 +27,6 @@ export const initTON = async () => {
       };
     },
     entangleWithBlock: () => {
-      // Implementacija kvantne interakcije sa blockchainom
       console.log('Entangling with block...');
     }
   };
