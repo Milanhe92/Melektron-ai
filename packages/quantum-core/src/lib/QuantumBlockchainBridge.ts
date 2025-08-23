@@ -1,4 +1,3 @@
-typescript:packages/quantum-core/src/lib/QuantumBlockchainBridge.ts
 import { TonClient } from '@ton/core';
 
 export class QuantumBlockchainBridge {
