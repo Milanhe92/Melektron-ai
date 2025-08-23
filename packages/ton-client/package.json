@@ -5,12 +5,12 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "echo \"No tests yet\" && exit 0"
+    "test": "echo \"No tests yet\""
   },
   "dependencies": {
-    "@melektron/quantum-core": "workspace:*"
+    "@melektron/quantum-core": "file:../quantum-core"
   },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.3.3"
   }
 }
