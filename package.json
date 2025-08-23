@@ -1,10 +1,17 @@
 {
   "name": "melektron-ai",
   "private": true,
+  "version": "1.0.0",
   "scripts": {
-    "build": "npm run build -w @melektron/quantum-core && npm run build -w @melektron/ton-client && npm run build -w web",
-    "dev": "npm run dev -w web",
-    "lint": "npm run lint -w web",
-    "test": "npm run test -w @melektron/quantum-core && npm run test -w @melektron/ton-client"
-  }
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint"
+  },
+  "devDependencies": {
+    "turbo": "latest"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
 }
