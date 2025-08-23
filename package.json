@@ -1,14 +1,21 @@
 {
   "name": "melektron-ai",
   "private": true,
-  "version": "1.0.0",
+  "packageManager": "npm@10.5.0",
   "scripts": {
-    "dev": "turbo dev",
-    "build": "turbo build",
-    "lint": "turbo lint"
-  },
+  "reset": "rm -rf node_modules apps/web/node_modules package-lock.json.turbo && npm install",
+  "install:ci": "npm install --legacy-peer-deps --no-audit --omit=dev",
+  "build:ton-client": "turbo run build --filter=@melektron/ton-client",
+  "build": "turbo run build",
+  "dev": "turbo run dev",
+  "lint": "turbo run lint",
+  "test": "turbo run test",
+  "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+  "build:web": "turbo run build --filter=web"
+},
   "devDependencies": {
-    "turbo": "latest"
+    "prettier": "^3.2.5",
+    "turbo": "^2.5.5"
   },
   "workspaces": [
     "apps/*",
