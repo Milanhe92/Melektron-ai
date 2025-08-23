@@ -1,10 +1,6 @@
 {
   "name": "melektron-ai",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
     "build": "npm run build -w @melektron/quantum-core && npm run build -w @melektron/ton-client && npm run build -w web",
     "dev": "npm run dev -w web",
