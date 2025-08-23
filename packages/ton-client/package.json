@@ -4,14 +4,14 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "test": "echo \"No tests yet\""
+    "build": "tsc",
+    "prepublish": "npm run build"
   },
   "dependencies": {
-    "@melektron/quantum-core": "file:../quantum-core"
+    "@ton/ton": "^15.3.1",
+    "@types/node": "^20.11.0"
   },
   "devDependencies": {
-  "@types/node": "^20.0.0",  
-  "typescript": "^5.3.3"
+    "typescript": "^5.4.2"
   }
 }
