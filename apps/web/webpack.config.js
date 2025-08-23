@@ -1,7 +1,9 @@
+const path = require('path');
+
 module.exports = {
   resolve: {
-    fallback: {
-      '@melektron/quantum-core': false
+    alias: {
+      '@melektron/quantum-core': path.resolve(__dirname, '../../packages/quantum-core')
     }
   }
 };
