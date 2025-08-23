@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Uklonite serverExternalPackages iz experimental sekcije
-  serverExternalPackages: ['@melektron/quantum-core'],
+  transpilePackages: ['@melektron/quantum-core'],
+  experimental: {
+    serverComponentsExternalPackages: ['@melektron/quantum-core'],
+  },
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
