@@ -1,46 +1,56 @@
 interface LicenseCardProps {
-  name: string;
+  name?: string;
+  title?: string;  // Dodano
   version?: string;
-  license: string;
+  license?: string;
   author?: string;
   description?: string;
   repository?: string;
+  path?: string;   // Dodano
+  type?: string;   // Dodano
 }
 
 export default function LicenseCard({
   name,
+  title,
   version,
   license,
   author,
   description,
-  repository
+  repository,
+  path,
+  type
 }: LicenseCardProps) {
+  const displayTitle = title || name || 'Unknown';
+  
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border border-gray-200 dark:border-gray-700">
       <div className="flex justify-between items-start mb-3">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-          {name}
+          {displayTitle}
         </h3>
-        {version && (
+        {(version || type) && (
           <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
-            v{version}
+            {version ? `v${version}` : type}
           </span>
         )}
       </div>
       
-      <div className="mb-3">
-        <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${
-          license === 'MIT' 
-            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-            : license === 'Apache-2.0'
-            ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-            : license === 'BSD-2-Clause' || license === 'BSD-3-Clause'
-            ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-            : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
-        }`}>
-          {license}
-        </span>
-      </div>
+      {license && (
+        <div className="mb-3">
+          <span className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${
+            license === 'MIT' 
+              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+              : license === 'Apache-2.0'
+              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+              : license === 'BSD-2-Clause' || license === 'BSD-3-Clause'
+              ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+              : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+          }`}>
+            {license}
+          </span>
+        </div>
+      )}
 
       {author && (
         <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
@@ -54,8 +64,8 @@ export default function LicenseCard({
         </p>
       )}
 
-      {repository && (
-        <div className="mt-4">
+      <div className="mt-4 flex gap-2">
+        {repository && (
           <a
             href={repository}
             target="_blank"
@@ -67,8 +77,22 @@ export default function LicenseCard({
             </svg>
             Repository
           </a>
-        </div>
-      )}
+        )}
+        
+        {path && (
+          <a
+            href={path}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center text-sm text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-200"
+          >
+            <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+            Download {type || 'File'}
+          </a>
+        )}
+      </div>
     </div>
   )
 }
