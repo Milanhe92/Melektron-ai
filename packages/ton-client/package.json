@@ -1,12 +1,19 @@
 {
   "name": "@melektron/ton-client",
   "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
   "dependencies": {
     "@ton/core": "^0.56.0",
     "@ton/crypto": "^3.2.0",
     "@ton/ton": "^13.11.2"
   },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
   }
 }
