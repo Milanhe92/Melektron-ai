@@ -1,42 +1,76 @@
-'use client';
+'use client'
 
-import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+import { useEffect, useRef } from 'react'
 
-const VantaEffect = () => {
-  const vantaRef = useRef<HTMLDivElement>(null);
+declare global {
+  interface Window {
+    VANTA: any;
+    THREE: any;
+  }
+}
+
+interface VantaEffectProps {
+  effect?: string;
+  config?: any;
+  className?: string;
+}
+
+export default function VantaEffect({ 
+  effect = 'NET', 
+  config = {},
+  className = "w-full h-full"
+}: VantaEffectProps) {
+  const vantaRef = useRef<HTMLDivElement>(null)
+  const vantaEffect = useRef<any>(null)
 
   useEffect(() => {
-    const initVanta = async () => {
-      if (!vantaRef.current) return;
-      
-      const { NET } = await import('vanta/dist/vanta.net.min');
-      const effect = NET({
-        el: vantaRef.current,
-        THREE: THREE,
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: 0x8a2be2,
-        backgroundColor: 0x0a0a18,
-        points: 15.00,
-        maxDistance: 24.00,
-        spacing: 17.00
-      });
+    if (!vantaRef.current) return
 
-      return () => {
-        if (effect) effect.destroy();
-      };
-    };
+    // Učitaj Three.js i Vanta.js ako nisu učitani
+    const loadScripts = async () => {
+      if (!window.THREE) {
+        const threeScript = document.createElement('script')
+        threeScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'
+        document.head.appendChild(threeScript)
+        
+        await new Promise(resolve => {
+          threeScript.onload = resolve
+        })
+      }
 
-    initVanta();
-  }, []);
+      if (!window.VANTA) {
+        const vantaScript = document.createElement('script')
+        vantaScript.src = `https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.${effect.toLowerCase()}.min.js`
+        document.head.appendChild(vantaScript)
+        
+        await new Promise(resolve => {
+          vantaScript.onload = resolve
+        })
+      }
 
-  return <div ref={vantaRef} className="fixed top-0 left-0 w-full h-full -z-10" />;
-};
+      // Inicijalizuj Vanta efekat
+      if (window.VANTA && window.VANTA[effect]) {
+        vantaEffect.current = window.VANTA[effect]({
+          el: vantaRef.current,
+          THREE: window.THREE,
+          color: 0x3b82f6,
+          backgroundColor: 0x0f172a,
+          points: 10,
+          maxDistance: 20,
+          spacing: 15,
+          ...config
+        })
+      }
+    }
 
-export default VantaEffect;
+    loadScripts()
+
+    return () => {
+      if (vantaEffect.current) {
+        vantaEffect.current.destroy()
+      }
+    }
+  }, [effect, config])
+
+  return <div ref={vantaRef} className={className} />
+}
