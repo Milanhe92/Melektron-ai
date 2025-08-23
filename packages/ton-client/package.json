@@ -4,13 +4,11 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json",
+    "test": "echo \"No tests yet\" && exit 0"
   },
   "dependencies": {
-    "@ton/core": "0.49.1",
-    "@ton/crypto": "^3.2.0",
-    "ton3-core": "^0.0.20",
-    "@ton/ton": "15.3.1"
+    "@melektron/quantum-core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.0.0"
