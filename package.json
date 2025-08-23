@@ -2,8 +2,10 @@
   "name": "melektron-ai",
   "version": "1.0.0",
   "scripts": {
-    "prebuild": "npm install --legacy-peer-deps && npm run build --workspace=packages/ton-client",
-    "build": "npm run build --workspace=apps/web"
+    "prebuild": "npm install --legacy-peer-deps && npm run build --workspace=packages/quantum-core && npm run build --workspace=packages/ton-client",
+    "build:web": "npm run build --workspace=apps/web",
+    "build": "npm run build --workspace=apps/web",
+    "dev": "npm run dev --workspace=apps/web"
   },
   "workspaces": [
     "packages/*",
