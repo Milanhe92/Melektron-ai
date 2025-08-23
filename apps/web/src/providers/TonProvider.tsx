@@ -29,6 +29,8 @@ interface TonProviderProps {
   children: ReactNode;
 }
 
+export default TonProvider
+
 export function TonProvider({ children }: TonProviderProps) {
   const [wallet, setWallet] = useState<TonWallet>({
     connected: false
