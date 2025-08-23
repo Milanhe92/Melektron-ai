@@ -4,6 +4,7 @@
 export * from './lib/QuantumBlockchainBridge';
 export * from './simulator';
 export * from './simulator/quantum-state';
+export * from './integration/blockchain-adapter';
 export * from './gates';
 export * from './types';
 export class QuantumState {
