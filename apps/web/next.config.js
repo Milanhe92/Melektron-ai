@@ -1,15 +1,24 @@
-const path = require('path');
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['@melektron/quantum-core'],
-  webpack: (config) => {
-    config.resolve.alias = {
-  ...config.resolve.alias,
-      '@melektron/quantum-core': path.resolve(__dirname, '../../packages/quantum-core'),
-    };
-    return config;
+  experimental: {
+    appDir: true,
   },
-};
+  transpilePackages: [
+    '@melektron/quantum-core',
+    '@melektron/ai-core', 
+    '@melektron/ton-utils'
+  ],
+  webpack: (config) => {
+    // Dodaj fallback za Node.js moduli
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      net: false,
+      tls: false,
+      crypto: false,
+    }
+    return config
+  }
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
