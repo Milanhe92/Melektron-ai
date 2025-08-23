@@ -35,16 +35,21 @@ jobs:
               points?: number;
               maxDistance?: number;
               spacing?: number;
+              mouseControls?: boolean;
+              touchControls?: boolean;
+              gyroControls?: boolean;
+              minHeight?: number;
+              minWidth?: number;
+              scale?: number;
+              scaleMobile?: number;
               [key: string]: any;
             }
             interface VantaEffect {
               destroy(): void;
               setOptions?(options: Partial<VantaNetOptions>): void;
             }
-            const NET: {
-              default: (options: VantaNetOptions) => VantaEffect;
-            };
-            export = NET;
+            function NET(options: VantaNetOptions): VantaEffect;
+            export default NET;
           }
           declare module 'vanta/dist/vanta.waves.min' {
             interface VantaWavesOptions {
@@ -54,16 +59,17 @@ jobs:
               waveHeight?: number;
               waveSpeed?: number;
               zoom?: number;
+              mouseControls?: boolean;
+              touchControls?: boolean;
+              gyroControls?: boolean;
               [key: string]: any;
             }
             interface VantaEffect {
               destroy(): void;
               setOptions?(options: Partial<VantaWavesOptions>): void;
             }
-            const WAVES: {
-              default: (options: VantaWavesOptions) => VantaEffect;
-            };
-            export = WAVES;
+            function WAVES(options: VantaWavesOptions): VantaEffect;
+            export default WAVES;
           }
           EOF
 
