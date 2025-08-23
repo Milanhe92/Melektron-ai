@@ -6,37 +6,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postbuild": "cp public/robots.txt .next/static/robots.txt && cp public/tonconnect-manifest.json .next/static/"
+    "lint": "next lint"
   },
   "dependencies": {
-    "@melektron/quantum-core": "file:../../packages/quantum-core",
-    "@melektron/ai-core": "file:../../packages/ai-core",
-    "@melektron/ton-utils": "file:../../packages/ton-utils",
-    "@portabletext/react": "^3.0.10",
-    "@sanity/client": "^6.8.0",
-    "@sanity/image-url": "^1.0.2",
-    "@ton/ton": "^15.3.1",
-    "@tonconnect/ui-react": "^2.2.0",
-    "autoprefixer": "^10.4.19",
-    "chart.js": "^4.5.0",
     "next": "14.1.0",
-    "next-sanity": "^6.0.0",
-    "postcss": "^8.4.38",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tailwindcss": "^3.4.0",
-    "three": "^0.166.1",
-    "vanta": "^0.5.24",
-    "zustand": "^4.5.2"
+    "@melektron/quantum-core": "workspace:*",
+    "@melektron/ton-client": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^20.11.0",
-    "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.0",
-    "@types/three": "^0.166.0",
-    "eslint-config-custom": "*",
-    "tsconfig": "*",
-    "typescript": "^5.4.2"
+    "typescript": "^5.0.0",
+    "@types/react": "^18.0.0",
+    "@types/node": "^20.0.0"
   }
 }
