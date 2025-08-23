@@ -7,6 +7,13 @@ declare module 'vanta/dist/vanta.net.min' {
     points?: number;
     maxDistance?: number;
     spacing?: number;
+    mouseControls?: boolean;
+    touchControls?: boolean;
+    gyroControls?: boolean;
+    minHeight?: number;
+    minWidth?: number;
+    scale?: number;
+    scaleMobile?: number;
     [key: string]: any;
   }
 
@@ -15,11 +22,9 @@ declare module 'vanta/dist/vanta.net.min' {
     setOptions?(options: Partial<VantaNetOptions>): void;
   }
 
-  const NET: {
-    default: (options: VantaNetOptions) => VantaEffect;
-  };
+  function NET(options: VantaNetOptions): VantaEffect;
   
-  export = NET;
+  export default NET;
 }
 
 declare module 'vanta/dist/vanta.waves.min' {
@@ -30,6 +35,9 @@ declare module 'vanta/dist/vanta.waves.min' {
     waveHeight?: number;
     waveSpeed?: number;
     zoom?: number;
+    mouseControls?: boolean;
+    touchControls?: boolean;
+    gyroControls?: boolean;
     [key: string]: any;
   }
 
@@ -38,11 +46,9 @@ declare module 'vanta/dist/vanta.waves.min' {
     setOptions?(options: Partial<VantaWavesOptions>): void;
   }
 
-  const WAVES: {
-    default: (options: VantaWavesOptions) => VantaEffect;
-  };
+  function WAVES(options: VantaWavesOptions): VantaEffect;
   
-  export = WAVES;
+  export default WAVES;
 }
 
 declare module 'vanta' {
