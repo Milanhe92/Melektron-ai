@@ -1,6 +1,6 @@
 declare module 'vanta/dist/vanta.net.min' {
   interface VantaNetOptions {
-    el: HTMLElement | string;
+    el: HTMLElement;
     THREE?: any;
     color?: number;
     backgroundColor?: number;
@@ -12,17 +12,19 @@ declare module 'vanta/dist/vanta.net.min' {
 
   interface VantaEffect {
     destroy(): void;
-    setOptions(options: Partial<VantaNetOptions>): void;
+    setOptions?(options: Partial<VantaNetOptions>): void;
   }
 
-  function NET(options: VantaNetOptions): VantaEffect;
+  const NET: {
+    default: (options: VantaNetOptions) => VantaEffect;
+  };
   
-  export default NET;
+  export = NET;
 }
 
 declare module 'vanta/dist/vanta.waves.min' {
   interface VantaWavesOptions {
-    el: HTMLElement | string;
+    el: HTMLElement;
     THREE?: any;
     color?: number;
     waveHeight?: number;
@@ -33,15 +35,18 @@ declare module 'vanta/dist/vanta.waves.min' {
 
   interface VantaEffect {
     destroy(): void;
-    setOptions(options: Partial<VantaWavesOptions>): void;
+    setOptions?(options: Partial<VantaWavesOptions>): void;
   }
 
-  function WAVES(options: VantaWavesOptions): VantaEffect;
+  const WAVES: {
+    default: (options: VantaWavesOptions) => VantaEffect;
+  };
   
-  export default WAVES;
+  export = WAVES;
 }
 
 declare module 'vanta' {
-  export * from 'vanta/dist/vanta.net.min';
-  export * from 'vanta/dist/vanta.waves.min';
+  export interface VantaEffect {
+    destroy(): void;
+  }
 }
