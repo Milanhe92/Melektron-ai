@@ -12,6 +12,7 @@
   "dependencies": {
     "@melektron/quantum-core": "file:../../packages/quantum-core",
     "@melektron/ai-core": "file:../../packages/ai-core",
+    "@melektron/ton-client": "file:../../packages/ton-client",
     "@melektron/ton-utils": "file:../../packages/ton-utils",
     "@portabletext/react": "^3.0.10",
     "@sanity/client": "^6.8.0",
@@ -35,6 +36,7 @@
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.0",
     "@types/three": "^0.166.0",
+    "@types/vanta": "^0.5.0",
     "eslint-config-custom": "*",
     "tsconfig": "*",
     "typescript": "^5.4.2"
