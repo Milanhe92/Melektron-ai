@@ -1,19 +1,18 @@
 import path from "path";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cdn.sanity.io",
-      },
+      { protocol: "https", hostname: "cdn.sanity.io" }
     ],
   },
   transpilePackages: [
     "@melektron/ai-core",
     "@melektron/ton-utils",
-    "@melektron/quantum-core"
+    "@melektron/quantum-core",
+    "@melektron/ton-client"
   ],
   webpack: (config) => {
     config.resolve.alias = {
@@ -24,12 +23,17 @@ const nextConfig = {
     config.experiments = { ...config.experiments, topLevelAwait: true };
     return config;
   },
+  // Next 15: stabilno ime opcije (ranije experimental.serverComponentsExternalPackages)
+  serverExternalPackages: [
+    '@ton/core',
+    '@ton/ton',
+    '@ton/crypto',
+    '@melektron/quantum-core'
+  ],
   experimental: {
-    esmExternals: 'loose',
-    serverComponentsExternalPackages: [
-      '@ton/core',
-      '@melektron/quantum-core'
-    ]
+    // ostavljamo loose ESM jer imaš mešavinu CJS/ESM u paketićima
+    esmExternals: 'loose'
   }
 };
+
 export default nextConfig;
