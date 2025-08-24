@@ -1,3 +1,12 @@
+// Global Window extensions
+declare global {
+  interface Window {
+    THREE?: any;
+    VANTA?: any;
+  }
+}
+
+// Vanta module declarations
 declare module 'vanta/dist/vanta.net.min' {
   interface VantaNetOptions {
     el: HTMLElement;
@@ -56,3 +65,36 @@ declare module 'vanta' {
     destroy(): void;
   }
 }
+
+// Other module declarations
+declare module '*.svg' {
+  const content: any;
+  export default content;
+}
+
+declare module '*.png' {
+  const content: string;
+  export default content;
+}
+
+declare module '*.jpg' {
+  const content: string;
+  export default content;
+}
+
+declare module '*.jpeg' {
+  const content: string;
+  export default content;
+}
+
+declare module '*.gif' {
+  const content: string;
+  export default content;
+}
+
+declare module '*.webp' {
+  const content: string;
+  export default content;
+}
+
+export {}
