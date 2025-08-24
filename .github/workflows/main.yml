@@ -20,7 +20,7 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - name: Install Vercel CLI  # DODAJTE OVAJ KORAK
+      - name: Install Vercel CLI 
         run: npm install -g vercel@latest
 
       - name: Install root dependencies
