@@ -39,6 +39,32 @@ jobs:
           rm -f pages/sample-page.tsx
           rm -f apps/web/pages/sample-page.tsx
           
+          # Vercel config in apps/web directory
+          cat > apps/web/vercel.json << 'EOF'
+          {
+            "framework": "nextjs",
+            "buildCommand": "npm run build",
+            "outputDirectory": ".next",
+            "routes": [
+              {
+                "src": "/ton-connect/(.*)",
+                "dest": "/api/ton-connect/$1"
+              },
+              {
+                "src": "/donacije",
+                "dest": "/donacije",
+                "headers": {
+                  "Cache-Control": "public, max-age=3600"
+                }
+              },
+              {
+                "src": "/(.*)",
+                "dest": "/$1"
+              }
+            ]
+          }
+          EOF
+          
           # TonConnect manifest
           cat > apps/web/public/tonconnect-manifest.json << 'EOF'
           {
