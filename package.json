@@ -9,11 +9,12 @@
     "build:quantum-core": "turbo run build --filter=@melektron/quantum-core",
     "build:packages": "turbo run build --filter=@melektron/*",
     "build": "turbo run build",
+    "build:web": "npm run build:packages && cd apps/web && npm run build",
+    "deploy": "cd apps/web && npm run deploy",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "build:web": "turbo run build --filter=web"
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
     "prettier": "^3.2.5",
