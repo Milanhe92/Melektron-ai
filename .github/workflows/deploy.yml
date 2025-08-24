@@ -1,47 +1,44 @@
-name: Vercel Deploy
+name: Build and Deploy
 
 on:
   push:
     branches: [main]
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    env:
+      CI: true
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: 20
+          cache: 'pnpm'
 
-      - name: Install dependencies
-        run: |
-          npm config set legacy-peer-deps true
-          npm install
+      - name: Install PNPM
+        run: npm install -g pnpm
 
-      - name: Build project
-        run: |
-          cd packages/ton-client && npm run build
-          cd ../../apps/web && npm run build
+      - name: Install dependencies with PNPM
+        run: pnpm install --no-frozen-lockfile
 
-      - name: Pull Vercel project settings
-        run: |
-          cd apps/web
-          npx vercel pull --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=melektron
+      - name: Build quantum-core
+        run: cd packages/quantum-core && pnpm run build
 
-      - name: Build with Vercel
-        run: |
-          cd apps/web
-          npx vercel build --token=${{ secrets.VERCEL_TOKEN }} --scope=melektron
+      - name: Build ton-client
+        run: cd packages/ton-client && pnpm run build
 
-      - name: Deploy to Vercel
-        run: |
-          cd apps/web
-          npx vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} --scope=melektron
+      - name: Build web app
+        run: cd apps/web && pnpm run build
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy to production
+        run: cd apps/web && pnpm run deploy
         env:
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
