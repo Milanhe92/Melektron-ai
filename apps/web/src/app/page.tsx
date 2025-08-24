@@ -23,8 +23,8 @@ export default function HomePage() {
   // Initialize Vanta.js background
 useEffect(() => {
   const initVanta = async () => {
-    const vanta = await import('vanta/dist/vanta.net.min');
-    const NET = vanta.default || vanta.NET;
+    // @ts-ignore: Ignoriši TypeScript grešku za Vanta.js
+    const { NET } = await import('vanta/dist/vanta.net.min');
     NET({
       el: vantaRef.current,
       mouseControls: true,
