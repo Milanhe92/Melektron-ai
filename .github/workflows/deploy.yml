@@ -19,6 +19,9 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
+      - name: Install Vercel CLI
+        run: npm install -g vercel@28.16.11
+
       - name: Install dependencies
         run: |
           npm config set legacy-peer-deps true
@@ -28,9 +31,6 @@ jobs:
         run: |
           cd packages/ton-client && npm run build
           cd ../../apps/web && npm run build
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel@28.16.11  # Користим стабилну верзију
 
       - name: Deploy to Vercel
         run: |
