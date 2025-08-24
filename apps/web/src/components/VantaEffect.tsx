@@ -1,42 +1,58 @@
-'use client';
+'use client'
 
-import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+import { useEffect, useRef } from 'react'
 
-const VantaEffect = () => {
-  const vantaRef = useRef<HTMLDivElement>(null);
+interface VantaEffectProps {
+  effect?: string;
+  config?: any;
+  className?: string;
+}
+
+export default function VantaEffect({ 
+  effect = 'NET', 
+  config = {},
+  className = "w-full h-full"
+}: VantaEffectProps) {
+  const vantaRef = useRef<HTMLDivElement>(null)
+  const vantaEffect = useRef<any>(null)
 
   useEffect(() => {
-    const initVanta = async () => {
-      if (!vantaRef.current) return;
-      
-      const { NET } = await import('vanta/dist/vanta.net.min');
-      const effect = NET({
-        el: vantaRef.current,
-        THREE: THREE,
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: 0x8a2be2,
-        backgroundColor: 0x0a0a18,
-        points: 15.00,
-        maxDistance: 24.00,
-        spacing: 17.00
-      });
+    if (!vantaRef.current) return
 
-      return () => {
-        if (effect) effect.destroy();
-      };
-    };
+    const loadVantaEffect = async () => {
+      try {
+        const THREE = await import('three')
+        const VantaModule = await import('vanta/dist/vanta.net.min')
 
-    initVanta();
-  }, []);
+        if (VantaModule.default && vantaRef.current) {
+          vantaEffect.current = VantaModule.default({
+            el: vantaRef.current,
+            THREE: THREE,
+            color: 0x3b82f6,
+            backgroundColor: 0x0f172a,
+            points: 10,
+            maxDistance: 20,
+            spacing: 15,
+            ...config
+          })
+        }
+      } catch (error) {
+        console.error('Failed to load Vanta effect:', error)
+      }
+    }
 
-  return <div ref={vantaRef} className="fixed top-0 left-0 w-full h-full -z-10" />;
-};
+    loadVantaEffect()
 
-export default VantaEffect;
+    return () => {
+      if (vantaEffect.current) {
+        try {
+          vantaEffect.current.destroy()
+        } catch (error) {
+          console.warn('Error destroying Vanta effect:', error)
+        }
+      }
+    }
+  }, [effect, config])
+
+  return <div ref={vantaRef} className={className} />
+}
