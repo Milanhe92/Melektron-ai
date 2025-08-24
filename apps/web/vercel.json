@@ -1,16 +1,22 @@
 {
-  "version": 2,
-  "builds": [
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "routes": [
     {
-      "src": "package.json",
-      "use": "@vercel/next"
+      "src": "/ton-connect/(.*)",
+      "dest": "/api/ton-connect/$1"
+    },
+    {
+      "src": "/donacije",
+      "dest": "/donacije",
+      "headers": {
+        "Cache-Control": "public, max-age=3600"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
     }
-  ],
-  "functions": {
-    "apps/web/**/*.ts": {
-      "maxDuration": 30
-    }
-  },
-  "installCommand": "pnpm install --no-frozen-lockfile",
-  "buildCommand": "pnpm run build"
+  ]
 }
