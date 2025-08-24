@@ -393,10 +393,20 @@ jobs:
           cd apps/web && npm run build
 
       - name: Deploy to Vercel
-        uses: BetaHuhn/deploy-to-vercel-action@v1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          production: true
+        run: |
+          # Install Vercel CLI
+          npm install -g vercel@latest
+          
+          # Link project
+          echo "$VERCEL_PROJECT_ID" > apps/web/.vercel/project.json
+          echo '{"projectId":"${{ secrets.VERCEL_PROJECT_ID }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}' > apps/web/.vercel/project.json
+          
+          # Create output directory structure
+          mkdir -p apps/web/.vercel/output
+          
+          # Deploy
+          cd apps/web && vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
