@@ -6,24 +6,11 @@
       "use": "@vercel/next"
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1",
-      "methods": ["GET"]
+  "functions": {
+    "apps/web/**/*.ts": {
+      "maxDuration": 30
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/ton-mining",
-      "destination": "/mining",
-      "permanent": true
-    }
-  ]
+  },
+  "installCommand": "pnpm install --no-frozen-lockfile",
+  "buildCommand": "pnpm run build"
 }
