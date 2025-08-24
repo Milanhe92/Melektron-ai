@@ -7,14 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "vercel deploy --prod --token=$VERCEL_TOKEN",
+    "deploy": "vercel deploy --prod",
     "postbuild": "cp public/robots.txt .next/static/robots.txt && cp public/tonconnect-manifest.json .next/static/"
   },
   "dependencies": {
-    "@melektron/quantum-core": "workspace:*",
-    "@melektron/ai-core": "workspace:*",
-    "@melektron/ton-client": "workspace:*",
-    "@melektron/ton-utils": "workspace:*",
+    "@melektron/quantum-core": "file:../../packages/quantum-core",
+    "@melektron/ai-core": "file:../../packages/ai-core",
+    "@melektron/ton-client": "file:../../packages/ton-client",
+    "@melektron/ton-utils": "file:../../packages/ton-utils",
     "@portabletext/react": "^3.0.10",
     "@sanity/client": "^6.8.0",
     "@sanity/image-url": "^1.0.2",
@@ -37,9 +37,8 @@
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.0",
     "@types/three": "^0.166.0",
-    "eslint-config-custom": "workspace:*",
-    "tsconfig": "workspace:*",
-    "typescript": "^5.4.2",
-    "vercel": "^28.16.11"
+    "eslint-config-custom": "*",
+    "tsconfig": "*",
+    "typescript": "^5.4.2"
   }
 }
