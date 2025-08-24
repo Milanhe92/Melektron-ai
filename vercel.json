@@ -1,25 +1,14 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "apps/web/package.json",
-      "use": "@vercel/next",
-      "config": {
-        "buildCommand": "npm run build",
-        "outputDirectory": ".next"
-      }
-    }
-  ],
   "build": {
     "env": {
-      "NPM_CONFIG_LEGACY_PEER_DEPS": "true",
-      "NODE_ENV": "production"
+      "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
     }
   },
   "routes": [
     {
-      "src": "/ton-connect/(.*)",
-      "dest": "/api/ton-connect/$1"
+      "src": "/ton-connect/.*",
+      "dest": "/api/ton-connect",
+      "methods": ["GET", "POST"]
     },
     {
       "src": "/donacije",
@@ -30,12 +19,8 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/$1"
+      "dest": "/$1",
+      "continue": true
     }
-  ],
-  "rootDirectory": "apps/web",
-  "buildCommand": "cd ../.. && npm run build:web",
-  "outputDirectory": "apps/web/.next",
-  "installCommand": "cd ../.. && npm install --legacy-peer-deps",
-  "framework": "nextjs"
+  ]
 }

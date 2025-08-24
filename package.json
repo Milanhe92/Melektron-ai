@@ -1,29 +1,17 @@
 {
   "name": "melektron-ai",
-  "private": true,
-  "packageManager": "npm@10.5.0",
+  "version": "1.0.0",
   "scripts": {
-    "reset": "rm -rf node_modules apps/web/node_modules package-lock.json.turbo && npm install",
-    "install:ci": "npm install --legacy-peer-deps --no-audit --omit=dev",
-    "build:ton-client": "turbo run build --filter=@melektron/ton-client",
-    "build:quantum-core": "turbo run build --filter=@melektron/quantum-core",
-    "build:packages": "turbo run build --filter=@melektron/*",
-    "build": "turbo run build",
-    "build:web": "npm run build:packages && cd apps/web && npm run build",
-    "deploy": "cd apps/web && npm run deploy",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "test": "turbo run test",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
-  },
-  "devDependencies": {
-    "prettier": "^3.2.5",
-    "turbo": "^2.5.5",
-    "typescript": "^5.0.0",
-    "@types/node": "^20.0.0"
+    "prebuild": "npm install --legacy-peer-deps && npm run build --workspace=packages/quantum-core && npm run build --workspace=packages/ton-client",
+    "build:web": "npm run build --workspace=apps/web",
+    "build": "npm run build --workspace=apps/web",
+    "dev": "npm run dev --workspace=apps/web"
   },
   "workspaces": [
-    "apps/*",
-    "packages/*"
-  ]
+    "packages/*",
+    "apps/*"
+  ],
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
 }

@@ -4,18 +4,12 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "test": "jest"
+    "build": "tsc"
   },
   "dependencies": {
-    "mathjs": "^11.0.0",
-    "ml-matrix": "^6.10.0"
+    "mathjs": "^12.4.0"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "@types/node": "^20.0.0",
-    "@types/jest": "^29.0.0",
-    "jest": "^29.0.0"
+    "typescript": "^5.8.3"
   }
 }

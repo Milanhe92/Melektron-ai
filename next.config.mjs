@@ -1,37 +1,36 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: true,
-    optimizePackageImports: [
-      '@ton/ton', 
-      'three', 
-      'vanta',
-      'chart.js'
-    ],
-    instrumentationHook: true,
-    outputFileTracingIncludes: {
-      '/*': ['./packages/**/*']
-    }
-  },
+  output: "standalone",
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'cdn.sanity.io'
-      }
-    ]
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+      },
+    ],
   },
-  output: 'standalone',
   transpilePackages: [
-    '../../packages/quantum-core',
-    '../../packages/ai-core',
-    '../../packages/ton-utils'
+    '@melektron/ai-core',
+    '@melektron/ton-utils'
   ],
-  // DODATO: Environment varijable
-  env: {
-    TON_API_KEY: process.env.TON_API_KEY,
-    TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
-    NODE_ENV: process.env.NODE_ENV
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      // Dodaj ovo za @ton/core specifično
+      '@ton/core': require.resolve('@ton/core'),
+      // Ostali paketi
+      '@melektron/quantum-core': false
+    };
+    
+    // Dodaj za ESM pakete
+    config.experiments = { ...config.experiments, topLevelAwait: true };
+    
+    return config;
+  },
+  // Dodaj za Vercel optimizaciju
+  experimental: {
+    esmExternals: 'loose',
+    serverComponentsExternalPackages: ['@ton/core', '@melektron/quantum-core']
   }
 };
 

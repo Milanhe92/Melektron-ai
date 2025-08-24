@@ -4,21 +4,17 @@
     "build": {
       "env": [
         "NODE_ENV",
-        "TON_API_KEY", 
+        "TON_API_KEY",
         "TELEGRAM_BOT_TOKEN"
       ],
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
+      "outputs": ["dist/**", ".next/**"]
     },
     "dev": {
-      "cache": false,
-      "persistent": true
+      "cache": false
     },
     "test": {
       "dependsOn": ["build"]
-    },
-    "lint": {
-      "outputs": []
     }
   }
 }
