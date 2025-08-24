@@ -19,9 +19,6 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install Vercel CLI
-        run: npm install -g vercel@latest
-
       - name: Install dependencies
         run: |
           npm config set legacy-peer-deps true
@@ -32,16 +29,19 @@ jobs:
           cd packages/ton-client && npm run build
           cd ../../apps/web && npm run build
 
-      - name: Build project with Vercel
+      - name: Pull Vercel project settings
         run: |
           cd apps/web
-          vercel build --token=${{ secrets.VERCEL_TOKEN }} --scope=melektron
+          npx vercel pull --yes --token=${{ secrets.VERCEL_TOKEN }} --scope=melektron
+
+      - name: Build with Vercel
+        run: |
+          cd apps/web
+          npx vercel build --token=${{ secrets.VERCEL_TOKEN }} --scope=melektron
 
       - name: Deploy to Vercel
         run: |
-          vercel deploy --prebuilt --prod \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            --scope=melektron \
-            --yes
+          cd apps/web
+          npx vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} --scope=melektron
         env:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
