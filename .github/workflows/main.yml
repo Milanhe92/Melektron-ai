@@ -20,6 +20,9 @@ jobs:
           node-version: 20
           cache: 'npm'
 
+      - name: Install Vercel CLI  # DODAJTE OVAJ KORAK
+        run: npm install -g vercel@latest
+
       - name: Install root dependencies
         run: npm install
 
@@ -43,3 +46,5 @@ jobs:
 
       - name: Deploy to production
         run: cd apps/web && npm run deploy
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
