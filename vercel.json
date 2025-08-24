@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "build": {
+    "env": {
+      "NPM_CONFIG_LEGACY_PEER_DEPS": "true",
+      "NODE_ENV": "production"
+    }
+  },
+  "buildCommand": "cd apps/web && npm run build",
+  "outputDirectory": "apps/web/.next",
+  "installCommand": "npm install --legacy-peer-deps",
+  "framework": "nextjs",
+  "routes": [
+    {
+      "src": "/ton-connect/(.*)",
+      "dest": "/api/ton-connect/$1"
+    },
+    {
+      "src": "/donacije",
+      "dest": "/donacije",
+      "headers": {
+        "Cache-Control": "public, max-age=3600"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}
