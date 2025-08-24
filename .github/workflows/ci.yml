@@ -365,10 +365,18 @@ jobs:
 
       - name: Install dependencies with retries
         run: |
+          # Pokušaj 1 - npm registry
           npm install --legacy-peer-deps || \
+          # Pokušaj 2 - čekaj i ponovi
           (sleep 30 && npm install --legacy-peer-deps) || \
-          (sleep 60 && npm install --legacy-peer-deps) || \
-          (echo "Falling back to yarn" && npm install -g yarn && yarn install)
+          # Pokušaj 3 - koristi yarn
+          (echo "Fallback to yarn" && npm install -g yarn && yarn install --ignore-engines) || \
+          # Pokušaj 4 - koristi pnpm
+          (echo "Fallback to pnpm" && npm install -g pnpm && pnpm install --shamefully-hoist) || \
+          # Pokušaj 5 - manual install kritičnih paketa
+          (echo "Manual install critical packages" && \
+           npm install react@18.2.0 react-dom@18.2.0 next@14.1.0 --legacy-peer-deps && \
+           npm install --legacy-peer-deps)
 
       - name: Clean up unnecessary files
         run: |
