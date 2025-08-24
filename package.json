@@ -2,10 +2,11 @@
   "name": "melektron-ai",
   "version": "1.0.0",
   "scripts": {
-    "prebuild": "npm install --legacy-peer-deps && npm run build --workspace=packages/quantum-core && npm run build --workspace=packages/ton-client",
-    "build:web": "npm run build --workspace=apps/web",
-    "build": "npm run build --workspace=apps/web",
-    "dev": "npm run dev --workspace=apps/web"
+    "prebuild": "pnpm install --no-frozen-lockfile && pnpm run build --filter=./packages/quantum-core && pnpm run build --filter=./packages/ton-client",
+    "build:web": "pnpm run build --filter=./apps/web",
+    "build": "pnpm run build --filter=./apps/web",
+    "dev": "pnpm run dev --filter=./apps/web",
+    "deploy": "cd apps/web && pnpm run deploy"
   },
   "workspaces": [
     "packages/*",
@@ -13,5 +14,6 @@
   ],
   "devDependencies": {
     "typescript": "^5.0.4"
-  }
+  },
+  "packageManager": "pnpm@8.6.0"
 }
