@@ -5,39 +5,52 @@ on:
     branches: [main]
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Configure npm
         run: |
-          cat > .npmrc << 'EOF'
-          legacy-peer-deps=true
-          fetch-retry-mintimeout=20000
-          fetch-retry-maxtimeout=120000  
-          fetch-retries=5
-          fetch-timeout=300000
-          registry=https://registry.npmjs.org/
-          EOF
+          npm config set legacy-peer-deps true
+          npm config set fetch-retry-mintimeout 20000
+          npm config set fetch-retry-maxtimeout 120000
+          npm config set fetch-retries 5
 
-      - name: Setup complete project structure
+      - name: Create project structure
         run: |
           mkdir -p apps/web/src/{types,components,providers,lib,app}
+          mkdir -p apps/web/.vercel
           mkdir -p packages/{tsconfig,ton-client/src,quantum-core/src,ai-core/src,ton-utils/src}
-          mkdir -p apps/web/public/licenses
+          mkdir -p apps/web/public
 
-      - name: Create all type definitions
+      - name: Create required files
         run: |
-          # Combined Vanta and global types
+          # Clean up old problematic files
+          rm -f pages/sample-page.tsx
+          rm -f apps/web/pages/sample-page.tsx
+          
+          # TonConnect manifest
+          cat > apps/web/public/tonconnect-manifest.json << 'EOF'
+          {
+            "url": "https://melektron.ai",
+            "name": "Melektron AI",
+            "iconUrl": "https://melektron.ai/logo.png",
+            "termsOfServiceUrl": "https://melektron.ai/terms",
+            "privacyPolicyUrl": "https://melektron.ai/privacy"
+          }
+          EOF
+          
+          # Vanta types
           cat > apps/web/src/types/vanta.d.ts << 'EOF'
           declare global {
             interface Window {
@@ -45,368 +58,31 @@ jobs:
               VANTA?: any;
             }
           }
-          
           declare module 'vanta/dist/vanta.net.min' {
             interface VantaNetOptions {
               el: HTMLElement;
               THREE?: any;
-              color?: number;
-              backgroundColor?: number;
-              points?: number;
-              maxDistance?: number;
-              spacing?: number;
-              mouseControls?: boolean;
-              touchControls?: boolean;
-              gyroControls?: boolean;
-              minHeight?: number;
-              minWidth?: number;
-              scale?: number;
-              scaleMobile?: number;
               [key: string]: any;
             }
-            interface VantaEffect {
-              destroy(): void;
-              setOptions?(options: Partial<VantaNetOptions>): void;
-            }
+            interface VantaEffect { destroy(): void; }
             function NET(options: VantaNetOptions): VantaEffect;
             export default NET;
           }
-          
-          declare module '*.svg' {
-            const content: any;
-            export default content;
-          }
-          
-          declare module '*.png' {
-            const content: string;
-            export default content;
-          }
-          
           export {}
           EOF
 
-      - name: Create tsconfig structure
-        run: |
-          # Base tsconfig
-          cat > packages/tsconfig/package.json << 'EOF'
-          {
-            "name": "tsconfig",
-            "version": "0.0.0",
-            "private": true,
-            "files": ["base.json", "nextjs.json"]
-          }
-          EOF
-          
-          cat > packages/tsconfig/base.json << 'EOF'
-          {
-            "compilerOptions": {
-              "target": "ES2020",
-              "module": "commonjs", 
-              "lib": ["ES2020"],
-              "declaration": true,
-              "esModuleInterop": true,
-              "skipLibCheck": true,
-              "strict": true,
-              "moduleResolution": "node",
-              "resolveJsonModule": true,
-              "forceConsistentCasingInFileNames": true
-            },
-            "exclude": ["node_modules", "**/*.test.ts", "**/*.spec.ts"]
-          }
-          EOF
-          
-          cat > packages/tsconfig/nextjs.json << 'EOF'
-          {
-            "extends": "./base.json",
-            "compilerOptions": {
-              "target": "es5",
-              "lib": ["dom", "dom.iterable", "esnext"],
-              "allowJs": true,
-              "noEmit": true,
-              "module": "esnext",
-              "moduleResolution": "bundler",
-              "jsx": "preserve",
-              "incremental": true,
-              "plugins": [{"name": "next"}],
-              "baseUrl": ".",
-              "paths": {
-                "@/*": ["./src/*"],
-                "@/components/*": ["./src/components/*"],
-                "@/providers/*": ["./src/providers/*"],
-                "@/types/*": ["./src/types/*"]
-              }
-            },
-            "include": ["src", "next-env.d.ts", "**/*.ts", "**/*.tsx"],
-            "exclude": ["node_modules"]
-          }
-          EOF
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
 
-      - name: Create missing components if not exist
+      - name: Build project
         run: |
-          # VantaEffect
-          if [ ! -f "apps/web/src/components/VantaEffect.tsx" ]; then
-            cat > apps/web/src/components/VantaEffect.tsx << 'EOF'
-          'use client'
-          import { useEffect, useRef } from 'react'
-          
-          interface VantaEffectProps {
-            effect?: string;
-            config?: any;
-            className?: string;
-          }
-          
-          export default function VantaEffect({ 
-            effect = 'NET', 
-            config = {},
-            className = "w-full h-full"
-          }: VantaEffectProps) {
-            const vantaRef = useRef<HTMLDivElement>(null)
-            const vantaEffect = useRef<any>(null)
-          
-            useEffect(() => {
-              if (!vantaRef.current) return
-          
-              const loadVantaEffect = async () => {
-                try {
-                  const THREE = await import('three')
-                  const VantaModule = await import('vanta/dist/vanta.net.min')
-          
-                  if (VantaModule.default && vantaRef.current) {
-                    vantaEffect.current = VantaModule.default({
-                      el: vantaRef.current,
-                      THREE: THREE,
-                      color: 0x3b82f6,
-                      backgroundColor: 0x0f172a,
-                      points: 10,
-                      maxDistance: 20,
-                      spacing: 15,
-                      ...config
-                    })
-                  }
-                } catch (error) {
-                  console.error('Failed to load Vanta effect:', error)
-                }
-              }
-          
-              loadVantaEffect()
-          
-              return () => {
-                if (vantaEffect.current) {
-                  try {
-                    vantaEffect.current.destroy()
-                  } catch (error) {
-                    console.warn('Error destroying Vanta effect:', error)
-                  }
-                }
-              }
-            }, [effect, config])
-          
-            return <div ref={vantaRef} className={className} />
-          }
-          EOF
-          fi
-          
-          # TonProvider  
-          if [ ! -f "apps/web/src/providers/TonProvider.tsx" ]; then
-            cat > apps/web/src/providers/TonProvider.tsx << 'EOF'
-          'use client'
-          import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-          
-          interface TonWallet {
-            address?: string;
-            balance?: string;
-            connected: boolean;
-          }
-          
-          interface TonContextType {
-            wallet: TonWallet;
-            connect: () => Promise<void>;
-            disconnect: () => void;
-            isConnecting: boolean;
-          }
-          
-          const TonContext = createContext<TonContextType | undefined>(undefined)
-          
-          export function useTonWallet() {
-            const context = useContext(TonContext)
-            if (context === undefined) {
-              throw new Error('useTonWallet must be used within a TonProvider')
-            }
-            return context
-          }
-          
-          interface TonProviderProps {
-            children: ReactNode;
-          }
-          
-          export default function TonProvider({ children }: TonProviderProps) {
-            const [wallet, setWallet] = useState<TonWallet>({
-              connected: false
-            })
-            const [isConnecting, setIsConnecting] = useState(false)
-          
-            const connect = async () => {
-              try {
-                setIsConnecting(true)
-                await new Promise(resolve => setTimeout(resolve, 1000))
-                setWallet({
-                  address: 'EQD...mock-address',
-                  balance: '100.0',
-                  connected: true
-                })
-              } catch (error) {
-                console.error('Failed to connect wallet:', error)
-              } finally {
-                setIsConnecting(false)
-              }
-            }
-          
-            const disconnect = () => {
-              setWallet({
-                connected: false
-              })
-            }
-          
-            const value = {
-              wallet,
-              connect,
-              disconnect,
-              isConnecting
-            }
-          
-            return (
-              <TonContext.Provider value={value}>
-                {children}
-              </TonContext.Provider>
-            )
-          }
-          
-          export { TonProvider }
-          EOF
-          fi
-          
-          # TON Utils
-          if [ ! -f "apps/web/src/lib/ton-utils.ts" ]; then
-            cat > apps/web/src/lib/ton-utils.ts << 'EOF'
-          import { Address, toNano } from '@ton/ton'
-          
-          export function initTON(config?: {
-            network?: 'mainnet' | 'testnet'
-            apiKey?: string
-          }) {
-            const network = config?.network || 'mainnet'
-            const apiKey = config?.apiKey || process.env.TON_API_KEY
-            
-            return {
-              network,
-              apiKey,
-              isMainnet: network === 'mainnet',
-              isTestnet: network === 'testnet',
-            }
-          }
-          
-          export class TonUtils {
-            static parseAddress(address: string): Address {
-              try {
-                return Address.parse(address)
-              } catch (error) {
-                throw new Error(`Invalid TON address: ${address}`)
-              }
-            }
-          
-            static formatAddress(address: Address | string): string {
-              if (typeof address === 'string') {
-                return address
-              }
-              return address.toString()
-            }
-          
-            static toNanoTon(amount: string | number): bigint {
-              return toNano(amount)
-            }
-          
-            static fromNanoTon(amount: bigint | string): string {
-              const nanoAmount = typeof amount === 'string' ? BigInt(amount) : amount
-              return (Number(nanoAmount) / 1e9).toFixed(9)
-            }
-          
-            static validateAddress(address: string): boolean {
-              try {
-                Address.parse(address)
-                return true
-              } catch {
-                return false
-              }
-            }
-          
-            static createTransferMessage(to: string, amount: string | number) {
-              return {
-                validUntil: Math.floor(Date.now() / 1000) + 300,
-                messages: [
-                  {
-                    address: this.parseAddress(to),
-                    amount: this.toNanoTon(amount),
-                  }
-                ]
-              }
-            }
-          }
-          
-          export const parseAddress = TonUtils.parseAddress.bind(TonUtils)
-          export const formatAddress = TonUtils.formatAddress.bind(TonUtils)
-          export const toNanoTon = TonUtils.toNanoTon.bind(TonUtils)
-          export const fromNanoTon = TonUtils.fromNanoTon.bind(TonUtils)
-          export const validateAddress = TonUtils.validateAddress.bind(TonUtils)
-          export const createTransferMessage = TonUtils.createTransferMessage.bind(TonUtils)
-          
-          export default TonUtils
-          EOF
-          fi
-
-      - name: Install dependencies with retries
-        run: |
-          # Pokušaj 1 - npm registry
-          npm install --legacy-peer-deps || \
-          # Pokušaj 2 - čekaj i ponovi
-          (sleep 30 && npm install --legacy-peer-deps) || \
-          # Pokušaj 3 - koristi yarn
-          (echo "Fallback to yarn" && npm install -g yarn && yarn install --ignore-engines) || \
-          # Pokušaj 4 - koristi pnpm
-          (echo "Fallback to pnpm" && npm install -g pnpm && pnpm install --shamefully-hoist) || \
-          # Pokušaj 5 - manual install kritičnih paketa
-          (echo "Manual install critical packages" && \
-           npm install react@18.2.0 react-dom@18.2.0 next@14.1.0 --legacy-peer-deps && \
-           npm install --legacy-peer-deps)
-
-      - name: Clean up unnecessary files
-        run: |
-          # Ukloni sample-page.tsx ako postoji jer može da pravi probleme
-          rm -f apps/web/pages/sample-page.tsx
-          rm -f apps/web/pages/_app.tsx
-          rm -f apps/web/pages/_document.tsx
-          # Next.js 14 koristi app directory, ne pages
-        run: |
-          npm run build:packages || echo "Some packages failed, continuing..."
-
-      - name: Build web app  
-        run: |
-          cd apps/web && npm run build
+          npm run build:web || (cd apps/web && npm run build)
 
       - name: Deploy to Vercel
-        run: |
-          # Install Vercel CLI
-          npm install -g vercel@latest
-          
-          # Link project
-          echo "$VERCEL_PROJECT_ID" > apps/web/.vercel/project.json
-          echo '{"projectId":"${{ secrets.VERCEL_PROJECT_ID }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}' > apps/web/.vercel/project.json
-          
-          # Create output directory structure
-          mkdir -p apps/web/.vercel/output
-          
-          # Deploy
-          cd apps/web && vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./apps/web
+          vercel-args: '--prod'
