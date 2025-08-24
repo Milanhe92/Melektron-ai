@@ -1,5 +1,21 @@
 import { Address, toNano } from '@ton/ton'
 
+// TON initialization function
+export function initTON(config?: {
+  network?: 'mainnet' | 'testnet'
+  apiKey?: string
+}) {
+  const network = config?.network || 'mainnet'
+  const apiKey = config?.apiKey || process.env.TON_API_KEY
+  
+  return {
+    network,
+    apiKey,
+    isMainnet: network === 'mainnet',
+    isTestnet: network === 'testnet',
+  }
+}
+
 // Utility funkcije za TON blockchain
 export class TonUtils {
   static parseAddress(address: string): Address {
