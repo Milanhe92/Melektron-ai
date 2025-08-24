@@ -21,28 +21,29 @@ export default function HomePage() {
 });
 
   // Initialize Vanta.js background
-  useEffect(() => {
-    const initVanta = async () => {
-      const { NET } = await import('vanta/dist/vanta.net.min');
-      NET({
-        el: vantaRef.current,
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: 0x8a2be2,
-        backgroundColor: 0x0a0a18,
-        points: 15.00,
-        maxDistance: 24.00,
-        spacing: 17.00
-      });
-    };
+useEffect(() => {
+  const initVanta = async () => {
+    const vanta = await import('vanta/dist/vanta.net.min');
+    const NET = vanta.default || vanta.NET;
+    NET({
+      el: vantaRef.current,
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      color: 0x8a2be2,
+      backgroundColor: 0x0a0a18,
+      points: 15.00,
+      maxDistance: 24.00,
+      spacing: 17.00
+    });
+  };
 
-    initVanta();
-  }, []);
+  initVanta();
+}, []);
 
   // Initialize revenue chart
   useEffect(() => {
