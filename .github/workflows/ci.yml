@@ -272,6 +272,69 @@ jobs:
           export { TonProvider }
           EOF
           fi
+          
+          # TON Utils
+          if [ ! -f "apps/web/src/lib/ton-utils.ts" ]; then
+            cat > apps/web/src/lib/ton-utils.ts << 'EOF'
+          import { Address, toNano } from '@ton/ton'
+          
+          export class TonUtils {
+            static parseAddress(address: string): Address {
+              try {
+                return Address.parse(address)
+              } catch (error) {
+                throw new Error(`Invalid TON address: ${address}`)
+              }
+            }
+          
+            static formatAddress(address: Address | string): string {
+              if (typeof address === 'string') {
+                return address
+              }
+              return address.toString()
+            }
+          
+            static toNanoTon(amount: string | number): bigint {
+              return toNano(amount)
+            }
+          
+            static fromNanoTon(amount: bigint | string): string {
+              const nanoAmount = typeof amount === 'string' ? BigInt(amount) : amount
+              return (Number(nanoAmount) / 1e9).toFixed(9)
+            }
+          
+            static validateAddress(address: string): boolean {
+              try {
+                Address.parse(address)
+                return true
+              } catch {
+                return false
+              }
+            }
+          
+            static createTransferMessage(to: string, amount: string | number) {
+              return {
+                validUntil: Math.floor(Date.now() / 1000) + 300,
+                messages: [
+                  {
+                    address: this.parseAddress(to),
+                    amount: this.toNanoTon(amount),
+                  }
+                ]
+              }
+            }
+          }
+          
+          export const parseAddress = TonUtils.parseAddress.bind(TonUtils)
+          export const formatAddress = TonUtils.formatAddress.bind(TonUtils)
+          export const toNanoTon = TonUtils.toNanoTon.bind(TonUtils)
+          export const fromNanoTon = TonUtils.fromNanoTon.bind(TonUtils)
+          export const validateAddress = TonUtils.validateAddress.bind(TonUtils)
+          export const createTransferMessage = TonUtils.createTransferMessage.bind(TonUtils)
+          
+          export default TonUtils
+          EOF
+          fi
 
       - name: Install dependencies
         run: |
