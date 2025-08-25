@@ -39,32 +39,6 @@ jobs:
           rm -f pages/sample-page.tsx
           rm -f apps/web/pages/sample-page.tsx
           
-          # Vercel config in apps/web directory
-          cat > apps/web/vercel.json << 'EOF'
-          {
-            "framework": "nextjs",
-            "buildCommand": "npm run build",
-            "outputDirectory": ".next",
-            "routes": [
-              {
-                "src": "/ton-connect/(.*)",
-                "dest": "/api/ton-connect/$1"
-              },
-              {
-                "src": "/donacije",
-                "dest": "/donacije",
-                "headers": {
-                  "Cache-Control": "public, max-age=3600"
-                }
-              },
-              {
-                "src": "/(.*)",
-                "dest": "/$1"
-              }
-            ]
-          }
-          EOF
-          
           # TonConnect manifest
           cat > apps/web/public/tonconnect-manifest.json << 'EOF'
           {
@@ -199,7 +173,32 @@ jobs:
           export { TonProvider }
           EOF
 
-      - name: Install dependencies
+      - name: Fix vercel.json placement
+        run: |
+          # Premesti ili kreiraj vercel.json u apps/web
+          cat > apps/web/vercel.json << 'EOF'
+          {
+            "framework": "nextjs",
+            "build": {
+              "env": {
+                "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
+              }
+            },
+            "routes": [
+              {
+                "src": "/ton-connect/(.*)",
+                "dest": "/api/ton-connect/$1"
+              },
+              {
+                "src": "/donacije",
+                "dest": "/donacije",
+                "headers": {
+                  "Cache-Control": "public, max-age=3600"
+                }
+              }
+            ]
+          }
+          EOF
         run: |
           npm install --legacy-peer-deps || \
           (sleep 30 && npm install --legacy-peer-deps) || \
@@ -209,10 +208,17 @@ jobs:
         run: npm run build:web
 
       - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          working-directory: ./apps/web
-          vercel-args: '--prod'
+        run: |
+          cd apps/web
+          # Install Vercel CLI if not available
+          npx vercel --version || npm install -g vercel
+          
+          # Link project (if not linked)
+          echo '{"projectId":"${{ secrets.VERCEL_PROJECT_ID }}","orgId":"${{ secrets.VERCEL_ORG_ID }}"}' > .vercel/project.json
+          
+          # Deploy to production
+          npx vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
