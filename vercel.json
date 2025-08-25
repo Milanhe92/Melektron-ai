@@ -12,6 +12,7 @@
       "dest": "apps/web/$1"
     }
   ],
-  "installCommand": "npm install --legacy-peer-deps",
-  "buildCommand": "cd apps/web && npm run build"
+  "env": {
+    "NEXT_PUBLIC_APP_URL": "https://melektron.com"
+  }
 }
