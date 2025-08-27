@@ -24,6 +24,7 @@ jobs:
           npm config set legacy-peer-deps true
           npm config set fetch-retry-mintimeout 20000
           npm config set fetch-retry-maxtimeout 120000
+          npm config set fetch-retry-maxtimeout 120000
           npm config set fetch-retries 5
 
       - name: Create project structure
@@ -199,6 +200,8 @@ jobs:
             ]
           }
           EOF
+
+      - name: Install dependencies with retry
         run: |
           npm install --legacy-peer-deps || \
           (sleep 30 && npm install --legacy-peer-deps) || \
