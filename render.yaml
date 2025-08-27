@@ -1,14 +1,17 @@
+# render.yaml u KORENU projekta
 services:
   - type: web
     name: melektron-ai
     env: node
-    buildCommand: |
-      npm install --legacy-peer-deps
-      cd apps/web && npm run build
-    startCommand: cd apps/web && npm start
+    plan: free
+    buildCommand: npm run render-build
+    startCommand: npm run render-start
     envVars:
       - key: NODE_ENV
         value: production
       - key: NEXT_PUBLIC_APP_URL
         value: https://melektron-ai.onrender.com
-    plan: free  # FREE TIER
+    # Resource limits za free tier
+    resources:
+      memory: 512MB
+      cpu: 0.25
