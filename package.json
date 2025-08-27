@@ -10,12 +10,11 @@
     "build:packages": "turbo run build --filter=@melektron/*",
     "build": "turbo run build",
     "build:web": "npm run build:packages && cd apps/web && npm run build",
-    
-  
-    "render-install": "npm install --legacy-peer-deps --no-audit",
-    "render-build": "npm run build:packages && cd apps/web && npm run build",
+
+    "render-install": "npm install --legacy-peer-deps --no-audit --include=dev",
+    "render-build": "npx turbo run build --filter=@melektron/* && cd apps/web && npm run build",
     "render-start": "cd apps/web && npm start",
-    
+
     "deploy": "cd apps/web && npm run deploy",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
