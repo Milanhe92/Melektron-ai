@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: melektron-ai
+    env: node
+    buildCommand: |
+      npm install --legacy-peer-deps
+      cd apps/web && npm run build
+    startCommand: cd apps/web && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_APP_URL
+        value: https://melektron-ai.onrender.com
+    plan: free  # FREE TIER
