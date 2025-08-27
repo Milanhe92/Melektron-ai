@@ -12,7 +12,7 @@
     "build:web": "npm run build:packages && cd apps/web && npm run build",
 
     "render-install": "npm install --legacy-peer-deps --no-audit --include=dev --workspaces",
-    "render-build": "npx turbo run build --filter=@melektron/* && cd apps/web && npm run build",
+    "render-build": "npx turbo run build --filter=@melektron/* --force && cd apps/web && npm run build",
     "render-start": "cd apps/web && npm start",
 
     "deploy": "cd apps/web && npm run deploy",
@@ -24,7 +24,8 @@
   "dependencies": {
     "@ton/core": "0.49.1",
     "@ton/crypto": "^3.2.0",
-    "@ton/ton": "15.3.1"
+    "@ton/ton": "15.3.1",
+    "ton-crypto": "^3.2.0"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
