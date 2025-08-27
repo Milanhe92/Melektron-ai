@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node polyfills.js && next build",
     "start": "next start",
     "lint": "next lint",
     "deploy": "vercel deploy --prod",
