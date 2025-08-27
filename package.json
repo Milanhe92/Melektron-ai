@@ -11,7 +11,7 @@
     "build": "turbo run build",
     "build:web": "npm run build:packages && cd apps/web && npm run build",
     
-    // DODAJ OVE NOVE SKRIPTE ZA RENDER:
+  
     "render-install": "npm install --legacy-peer-deps --no-audit",
     "render-build": "npm run build:packages && cd apps/web && npm run build",
     "render-start": "cd apps/web && npm start",
