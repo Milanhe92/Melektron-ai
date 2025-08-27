@@ -4,15 +4,19 @@ const nextConfig = {
     '@melektron/quantum-core',
     '@ton/core',
     '@ton/crypto',
-    '@ton/ton'
+    '@ton/ton',
+    'ton-crypto'
   ],
-  webpack: (config) => {
-    config.resolve.fallback = {
-      ...config.resolve.fallback,
-      crypto: require.resolve('crypto-browserify'),
-      stream: require.resolve('stream-browserify'),
-      buffer: require.resolve('buffer')
-    };
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        crypto: require.resolve('crypto-browserify'),
+        stream: require.resolve('stream-browserify'),
+        buffer: require.resolve('buffer'),
+        process: require.resolve('process/browser')
+      };
+    }
     return config;
   }
 };
