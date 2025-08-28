@@ -22,13 +22,6 @@ const RevenueChart = dynamic(() => import('@/components/RevenueChart'), {
   ssr: false
 });
 
-const UniverseSimulator = dynamic(() => import('@/components/UniverseSimulator'), {
-  ssr: false,
-  loading: () => <div className="w-full h-96 md:h-[600px] bg-gray-900/50 rounded-xl flex items-center justify-center">
-    <div className="text-white text-lg">Inicijalizacija univerzuma...</div>
-  </div>
-});
-
 export default function HomePage() {
   const [loaded, setLoaded] = useState(false);
   const [currentEffect, setCurrentEffect] = useState('NET');
@@ -309,11 +302,6 @@ export default function HomePage() {
                 </ul>
               </div>
             ))}
-          </div>
-
-          {/* Universe Simulator */}
-          <div className="mb-16">
-            <UniverseSimulator />
           </div>
 
           {/* Quantum Orbit Animation */}
