@@ -22,7 +22,7 @@ export default function QuantumOrbit() {
 
     colors.forEach((color, index) => {
       const geometry = new THREE.TorusGeometry(3 + index * 1.5, 0.2, 16, 100);
-      const material = new THREE.MeshBasicMaterial({ 
+      const material = new THREE.MeshStandardMaterial({ 
         color, 
         wireframe: true,
         transparent: true,
