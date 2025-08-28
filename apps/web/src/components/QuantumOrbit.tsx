@@ -10,11 +10,24 @@ export default function QuantumOrbit() {
     if (!containerRef.current) return;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, containerRef.current.clientWidth / containerRef.current.clientHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      containerRef.current.clientWidth / containerRef.current.clientHeight,
+      0.1,
+      1000
+    );
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    
+
     renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
     containerRef.current.appendChild(renderer.domElement);
+
+    // Add lights so emissive & materials look good
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    scene.add(ambientLight);
+
+    const pointLight = new THREE.PointLight(0xffffff, 1.2);
+    pointLight.position.set(10, 10, 10);
+    scene.add(pointLight);
 
     // Create quantum orbits
     const orbits: THREE.Mesh[] = [];
@@ -22,11 +35,13 @@ export default function QuantumOrbit() {
 
     colors.forEach((color, index) => {
       const geometry = new THREE.TorusGeometry(3 + index * 1.5, 0.2, 16, 100);
-      const material = new THREE.MeshStandardMaterial({ 
-        color, 
+      const material = new THREE.MeshStandardMaterial({
+        color,
         wireframe: true,
         transparent: true,
-        opacity: 0.7
+        opacity: 0.7,
+        metalness: 0.3,
+        roughness: 0.6,
       });
       const orbit = new THREE.Mesh(geometry, material);
       orbit.rotation.x = Math.PI / 2;
@@ -34,12 +49,14 @@ export default function QuantumOrbit() {
       orbits.push(orbit);
     });
 
-    // Add central particle
+    // Add central glowing particle
     const particleGeometry = new THREE.SphereGeometry(1, 32, 32);
-    const particleMaterial = new THREE.MeshBasicMaterial({
+    const particleMaterial = new THREE.MeshStandardMaterial({
       color: 0xffffff,
       emissive: 0x06b6d4,
-      emissiveIntensity: 0.5
+      emissiveIntensity: 0.7,
+      metalness: 0.5,
+      roughness: 0.3,
     });
     const particle = new THREE.Mesh(particleGeometry, particleMaterial);
     scene.add(particle);
@@ -64,9 +81,13 @@ export default function QuantumOrbit() {
 
     const handleResize = () => {
       if (!containerRef.current) return;
-      camera.aspect = containerRef.current.clientWidth / containerRef.current.clientHeight;
+      camera.aspect =
+        containerRef.current.clientWidth / containerRef.current.clientHeight;
       camera.updateProjectionMatrix();
-      renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
+      renderer.setSize(
+        containerRef.current.clientWidth,
+        containerRef.current.clientHeight
+      );
     };
 
     window.addEventListener('resize', handleResize);
