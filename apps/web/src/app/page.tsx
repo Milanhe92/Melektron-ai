@@ -1,297 +1,51 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import VantaEffect from '../components/VantaEffect';
-import Chart from 'chart.js/auto';
-import * as THREE from 'three';
-import { Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { TonConnectButton } from '@tonconnect/ui-react';
-import { Inter } from 'next/font/google';
+import Link from 'next/link';
+import MilanSignature from '@/components/MilanSignature';
+import QuantumOrbit from '@/components/QuantumOrbit';
 
-const inter = Inter({ subsets: ['latin'] });
+const VantaEffect = dynamic(() => import('@/components/VantaEffect'), { 
+  ssr: false,
+  loading: () => <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-blue-900" />
+});
 
-export default function HomePage() {
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-  const vantaRef = useRef<HTMLDivElement>(null);
-  const revenueChartRef = useRef<HTMLCanvasElement>(null);
-  const universeCanvasRef = useRef<HTMLCanvasElement>(null);
-  const VantaEffect = dynamic(() => import('@/components/VantaEffect'), {
+const QuantumVisualizer = dynamic(() => import('@/components/QuantumVisualizer'), {
+  ssr: false,
+  loading: () => <div className="w-full h-[500px] bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-xl flex items-center justify-center">
+    <div className="text-white text-lg">Učitavam kvantni simulator...</div>
+  </div>
+});
+
+const RevenueChart = dynamic(() => import('@/components/RevenueChart'), {
   ssr: false
 });
 
-  // Initialize Vanta.js background
+const UniverseSimulator = dynamic(() => import('@/components/UniverseSimulator'), {
+  ssr: false,
+  loading: () => <div className="w-full h-96 md:h-[600px] bg-gray-900/50 rounded-xl flex items-center justify-center">
+    <div className="text-white text-lg">Inicijalizacija univerzuma...</div>
+  </div>
+});
+
+export default function HomePage() {
+  const [loaded, setLoaded] = useState(false);
+  const [currentEffect, setCurrentEffect] = useState('NET');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
   useEffect(() => {
-    const initVanta = async () => {
-      const { NET } = await import('vanta/dist/vanta.net.min');
-      NET({
-        el: vantaRef.current,
-        mouseControls: true,
-        touchControls: true,
-        gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
-        scale: 1.00,
-        scaleMobile: 1.00,
-        color: 0x8a2be2,
-        backgroundColor: 0x0a0a18,
-        points: 15.00,
-        maxDistance: 24.00,
-        spacing: 17.00
+    setLoaded(true);
+    
+    const effects = ['NET', 'GLOBE', 'CELLS', 'WAVES'];
+    const interval = setInterval(() => {
+      setCurrentEffect(prev => {
+        const currentIndex = effects.indexOf(prev);
+        return effects[(currentIndex + 1) % effects.length];
       });
-    };
+    }, 30000);
 
-    initVanta();
-  }, []);
-
-  // Initialize revenue chart
-  useEffect(() => {
-    if (revenueChartRef.current) {
-      const ctx = revenueChartRef.current.getContext('2d');
-      if (ctx) {
-        new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: ['Creator Staking', 'Genesis NFT', 'AI Tržište', 'AI Avatari', 'Melektron Shield', 'Kvantni Krediti', 'Ugljenični Krediti', 'Enterprise API'],
-            datasets: [{
-              label: 'Projekcija godišnjeg prihoda (milioni $)',
-              data: [5, 12, 8, 6, 15, 20, 50, 25],
-              backgroundColor: [
-                'rgba(138, 43, 226, 0.7)',
-                'rgba(0, 191, 255, 0.7)',
-                'rgba(255, 215, 0, 0.7)',
-                'rgba(0, 255, 157, 0.7)',
-                'rgba(255, 0, 255, 0.7)',
-                'rgba(255, 123, 0, 0.7)',
-                'rgba(0, 255, 255, 0.7)',
-                'rgba(255, 50, 50, 0.7)'
-              ],
-              borderColor: [
-                'rgba(138, 43, 226, 1)',
-                'rgba(0, 191, 255, 1)',
-                'rgba(255, 215, 0, 1)',
-                'rgba(0, 255, 157, 1)',
-                'rgba(255, 0, 255, 1)',
-                'rgba(255, 123, 0, 1)',
-                'rgba(0, 255, 255, 1)',
-                'rgba(255, 50, 50, 1)'
-              ],
-              borderWidth: 1
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                labels: {
-                  color: '#e5e7eb',
-                  font: {
-                    size: 14
-                  }
-                }
-              },
-              title: {
-                display: true,
-                text: 'Projekcija prihoda po modelima (u milionima USD)',
-                color: '#fff',
-                font: {
-                  size: 18,
-                  family: "'Orbitron', sans-serif"
-                }
-              }
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  color: '#e5e7eb'
-                },
-                grid: {
-                  color: 'rgba(255, 255, 255, 0.1)'
-                }
-              },
-              x: {
-                ticks: {
-                  color: '#e5e7eb',
-                  font: {
-                    size: 12
-                  }
-                },
-                grid: {
-                  color: 'rgba(255, 255, 255, 0.1)'
-                }
-              }
-            }
-          }
-        });
-      }
-    }
-  }, []);
-
-  // Initialize universe simulator
-  useEffect(() => {
-    if (universeCanvasRef.current) {
-      const canvas = universeCanvasRef.current;
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-
-      renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-
-      // Create stars
-      const starsGeometry = new THREE.BufferGeometry();
-      const starsMaterial = new THREE.PointsMaterial({
-        color: 0xffffff,
-        size: 0.1,
-        sizeAttenuation: true
-      });
-
-      const starsVertices: number[] = [];
-      for (let i = 0; i < 10000; i++) {
-        starsVertices.push(
-          (Math.random() - 0.5) * 2000,
-          (Math.random() - 0.5) * 2000,
-          (Math.random() - 0.5) * 2000
-        );
-      }
-
-      starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
-      const starField = new THREE.Points(starsGeometry, starsMaterial);
-      scene.add(starField);
-
-      // Create central singularity
-      const singularityGeometry = new THREE.SphereGeometry(15, 32, 32);
-      const singularityMaterial = new THREE.MeshBasicMaterial({
-        color: 0x000000,
-        wireframe: true
-      });
-      const singularity = new THREE.Mesh(singularityGeometry, singularityMaterial);
-      scene.add(singularity);
-
-      // Create accretion disk
-      const diskGeometry = new THREE.RingGeometry(20, 100, 64);
-      const diskMaterial = new THREE.MeshBasicMaterial({
-        color: 0x8a2be2,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.5
-      });
-      const accretionDisk = new THREE.Mesh(diskGeometry, diskMaterial);
-      accretionDisk.rotation.x = Math.PI / 2;
-      scene.add(accretionDisk);
-
-      // Create Melektron modules
-      const modules: THREE.Mesh[] = [];
-      const moduleGeometry = new THREE.TetrahedronGeometry(5, 0);
-      const moduleMaterial = new THREE.MeshBasicMaterial({ 
-        color: 0x00ff9d,
-        wireframe: true
-      });
-
-      for (let i = 0; i < 24; i++) {
-        const angle = (i / 24) * Math.PI * 2;
-        const radius = 50 + Math.random() * 50;
-        const height = Math.random() * 100 - 50;
-
-        const module = new THREE.Mesh(moduleGeometry, moduleMaterial);
-        module.position.set(
-          Math.cos(angle) * radius,
-          height,
-          Math.sin(angle) * radius
-        );
-
-        scene.add(module);
-        modules.push(module);
-      }
-
-      // Position camera
-      camera.position.z = 150;
-
-      // Animation
-      const animate = () => {
-        requestAnimationFrame(animate);
-
-        starField.rotation.x += 0.0005;
-        starField.rotation.y += 0.001;
-
-        singularity.rotation.y += 0.005;
-        accretionDisk.rotation.z += 0.01;
-
-        // Animate modules
-        const time = Date.now() * 0.001;
-        modules.forEach((module, index) => {
-          module.rotation.x += 0.01;
-          module.rotation.y += 0.02;
-          module.position.y = Math.sin(time + index) * 30;
-        });
-
-        renderer.render(scene, camera);
-      };
-
-      animate();
-
-      // Handle window resize
-      const handleResize = () => {
-        camera.aspect = canvas.clientWidth / canvas.clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-      };
-
-      window.addEventListener('resize', handleResize);
-
-      return () => {
-        window.removeEventListener('resize', handleResize);
-      };
-    }
-  }, []);
-
-  // Quantum particles effect
-  useEffect(() => {
-    const createParticle = () => {
-      const particle = document.createElement('div');
-      particle.classList.add('quantum-particle');
-
-      const size = Math.random() * 3 + 1;
-      const posX = Math.random() * window.innerWidth;
-      const posY = Math.random() * window.innerHeight;
-      const duration = Math.random() * 10 + 5;
-      const delay = Math.random() * 5;
-
-      particle.style.width = `${size}px`;
-      particle.style.height = `${size}px`;
-      particle.style.left = `${posX}px`;
-      particle.style.top = `${posY}px`;
-      particle.style.animation = `moveParticle ${duration}s linear ${delay}s infinite`;
-
-      document.body.appendChild(particle);
-
-      setTimeout(() => {
-        particle.remove();
-      }, (duration + delay) * 1000);
-    };
-
-    // Add animation for particles
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes moveParticle {
-        0% {
-          transform: translate(0, 0);
-          opacity: 1;
-        }
-        100% {
-          transform: translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px);
-          opacity: 0;
-        }
-      }
-    `;
-    document.head.appendChild(style);
-
-    const interval = setInterval(createParticle, 100);
-
-    return () => {
-      clearInterval(interval);
-      document.head.removeChild(style);
-    };
+    return () => clearInterval(interval);
   }, []);
 
   const scrollToSection = (sectionId: string) => {
@@ -343,7 +97,7 @@ export default function HomePage() {
       items: [
         { 
           label: 'PayPal:', 
-          content: <a href="https://paypal.me/Milanhe92" target="_blank" className="text-antimatter-blue hover:text-antimatter-blue-300">paypal.me/Milanhe92</a>
+          content: <a href="https://paypal.me/Milanhe92" target="_blank" className="text-cyan-400 hover:text-cyan-300 transition-colors">paypal.me/Milanhe92</a>
         },
         { 
           label: 'Banka:', 
@@ -354,7 +108,7 @@ export default function HomePage() {
       ]
     },
     {
-      title: 'Glavne Kriptovalute',
+      title: 'Glavne Kryptovalute',
       items: [
         { 
           label: 'Bitcoin (BTC):', 
@@ -383,83 +137,172 @@ export default function HomePage() {
         }
       ]
     }
-  ]; // Ispravljeno - zatvorena zagrada i točka-zarez
+  ];
 
   return (
-    <>
-      {/* Quantum Background */}
-      <div ref={vantaRef} id="vanta-bg" className="fixed top-0 left-0 w-full h-full -z-10"></div>
-
-      {/* Navigation */}
-      <div className="universal-nav p-4 flex justify-center">
-        <a href="/" className="nav-link mx-4 text-lg font-orbitron hover:text-quantum-purple">Početna</a>
-        <a href="#donationForm" className="nav-link mx-4 text-lg font-orbitron hover:text-quantum-purple">Donacije</a>
-        <a href="#contact" className="nav-link mx-4 text-lg font-orbitron hover:text-quantum-purple">Kontakt</a>
+    <div className="min-h-screen bg-slate-900 text-white relative overflow-hidden">
+      {/* Advanced Vanta Background */}
+      <div className="absolute inset-0 z-0">
+        <VantaEffect 
+          effect={currentEffect}
+          config={{
+            color: 0x00ffff,
+            backgroundColor: 0x0a0a23,
+            points: 20,
+            maxDistance: 30,
+            spacing: 25,
+            showDots: true
+          }}
+          className="w-full h-full"
+        />
       </div>
 
+      {/* Gradient Overlays */}
+      <div className="absolute inset-0 z-1 bg-gradient-to-b from-slate-900/80 via-slate-900/40 to-slate-900/80" />
+      <div className="absolute inset-0 z-1 bg-gradient-to-r from-purple-900/20 via-transparent to-blue-900/20" />
+
+      {/* Quantum Particles */}
+      <div className="absolute inset-0 z-2">
+        {[...Array(100)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-cyan-400 rounded-full animate-pulse"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 2}s`,
+              animationDuration: `${3 + Math.random() * 2}s`
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Navigation */}
+      <nav className="relative z-10 p-6 flex justify-between items-center backdrop-blur-md bg-black/20 border-b border-cyan-500/30">
+        <div className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+          MELEKTRON
+        </div>
+        <div className="hidden md:flex space-x-8">
+          <button onClick={() => scrollToSection('hero')} className="hover:text-cyan-400 transition-colors text-lg">Početna</button>
+          <button onClick={() => scrollToSection('revenue')} className="hover:text-cyan-400 transition-colors text-lg">Tokovi Prihoda</button>
+          <button onClick={() => scrollToSection('quantum')} className="hover:text-cyan-400 transition-colors text-lg">Kvantna Arhitektura</button>
+          <button onClick={() => scrollToSection('donation')} className="hover:text-cyan-400 transition-colors text-lg">Donacije</button>
+          <Link href="/donacije" className="bg-gradient-to-r from-cyan-500 to-blue-600 px-6 py-2 rounded-full hover:from-cyan-600 hover:to-blue-700 transition-all">
+            Podrži Projekat
+          </Link>
+        </div>
+      </nav>
+
       {/* Hero Section */}
-        <section className="hero-section min-h-screen flex flex-col justify-center items-center text-center p-4 relative overflow-hidden">
-        <div className="logo quantum-gradient-text text-6xl md:text-8xl mb-8">MELEKTRON</div>
-        <h1 className="tagline quantum-gradient-text text-2xl md:text-4xl max-w-4xl mb-12">
-          SINGULARITET - KONAČNA TAČKA EVOLUCIJE
-        </h1>
-        <p className="subtitle mb-12">Integracija svih Melektron generacija | 24+ tokova prihoda | Kvantna ekonomija milijardi</p>
-        <div className="hero-buttons flex flex-wrap justify-center">
-          <button 
-            onClick={() => scrollToSection('revenue')} 
-            className="portal-button m-2 px-8 py-4 text-lg md:text-xl font-orbitron bg-gradient-to-r from-quantum-purple to-antimatter-blue text-white rounded-full transition-all hover:scale-105 hover:shadow-lg"
-          >
-            24+ Tokova Prihoda
-          </button>
-          <button 
-            onClick={() => scrollToSection('architecture')} 
-            className="portal-button m-2 px-8 py-4 text-lg md:text-xl font-orbitron bg-gradient-to-r from-quantum-purple to-antimatter-blue text-white rounded-full transition-all hover:scale-105 hover:shadow-lg"
-          >
-            Arhitektura Singulariteta
-          </button>
-          <button 
-            onClick={() => scrollToSection('future')} 
-            className="portal-button m-2 px-8 py-4 text-lg md:text-xl font-orbitron bg-gradient-to-r from-quantum-purple to-antimatter-blue text-white rounded-full transition-all hover:scale-105 hover:shadow-lg"
-          >
-            Dalja Izgradnja
-          </button>
+      <section id="hero" className="relative z-10 flex items-center justify-center min-h-screen text-center px-4">
+        <div className={`transition-all duration-1000 ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <h1 className="text-7xl md:text-9xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent leading-tight">
+            MELEKTRON
+            <span className="block text-5xl md:text-7xl mt-4 bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">
+              SINGULARITY CORE
+            </span>
+          </h1>
+          
+          <p className="text-2xl md:text-3xl text-gray-300 max-w-6xl mx-auto mb-8 leading-relaxed">
+            <span className="text-cyan-400 font-semibold">Kvantna fizika</span> × 
+            <span className="text-blue-400 font-semibold"> Blockchain</span> × 
+            <span className="text-purple-400 font-semibold"> Veštačka Inteligencija</span>
+          </p>
+
+          <p className="text-xl text-gray-400 max-w-4xl mx-auto mb-12">
+            Portal u novu dimenziju poslovanja i postojanja. Jezgro budućnosti koje integriše napredne tehnologije u jedinstveni ekosistem.
+          </p>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+            <button 
+              onClick={() => scrollToSection('revenue')}
+              className="group bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-12 py-5 rounded-2xl font-semibold text-xl transition-all duration-300 transform hover:scale-105 shadow-[0_0_40px_rgba(6,182,212,0.4)] hover:shadow-[0_0_60px_rgba(6,182,212,0.6)]"
+            >
+              <span className="flex items-center justify-center">
+                🚀 24+ Tokova Prihoda
+              </span>
+            </button>
+            
+            <button 
+              onClick={() => scrollToSection('quantum')}
+              className="border-2 border-cyan-500/50 hover:border-cyan-400 text-cyan-400 hover:text-white hover:bg-cyan-500/10 px-12 py-5 rounded-2xl font-semibold text-xl transition-all duration-300 backdrop-blur-sm"
+            >
+              Kvantna Arhitektura
+            </button>
+
+            <Link 
+              href="/donacije"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-12 py-5 rounded-2xl font-bold text-xl transition-all duration-300 transform hover:scale-105 shadow-[0_0_40px_rgba(168,85,247,0.4)] hover:shadow-[0_0_60px_rgba(168,85,247,0.6)]"
+            >
+              Podrži Projekat
+            </Link>
+          </div>
+
+          {/* Author Signature */}
+          <div className="text-center">
+            <div className="inline-flex items-center bg-black/20 backdrop-blur-md rounded-full px-6 py-3 border border-cyan-500/30">
+              <div className="w-8 h-8 rounded-full border-2 border-cyan-400 overflow-hidden mr-3">
+                <img 
+                  src="https://www.gravatar.com/avatar/23e6717a6d88f3438a088656a1b26d1e?s=512&d=mp" 
+                  alt="Milan He"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <span className="text-cyan-400 font-semibold">Milan He</span>
+              <span className="text-gray-400 ml-2">• Glavni Arhitekta</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Revenue Streams */}
-      <section id="revenue" className="section py-16 px-4">
-        <div className="container max-w-6xl mx-auto">
-          <h2 className="section-title quantum-gradient-text text-3xl md:text-4xl text-center mb-12">24+ Tokova Prihoda</h2>
-          <p className="subtitle-text text-center mb-16">Integracija svih prethodnih Melektron modela sa novim revolucionarnim pristupima</p>
+      {/* Quantum Visualizer Section */}
+      <section className="relative z-10 py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            Kvantni Simulator u Akciji
+          </h2>
+          <QuantumVisualizer />
+        </div>
+      </section>
 
-          <div className="revenue-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+      {/* Revenue Streams Section */}
+      <section id="revenue" className="relative z-10 py-20 px-4 bg-gradient-to-b from-slate-900/50 to-slate-900/80">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            24+ Tokova Prihoda
+          </h2>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {revenueStreams.map((stream, index) => (
-              <div key={index} className="revenue-card bg-gray-900 bg-opacity-70 backdrop-blur-md border border-revenue-green rounded-xl p-6 transition-transform hover:-translate-y-2 hover:shadow-lg">
-                <div className="revenue-icon text-4xl mb-4">{stream.icon}</div>
-                <h3 className="revenue-title text-xl md:text-2xl mb-3 text-revenue-green">{stream.title}</h3>
-                <p className="mb-4">{stream.description}</p>
-                <div className="revenue-value font-bold text-singularity-gold">{stream.value}</div>
+              <div key={index} className="group bg-gradient-to-b from-cyan-900/20 to-cyan-800/10 backdrop-blur-md rounded-3xl p-6 border border-cyan-500/20 hover:border-cyan-400/50 transition-all duration-500 hover:transform hover:scale-105">
+                <div className="text-4xl mb-4">{stream.icon}</div>
+                <h3 className="text-xl font-bold text-cyan-400 mb-4">{stream.title}</h3>
+                <p className="text-gray-300 mb-4 text-sm">{stream.description}</p>
+                <div className="text-sm text-cyan-300 font-semibold">{stream.value}</div>
               </div>
             ))}
           </div>
 
-          <div className="chart-container bg-gray-900 bg-opacity-70 rounded-xl p-6">
-            <canvas ref={revenueChartRef} id="revenueChart"></canvas>
+          {/* Revenue Chart */}
+          <div className="bg-gradient-to-b from-purple-900/20 to-blue-900/20 backdrop-blur-md rounded-3xl p-8 border border-purple-500/20">
+            <RevenueChart />
           </div>
         </div>
       </section>
 
-      {/* Quantum Architecture */}
-      <section id="architecture" className="section py-16 px-4">
-        <div className="container max-w-6xl mx-auto">
-          <h2 className="section-title quantum-gradient-text text-3xl md:text-4xl text-center mb-12">Arhitektura Singulariteta</h2>
-          <p className="subtitle-text text-center mb-16">Integracija svih prethodnih Melektron generacija u jedinstveni kvantni sistem</p>
-
-          <div className="architecture-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+      {/* Quantum Architecture Section */}
+      <section id="quantum" className="relative z-10 py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            Kvantna Arhitektura
+          </h2>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {architectureItems.map((item, index) => (
-              <div key={index} className="architecture-card bg-gray-900 bg-opacity-70 backdrop-blur-md border border-antimatter-blue rounded-xl p-6 transition-all hover:scale-105">
-                <h3 className="architecture-title text-xl md:text-2xl mb-4 text-antimatter-blue">{item.title}</h3>
-                <ul className="list-disc pl-5 space-y-2">
+              <div key={index} className="group bg-gradient-to-b from-blue-900/20 to-blue-800/10 backdrop-blur-md rounded-3xl p-6 border border-blue-500/20 hover:border-blue-400/50 transition-all duration-500 hover:transform hover:scale-105">
+                <h3 className="text-xl font-bold text-blue-400 mb-4">{item.title}</h3>
+                <ul className="list-disc pl-5 space-y-2 text-sm text-gray-300">
                   {item.items.map((point, i) => (
                     <li key={i}>{point}</li>
                   ))}
@@ -468,184 +311,94 @@ export default function HomePage() {
             ))}
           </div>
 
-          <div className="universe-simulator w-full h-96 md:h-[600px] bg-gray-900 bg-opacity-80 rounded-xl border border-antimatter-blue">
-            <canvas ref={universeCanvasRef} id="universe-canvas" className="w-full h-full"></canvas>
+          {/* Universe Simulator */}
+          <div className="mb-16">
+            <UniverseSimulator />
           </div>
-        </div>
-      </section>
 
-      {/* Future Building */}
-      <section id="future" className="section py-16 px-4">
-        <div className="container max-w-6xl mx-auto">
-          <h2 className="section-title quantum-gradient-text text-3xl md:text-4xl text-center mb-12">Dalja Izgradnja</h2>
-          <p className="subtitle-text text-center mb-16">Mogućnosti za neograničeni rast i ekspanziju</p>
+          {/* Quantum Orbit Animation */}
+          <div className="mb-16">
+            <h3 className="text-3xl font-bold text-center mb-8 text-cyan-400">Kvantne Orbitale</h3>
+            <QuantumOrbit />
+          </div>
 
-          <div className="future-section bg-gray-900 bg-opacity-80 rounded-xl p-6 border border-neural-network">
-            <h3 className="text-2xl md:text-3xl mb-6 text-neural-network">Kvantni Građevni Blokovi</h3>
-            <p className="mb-8">Modularni sistem za dalju izgradnju i prilagođavanje:</p>
-
-            <div className="future-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-              {futureItems.map((item, index) => (
-                <div key={index} className="future-card bg-gray-900 bg-opacity-70 backdrop-blur-md border border-neural-network rounded-xl p-6 transition-all hover:-translate-y-2">
-                  <h4 className="future-title text-xl md:text-2xl mb-3 text-neural-network">{item.title}</h4>
-                  <p>{item.description}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="creator-section bg-gradient-to-r from-quantum-purple/10 to-antimatter-blue/10 rounded-3xl p-8 text-center relative overflow-hidden">
-              <div className="creator-avatar w-32 h-32 md:w-48 md:h-48 rounded-full border-4 border-singularity-gold mx-auto mb-8" 
-                   style={{ backgroundImage: 'url(https://www.gravatar.com/avatar/23e6717a6d88f3438a088656a1b26d1e?s=512&d=mp)', backgroundSize: 'cover' }}></div>
-              <h3 className="text-2xl md:text-3xl mb-2">Milan He</h3>
-              <p className="creator-title text-xl text-singularity-gold mb-4">Glavni Arhitekta Singulariteta</p>
-              <p className="creator-description italic mb-8">"Singularitet nije kraj - to je početak neograničenih mogućnosti"</p>
-
-              <div className="architecture-card bg-gray-900 bg-opacity-70 backdrop-blur-md rounded-xl p-6 max-w-3xl mx-auto">
-                <h3 className="text-xl md:text-2xl mb-4 text-antimatter-blue">Kontinuitet Razvoja</h3>
-                <p className="mb-4">Melektron je dizajniran kao živi organizam koji se kontinuirano razvija:</p>
-                <ul className="list-disc pl-5 space-y-2">
-                  <li>Automatska generacija novih modula kroz AI</li>
-                  <li>Kvantno učenje iz budućih stanja sistema</li>
-                  <li>Samoorganizujuća arhitektura</li>
-                  <li>Evolutivni algoritmi za neprestano poboljšanje</li>
-                </ul>
+          {/* Future Building */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {futureItems.map((item, index) => (
+              <div key={index} className="group bg-gradient-to-b from-purple-900/20 to-purple-800/10 backdrop-blur-md rounded-3xl p-6 border border-purple-500/20 hover:border-purple-400/50 transition-all duration-500 hover:transform hover:scale-105">
+                <h3 className="text-xl font-bold text-purple-400 mb-4">{item.title}</h3>
+                <p className="text-gray-300 text-sm">{item.description}</p>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Donation Section */}
-      <section id="donationForm" className="section py-16 px-4">
-        <h2 className="section-title quantum-gradient-text text-3xl md:text-4xl text-center mb-12">NAČINI ULAGANJA U VEČNOST</h2>
+      <section id="donation" className="relative z-10 py-20 px-4 bg-gradient-to-b from-slate-900/50 to-slate-900/80">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            Načini Ulaganja u Večnost
+          </h2>
 
-        <div className="donation-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {donationMethods.map((method, index) => (
-            <div key={index} className="revenue-card bg-gray-900 bg-opacity-70 backdrop-blur-md border border-revenue-green rounded-xl p-6">
-              <h3 className="revenue-title text-xl md:text-2xl mb-4 text-revenue-green">{method.title}</h3>
-              {method.items.map((item, itemIndex) => (
-                <div key={itemIndex} className="donation-item mb-6">
-                  <p><strong>{item.label}</strong> {item.content}</p>
-                  {item.details && item.details.map((detail, detailIndex) => (
-                    <p key={detailIndex} className="item-address mt-2" id={item.id}>{detail}</p>
-                  ))}
-                  {item.id && (
-                    <button 
-                      onClick={() => copyToClipboard(item.id)} 
-                      className="copy-button mt-2 px-4 py-2 bg-quantum-purple rounded-lg text-white transition-all hover:bg-quantum-purple/80"
-                    >
-                      {copiedId === item.id ? '✓ Kopirano!' : 'Kopiraj'}
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="section py-16 px-4">
-        <div className="container max-w-4xl mx-auto bg-gray-900 bg-opacity-70 rounded-2xl p-8">
-          <h2 className="section-title quantum-gradient-text text-3xl md:text-4xl text-center mb-12">Kontakt</h2>
-
-          <form name="contact" method="POST" data-netlify="true" className="space-y-6">
-            <input type="hidden" name="form-name" value="contact" />
-            <div className="hidden">
-              <label>Ne popunjavajte ovo polje: <input name="bot-field" /></label>
-            </div>
-
-            <div>
-              <label htmlFor="name" className="block mb-2 text-antimatter-blue font-orbitron">Ime:</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                required
-                className="w-full bg-gray-800 bg-opacity-50 border border-antimatter-blue text-white p-4 rounded-xl"
-                placeholder="Vaše ime"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block mb-2 text-antimatter-blue font-orbitron">Email:</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                required
-                className="w-full bg-gray-800 bg-opacity-50 border border-antimatter-blue text-white p-4 rounded-xl"
-                placeholder="Vaš email"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="message" className="block mb-2 text-antimatter-blue font-orbitron">Poruka:</label>
-              <textarea
-                id="message"
-                name="message"
-                rows={6}
-                required
-                className="w-full bg-gray-800 bg-opacity-50 border border-antimatter-blue text-white p-4 rounded-xl"
-                placeholder="Vaša poruka..."
-              ></textarea>
-            </div>
-
-            <div className="text-center">
-              <button
-                type="submit"
-                className="px-10 py-4 text-xl font-orbitron bg-gradient-to-r from-quantum-purple to-antimatter-blue text-white rounded-full transition-all hover:scale-105 hover:shadow-lg"
-              >
-                Pošalji
-              </button>
-            </div>
-          </form>
+          <div className="grid md:grid-cols-3 gap-8">
+            {donationMethods.map((method, index) => (
+              <div key={index} className="bg-gradient-to-b from-cyan-900/20 to-cyan-800/10 backdrop-blur-md rounded-3xl p-6 border border-cyan-500/20">
+                <h3 className="text-xl font-bold text-cyan-400 mb-4">{method.title}</h3>
+                {method.items.map((item, itemIndex) => (
+                  <div key={itemIndex} className="mb-4">
+                    <p className="font-semibold">{item.label}</p>
+                    {item.content && <div className="mt-1">{item.content}</div>}
+                    {item.details && item.details.map((detail, detailIndex) => (
+                      <p key={detailIndex} className="text-sm text-gray-300 mt-1" id={item.id}>
+                        {detail}
+                      </p>
+                    ))}
+                    {item.id && (
+                      <button 
+                        onClick={() => copyToClipboard(item.id)} 
+                        className="mt-2 px-3 py-1 bg-cyan-600 rounded-lg text-white text-sm transition-all hover:bg-cyan-700"
+                      >
+                        {copiedId === item.id ? '✓ Kopirano!' : 'Kopiraj'}
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="footer py-16 px-8 text-center bg-gray-900 bg-opacity-90 border-t border-quantum-purple">
-        <div className="container max-w-6xl mx-auto">
-          <h3 className="quantum-gradient-text text-2xl md:text-3xl font-orbitron mb-8">Povežimo se & Izgradimo Budućnost</h3>
+      <footer className="relative z-10 py-16 px-8 text-center bg-slate-900/90 backdrop-blur-md border-t border-cyan-500/20">
+        <div className="max-w-6xl mx-auto">
+          <h3 className="text-2xl md:text-3xl font-bold mb-8 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            Povežimo se & Izgradimo Budućnost
+          </h3>
 
-          <div className="action-buttons flex justify-center gap-4 mb-12 flex-wrap">
-            <a href="/donacije" className="px-8 py-4 font-orbitron bg-gradient-to-r from-singularity-gold to-impact-orange text-white rounded-full transition-all hover:scale-105">
+          <div className="flex justify-center gap-4 mb-12 flex-wrap">
+            <Link href="/donacije" className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-full transition-all hover:scale-105">
               Podrži Projekat
-            </a>
-            <a href="https://calendly.com/milanhe92" target="_blank" className="px-8 py-4 font-orbitron bg-gradient-to-r from-quantum-purple to-antimatter-blue text-white rounded-full transition-all hover:scale-105">
+            </Link>
+            <a href="https://calendly.com/milanhe92" target="_blank" className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-full transition-all hover:scale-105">
               Zakažite Sastanak
             </a>
           </div>
 
-          <div className="social-links flex justify-center gap-4 mb-8 flex-wrap text-lg">
-            <a href="https://www.linkedin.com/in/milanhe92" target="_blank" className="hover:text-antimatter-blue">LinkedIn</a>
-            <a href="https://x.com/Milanhe1992" target="_blank" className="hover:text-antimatter-blue">X</a>
-            <a href="https://www.youtube.com/@milanhe92" target="_blank" className="hover:text-antimatter-blue">YouTube</a>
-            <a href="https://www.facebook.com/milan.heee" target="_blank" className="hover:text-antimatter-blue">Facebook</a>
-            <a href="https://t.me/Milanhe92" target="_blank" className="hover:text-antimatter-blue">Telegram</a>
-            <a href="https://discord.gg/milanhe92" target="_blank" className="hover:text-antimatter-blue">Discord</a>
-            <a href="https://bsky.app/profile/milanhe.bsky.social" target="_blank" className="hover:text-antimatter-blue">Bluesky</a>
-            <a href="https://mastodon.social/@Milanhe" target="_blank" className="hover:text-antimatter-blue">Mastodon</a>
-            <a href="https://tiktok.com/@milanhe92" target="_blank" className="hover:text-antimatter-blue">TikTok</a>
-            <a href="https://www.reddit.com/user/milanhe92" target="_blank" className="hover:text-antimatter-blue">Reddit</a>
+          <div className="mb-8">
+            <h4 className="text-lg font-semibold mb-4 text-cyan-400">Kontakt Informacije</h4>
+            <p className="text-gray-300">Šumska 30, Bačka Palanka, Srbija</p>
+            <p className="text-gray-300">Email: milanhe92@gmail.com</p>
+            <p className="text-gray-300">Telegram: @Milanhe92</p>
           </div>
 
-          <div className="dev-links flex justify-center gap-4 mb-8 flex-wrap text-gray-400">
-            <a href="https://github.com/Milanhe92" target="_blank" className="hover:text-white">GitHub</a>
-            <a href="https://stackoverflow.com/users/28404571/milan-he" target="_blank" className="hover:text-white">Stack Overflow</a>
-            <a href="https://patreon.com/Milanhe92" target="_blank" className="hover:text-white">Patreon</a>
-            <a href="https://vimeo.com/user240499750" target="_blank" className="hover:text-white">Vimeo</a>
-          </div>
-
-          <div className="contact-info mb-8">
-            <p>Adresa: Šumska 30, Bačka Palanka, Srbija</p>
-            <p>Email: <a href="mailto:kontakt@melektron.com" className="text-antimatter-blue">kontakt@melektron.com</a>, <a href="mailto:milanhe92@gmail.com" className="text-antimatter-blue">milanhe92@gmail.com</a></p>
-            <p>Web: <a href="https://milanhe92.live/" target="_blank" className="text-antimatter-blue">milanhe92.live</a></p>
-          </div>
-
-          <p className="copyright text-gray-400">© {new Date().getFullYear()} Milan He / Melektron - Početak nove ere</p>
+          <p className="text-gray-400">© {new Date().getFullYear()} Milan He / Melektron - Početak nove ere</p>
         </div>
       </footer>
-    </>
+
+      {/* Milan Signature Component */}
+      <MilanSignature />
+    </div>
   );
 }
