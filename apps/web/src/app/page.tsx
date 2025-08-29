@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import QRCode from 'qrcode.react';
 import MilanSignature from '@/components/MilanSignature';
 import QuantumOrbit from '@/components/QuantumOrbit';
 
+// Dynamic imports za teške komponente
 const VantaEffect = dynamic(() => import('@/components/VantaEffect'), { 
   ssr: false,
   loading: () => <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-blue-900" />
@@ -23,7 +24,6 @@ const RevenueChart = dynamic(() => import('@/components/RevenueChart'), {
   ssr: false
 });
 
-// Novi komponenti koje ćemo dodati
 const UniverseSimulator = dynamic(() => import('@/components/UniverseSimulator'), {
   ssr: false,
   loading: () => <div className="w-full h-96 md:h-[600px] bg-gray-900/50 rounded-xl flex items-center justify-center">
@@ -32,8 +32,14 @@ const UniverseSimulator = dynamic(() => import('@/components/UniverseSimulator')
 });
 
 const QuantumWeb3Announcement = dynamic(() => import('@/components/QuantumWeb3Announcement'), {
-  ssr: false
+  ssr: false,
+  loading: () => <div className="h-48 bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-xl flex items-center justify-center">
+    <div className="text-white">Učitavam Web3 najavu...</div>
+  </div>
 });
+
+// Lazy loading za dodatne teške komponente
+const HeavySection = lazy(() => import('@/components/HeavySection'));
 
 export default function HomePage() {
   const [loaded, setLoaded] = useState(false);
@@ -285,9 +291,10 @@ export default function HomePage() {
     { value: '10M+', label: 'Projekcija ($)', icon: '📈' },
   ];
 
+  // Socijalni linkovi - kompletna lista
   const socialLinks = [
     { name: 'LinkedIn', url: 'https://www.linkedin.com/in/milanhe92', icon: '💼' },
-    { name: 'X', url: 'https://x.com/Milanhe1992', icon: '🐦' },
+    { name: 'X (Twitter)', url: 'https://x.com/Milanhe1992', icon: '🐦' },
     { name: 'YouTube', url: 'https://www.youtube.com/@milanhe92', icon: '🎥' },
     { name: 'Facebook', url: 'https://www.facebook.com/milan.heee', icon: '👥' },
     { name: 'Telegram', url: 'https://t.me/Milanhe92', icon: '✈️' },
@@ -296,13 +303,30 @@ export default function HomePage() {
     { name: 'Mastodon', url: 'https://mastodon.social/@Milanhe', icon: '🐘' },
     { name: 'TikTok', url: 'https://tiktok.com/@milanhe92', icon: '🎵' },
     { name: 'Reddit', url: 'https://www.reddit.com/user/milanhe92', icon: '🤖' },
+    { name: 'Instagram', url: 'https://instagram.com/milanhe92', icon: '📸' },
+    { name: 'GitHub', url: 'https://github.com/Milanhe92', icon: '🐙' },
   ];
 
-  const devLinks = [
+  // Profesionalni i dev linkovi
+  const professionalLinks = [
     { name: 'GitHub', url: 'https://github.com/Milanhe92', icon: '🐙' },
     { name: 'Stack Overflow', url: 'https://stackoverflow.com/users/28404571/milan-he', icon: '🔍' },
     { name: 'Patreon', url: 'https://patreon.com/Milanhe92', icon: '🎗️' },
     { name: 'Vimeo', url: 'https://vimeo.com/user240499750', icon: '🎬' },
+    { name: 'Dribbble', url: 'https://dribbble.com/Milanhe92', icon: '🎨' },
+    { name: 'Behance', url: 'https://behance.net/milanhe92', icon: '⚡' },
+    { name: 'Medium', url: 'https://medium.com/@milanhe92', icon: '📝' },
+    { name: 'Dev.to', url: 'https://dev.to/milanhe92', icon: '💻' },
+    { name: 'Hashnode', url: 'https://hashnode.com/@milanhe92', icon: '🌐' },
+    { name: 'Product Hunt', url: 'https://www.producthunt.com/@milan_he', icon: '🚀' },
+  ];
+
+  // Kontakt informacije
+  const contactInfo = [
+    { type: 'Email', value: 'milanhe92@gmail.com', icon: '📧' },
+    { type: 'Telegram', value: '@Milanhe92', icon: '✈️' },
+    { type: 'Adresa', value: 'Šumska 30, Bačka Palanka, Srbija', icon: '📍' },
+    { type: 'Website', value: 'milanhe92.live', url: 'https://milanhe92.live', icon: '🌐' },
   ];
 
   return (
@@ -477,9 +501,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Quantum Web3 Announcement */}
+      {/* Quantum Web3 Announcement Section */}
       <section className="relative z-10 py-20 px-4">
-        <QuantumWeb3Announcement />
+        <div className="max-w-7xl mx-auto">
+          <Suspense fallback={<div className="h-48 bg-gray-900/50 rounded-xl flex items-center justify-center">Učitavam...</div>}>
+            <QuantumWeb3Announcement />
+          </Suspense>
+        </div>
       </section>
 
       {/* Quantum Visualizer Section */}
@@ -671,46 +699,58 @@ export default function HomePage() {
           {/* Social Links */}
           <div className="mb-8">
             <h4 className="text-lg font-semibold mb-4 text-cyan-400">Pratite Melektron</h4>
-            <div className="flex justify-center gap-4 flex-wrap">
+            <div className="flex justify-center gap-3 flex-wrap">
               {socialLinks.map((link, index) => (
                 <a 
                   key={index}
                   href={link.url} 
                   target="_blank" 
-                  className="flex items-center px-4 py-2 bg-slate-800/50 rounded-full hover:bg-cyan-900/30 transition-all"
+                  className="flex items-center px-4 py-2 bg-slate-800/50 rounded-full hover:bg-cyan-900/30 transition-all group"
                   rel="noopener noreferrer"
                 >
-                  <span className="mr-2">{link.icon}</span>
-                  {link.name}
+                  <span className="mr-2 group-hover:scale-110 transition-transform">{link.icon}</span>
+                  <span className="text-sm">{link.name}</span>
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Dev Links */}
+          {/* Professional Links */}
           <div className="mb-8">
-            <h4 className="text-lg font-semibold mb-4 text-cyan-400">Development</h4>
-            <div className="flex justify-center gap-4 flex-wrap">
-              {devLinks.map((link, index) => (
+            <h4 className="text-lg font-semibold mb-4 text-cyan-400">Development & Profesionalni Profili</h4>
+            <div className="flex justify-center gap-3 flex-wrap">
+              {professionalLinks.map((link, index) => (
                 <a 
                   key={index}
                   href={link.url} 
                   target="_blank" 
-                  className="flex items-center px-4 py-2 bg-slate-800/50 rounded-full hover:bg-purple-900/30 transition-all"
+                  className="flex items-center px-4 py-2 bg-slate-800/50 rounded-full hover:bg-purple-900/30 transition-all group"
                   rel="noopener noreferrer"
                 >
-                  <span className="mr-2">{link.icon}</span>
-                  {link.name}
+                  <span className="mr-2 group-hover:scale-110 transition-transform">{link.icon}</span>
+                  <span className="text-sm">{link.name}</span>
                 </a>
               ))}
             </div>
           </div>
 
+          {/* Contact Information */}
           <div className="mb-8">
             <h4 className="text-lg font-semibold mb-4 text-cyan-400">Kontakt Informacije</h4>
-            <p className="text-gray-300">Šumska 30, Bačka Palanka, Srbija</p>
-            <p className="text-gray-300">Email: milanhe92@gmail.com</p>
-            <p className="text-gray-300">Telegram: @Milanhe92</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {contactInfo.map((info, index) => (
+                <div key={index} className="flex items-center justify-center">
+                  <span className="text-xl mr-3">{info.icon}</span>
+                  {info.url ? (
+                    <a href={info.url} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-cyan-400 transition-colors">
+                      {info.value}
+                    </a>
+                  ) : (
+                    <span className="text-gray-300">{info.value}</span>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
 
           <p className="text-gray-400">© {new Date().getFullYear()} Milan He / Melektron - Početak nove ere</p>
