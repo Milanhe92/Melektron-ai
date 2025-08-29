@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import QRCode from 'qrcode.react';
 import MilanSignature from '@/components/MilanSignature';
 import QuantumOrbit from '@/components/QuantumOrbit';
 
@@ -22,11 +23,24 @@ const RevenueChart = dynamic(() => import('@/components/RevenueChart'), {
   ssr: false
 });
 
+// Novi komponenti koje ćemo dodati
+const UniverseSimulator = dynamic(() => import('@/components/UniverseSimulator'), {
+  ssr: false,
+  loading: () => <div className="w-full h-96 md:h-[600px] bg-gray-900/50 rounded-xl flex items-center justify-center">
+    <div className="text-white text-lg">Inicijalizacija univerzuma...</div>
+  </div>
+});
+
+const QuantumWeb3Announcement = dynamic(() => import('@/components/QuantumWeb3Announcement'), {
+  ssr: false
+});
+
 export default function HomePage() {
   const [loaded, setLoaded] = useState(false);
   const [currentEffect, setCurrentEffect] = useState('NET');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState('hero');
+  const [showQuantumEffect, setShowQuantumEffect] = useState(false);
   const sectionRefs = useRef<{[key: string]: HTMLElement | null}>({});
 
   useEffect(() => {
@@ -49,7 +63,7 @@ export default function HomePage() {
           }
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0.6 }
     );
 
     // Početak observacije svih sekcija
@@ -71,6 +85,7 @@ export default function HomePage() {
     const section = document.getElementById(sectionId);
     if (section) {
       section.scrollIntoView({ behavior: 'smooth' });
+      setActiveSection(sectionId);
     }
   };
 
@@ -79,7 +94,11 @@ export default function HomePage() {
     if (element) {
       navigator.clipboard.writeText(element.innerText);
       setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
+      setShowQuantumEffect(true);
+      setTimeout(() => {
+        setCopiedId(null);
+        setShowQuantumEffect(false);
+      }, 2000);
     }
   };
 
@@ -146,22 +165,26 @@ export default function HomePage() {
     { 
       title: 'Melektron v1-v3', 
       items: ['Modularni AI sistem', 'Web3 integracije', 'Telegram bot platforma', 'RAG tehnologija'],
-      gradient: 'from-blue-500 to-cyan-500'
+      gradient: 'from-blue-500 to-cyan-500',
+      version: '1.0-3.0'
     },
     { 
       title: 'Melektron v4-v6', 
       items: ['Kvantna optimizacija', 'Multi-chain podrška', 'Humanitarni moduli', 'Defi integracije'],
-      gradient: 'from-purple-500 to-pink-500'
+      gradient: 'from-purple-500 to-pink-500',
+      version: '4.0-6.0'
     },
     { 
-      title: 'Melektron v7', 
+      title: 'Melektron v7-v9', 
       items: ['Antimaterijski koncepti', 'Kvantna sigurnost', 'Holografski univerzum', 'EPR komunikacija'],
-      gradient: 'from-amber-500 to-red-500'
+      gradient: 'from-amber-500 to-red-500',
+      version: '7.0-9.0'
     },
     { 
       title: 'Melektron Singularitet', 
       items: ['Kvantni supermozak', 'Međudimenzionalna ekonomija', 'Samo-organizujući sistem', 'Neograničeni rast'],
-      gradient: 'from-green-500 to-teal-500'
+      gradient: 'from-green-500 to-teal-500',
+      version: '10.0+'
     },
   ];
 
@@ -201,11 +224,12 @@ export default function HomePage() {
   const donationMethods = [
     {
       title: 'Standardni Načini',
+      icon: '💳',
       items: [
         { 
           label: 'PayPal:', 
           content: <a href="https://paypal.me/Milanhe92" target="_blank" className="text-cyan-400 hover:text-cyan-300 transition-colors font-semibold">paypal.me/Milanhe92</a>,
-          icon: '💳'
+          icon: '📱'
         },
         { 
           label: 'Banka:', 
@@ -218,6 +242,7 @@ export default function HomePage() {
     },
     {
       title: 'Glavne Kryptovalute',
+      icon: '₿',
       items: [
         { 
           label: 'Bitcoin (BTC):', 
@@ -235,6 +260,7 @@ export default function HomePage() {
     },
     {
       title: 'Ostale Mreže',
+      icon: '🔗',
       items: [
         { 
           label: 'BNB Smart Chain (BEP20):', 
@@ -257,6 +283,26 @@ export default function HomePage() {
     { value: '100+', label: 'AI Modela', icon: '🧠' },
     { value: '∞', label: 'Kvantni Potencijal', icon: '⚛️' },
     { value: '10M+', label: 'Projekcija ($)', icon: '📈' },
+  ];
+
+  const socialLinks = [
+    { name: 'LinkedIn', url: 'https://www.linkedin.com/in/milanhe92', icon: '💼' },
+    { name: 'X', url: 'https://x.com/Milanhe1992', icon: '🐦' },
+    { name: 'YouTube', url: 'https://www.youtube.com/@milanhe92', icon: '🎥' },
+    { name: 'Facebook', url: 'https://www.facebook.com/milan.heee', icon: '👥' },
+    { name: 'Telegram', url: 'https://t.me/Milanhe92', icon: '✈️' },
+    { name: 'Discord', url: 'https://discord.gg/milanhe92', icon: '💬' },
+    { name: 'Bluesky', url: 'https://bsky.app/profile/milanhe.bsky.social', icon: '🔵' },
+    { name: 'Mastodon', url: 'https://mastodon.social/@Milanhe', icon: '🐘' },
+    { name: 'TikTok', url: 'https://tiktok.com/@milanhe92', icon: '🎵' },
+    { name: 'Reddit', url: 'https://www.reddit.com/user/milanhe92', icon: '🤖' },
+  ];
+
+  const devLinks = [
+    { name: 'GitHub', url: 'https://github.com/Milanhe92', icon: '🐙' },
+    { name: 'Stack Overflow', url: 'https://stackoverflow.com/users/28404571/milan-he', icon: '🔍' },
+    { name: 'Patreon', url: 'https://patreon.com/Milanhe92', icon: '🎗️' },
+    { name: 'Vimeo', url: 'https://vimeo.com/user240499750', icon: '🎬' },
   ];
 
   return (
@@ -296,6 +342,18 @@ export default function HomePage() {
           />
         ))}
       </div>
+
+      {/* Quantum Effect Overlay */}
+      {showQuantumEffect && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md">
+          <div className="text-center p-8 bg-slate-900/90 rounded-3xl border border-cyan-500/50">
+            <div className="text-6xl mb-4">⚡</div>
+            <h3 className="text-3xl font-bold text-cyan-400 mb-2">Energija Primljena!</h3>
+            <p className="text-xl text-gray-300">Vaša donacija se konvertuje u kvantni kapital</p>
+            <div className="mt-6 h-2 w-48 mx-auto bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full animate-pulse"></div>
+          </div>
+        </div>
+      )}
 
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 p-6 flex justify-between items-center backdrop-blur-md bg-black/20 border-b border-cyan-500/30">
@@ -401,7 +459,27 @@ export default function HomePage() {
               Podrži Projekat
             </Link>
           </div>
+
+          {/* Author Signature */}
+          <div className="text-center">
+            <div className="inline-flex items-center bg-black/20 backdrop-blur-md rounded-full px-6 py-3 border border-cyan-500/30">
+              <div className="w-8 h-8 rounded-full border-2 border-cyan-400 overflow-hidden mr-3">
+                <img 
+                  src="https://www.gravatar.com/avatar/23e6717a6d88f3438a088656a1b26d1e?s=512&d=mp" 
+                  alt="Milan He"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <span className="text-cyan-400 font-semibold">Milan He</span>
+              <span className="text-gray-400 ml-2">• Glavni Arhitekta</span>
+            </div>
+          </div>
         </div>
+      </section>
+
+      {/* Quantum Web3 Announcement */}
+      <section className="relative z-10 py-20 px-4">
+        <QuantumWeb3Announcement />
       </section>
 
       {/* Quantum Visualizer Section */}
@@ -459,7 +537,10 @@ export default function HomePage() {
             {architectureItems.map((item, index) => (
               <div key={index} className="group bg-gradient-to-b from-blue-900/20 to-blue-800/10 backdrop-blur-md rounded-3xl p-6 border border-blue-500/20 hover:border-blue-400/50 transition-all duration-500 hover:transform hover:scale-105">
                 <div className={`h-2 bg-gradient-to-r ${item.gradient} rounded-full mb-4`}></div>
-                <h3 className="text-xl font-bold text-blue-400 mb-4">{item.title}</h3>
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="text-xl font-bold text-blue-400">{item.title}</h3>
+                  <span className="text-xs text-blue-300 bg-blue-900/50 px-2 py-1 rounded-full">{item.version}</span>
+                </div>
                 <ul className="list-disc pl-5 space-y-2 text-sm text-gray-300">
                   {item.items.map((point, i) => (
                     <li key={i}>{point}</li>
@@ -467,6 +548,11 @@ export default function HomePage() {
                 </ul>
               </div>
             ))}
+          </div>
+
+          {/* Universe Simulator */}
+          <div className="mb-16">
+            <UniverseSimulator />
           </div>
 
           {/* Quantum Orbit Animation */}
@@ -502,7 +588,10 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             {donationMethods.map((method, index) => (
               <div key={index} className="bg-gradient-to-b from-cyan-900/20 to-cyan-800/10 backdrop-blur-md rounded-3xl p-6 border border-cyan-500/20">
-                <h3 className="text-xl font-bold text-cyan-400 mb-4">{method.title}</h3>
+                <div className="flex items-center mb-4">
+                  <span className="text-2xl mr-2">{method.icon}</span>
+                  <h3 className="text-xl font-bold text-cyan-400">{method.title}</h3>
+                </div>
                 {method.items.map((item, itemIndex) => (
                   <div key={itemIndex} className="mb-6 p-4 bg-slate-800/30 rounded-xl">
                     <div className="flex items-center mb-2">
@@ -516,12 +605,24 @@ export default function HomePage() {
                       </p>
                     ))}
                     {item.id && (
-                      <button 
-                        onClick={() => copyToClipboard(item.id)} 
-                        className="mt-3 px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-lg text-white text-sm transition-all hover:from-cyan-700 hover:to-blue-700 w-full"
-                      >
-                        {copiedId === item.id ? '✓ Kopirano!' : 'Kopiraj Adresu'}
-                      </button>
+                      <div className="mt-4">
+                        <div className="flex justify-center mb-2">
+                          <div className="bg-white p-2 rounded-lg">
+                            <QRCode 
+                              value={item.details ? item.details[0] : ''} 
+                              size={100}
+                              level="H"
+                              includeMargin
+                            />
+                          </div>
+                        </div>
+                        <button 
+                          onClick={() => copyToClipboard(item.id)} 
+                          className="mt-2 px-3 py-1 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-lg text-white text-sm transition-all hover:from-cyan-700 hover:to-blue-700 w-full"
+                        >
+                          {copiedId === item.id ? '✓ Kopirano!' : 'Kopiraj Adresu'}
+                        </button>
+                      </div>
                     )}
                   </div>
                 ))}
@@ -565,6 +666,44 @@ export default function HomePage() {
             >
               Nazad na Vrh
             </button>
+          </div>
+
+          {/* Social Links */}
+          <div className="mb-8">
+            <h4 className="text-lg font-semibold mb-4 text-cyan-400">Pratite Melektron</h4>
+            <div className="flex justify-center gap-4 flex-wrap">
+              {socialLinks.map((link, index) => (
+                <a 
+                  key={index}
+                  href={link.url} 
+                  target="_blank" 
+                  className="flex items-center px-4 py-2 bg-slate-800/50 rounded-full hover:bg-cyan-900/30 transition-all"
+                  rel="noopener noreferrer"
+                >
+                  <span className="mr-2">{link.icon}</span>
+                  {link.name}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Dev Links */}
+          <div className="mb-8">
+            <h4 className="text-lg font-semibold mb-4 text-cyan-400">Development</h4>
+            <div className="flex justify-center gap-4 flex-wrap">
+              {devLinks.map((link, index) => (
+                <a 
+                  key={index}
+                  href={link.url} 
+                  target="_blank" 
+                  className="flex items-center px-4 py-2 bg-slate-800/50 rounded-full hover:bg-purple-900/30 transition-all"
+                  rel="noopener noreferrer"
+                >
+                  <span className="mr-2">{link.icon}</span>
+                  {link.name}
+                </a>
+              ))}
+            </div>
           </div>
 
           <div className="mb-8">
