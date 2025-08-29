@@ -2,18 +2,113 @@
 @tailwind components;
 @tailwind utilities;
 
-.prose {
-  color: white;
+:root {
+  --font-inter: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 10, 10, 35;
+  --background-end-rgb: 15, 15, 35;
+  
+  /* Quantum colors */
+  --quantum-purple: #8a2be2;
+  --antimatter-blue: #00bfff;
+  --singularity-gold: #ffd700;
+  --revenue-green: #00ff9d;
+  --neural-network: #ff00ff;
 }
 
-.prose h2 {
-  @apply text-2xl font-bold mt-8 mb-4 text-purple-400;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 10, 10, 35;
+    --background-end-rgb: 15, 15, 35;
+  }
 }
 
-.prose ul {
-  @apply list-disc pl-6 mb-4;
+body {
+  font-family: var(--font-inter);
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+  min-height: 100vh;
 }
 
-.prose pre {
-  @apply bg-gray-800 p-4 rounded overflow-x-auto text-sm;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--quantum-purple);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--antimatter-blue);
+}
+
+/* Quantum animations */
+@keyframes quantum-pulse {
+  0%, 100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.quantum-pulse {
+  animation: quantum-pulse 2s ease-in-out infinite;
+}
+
+.quantum-gradient-text {
+  background: linear-gradient(
+    135deg,
+    var(--quantum-purple),
+    var(--antimatter-blue),
+    var(--singularity-gold)
+  );
+  background-size: 300% 300%;
+  animation: gradient-shift 8s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glassmorphism effects */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-effect-dark {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Vanta container fix */
+#vanta-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
 }
