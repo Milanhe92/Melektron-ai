@@ -13,11 +13,29 @@ export default function QuantumWeb3Announcement() {
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(prev => {
-        const newSeconds = prev.seconds - 1;
-        if (newSeconds < 0) {
-          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
+        let { days, hours, minutes, seconds } = prev;
+        
+        seconds--;
+        if (seconds < 0) {
+          seconds = 59;
+          minutes--;
+          if (minutes < 0) {
+            minutes = 59;
+            hours--;
+            if (hours < 0) {
+              hours = 23;
+              days--;
+              if (days < 0) {
+                days = 0;
+                hours = 0;
+                minutes = 0;
+                seconds = 0;
+              }
+            }
+          }
         }
-        return { ...prev, seconds: newSeconds };
+        
+        return { days, hours, minutes, seconds };
       });
     }, 1000);
 
@@ -34,7 +52,7 @@ export default function QuantumWeb3Announcement() {
         Revolucionarna integracija blockchain tehnologije u kvantni ekosistem
       </p>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="text-center p-4 bg-slate-800/50 rounded-xl">
           <div className="text-2xl">🎯</div>
           <h3 className="font-semibold mt-2">TON Staking</h3>
@@ -55,6 +73,7 @@ export default function QuantumWeb3Announcement() {
       </div>
 
       <div className="countdown mb-6">
+        <p className="text-gray-300 mb-2">Launch za:</p>
         <div className="flex justify-center gap-4 text-2xl font-mono">
           <span className="bg-slate-800/50 px-4 py-2 rounded">{timeLeft.days}d</span>
           <span className="bg-slate-800/50 px-4 py-2 rounded">{timeLeft.hours}h</span>
