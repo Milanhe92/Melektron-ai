@@ -35,13 +35,15 @@
     "stream-browserify": "^3.0.0",
     "buffer": "^6.0.3",
     "process": "^0.11.10",
-    "ton-crypto": "^3.2.0"
+    "ton-crypto": "^3.2.0",
+    "qrcode.react": "^3.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.0",
     "@types/three": "^0.166.0",
+    "@types/qrcode.react": "^1.0.2",
     "eslint-config-custom": "*",
     "tsconfig": "*",
     "typescript": "^5.4.2"
