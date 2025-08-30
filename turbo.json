@@ -1,12 +1,8 @@
 {
   "globalDependencies": ["**/.env.*local"],
-  "tasks": {
+  "pipeline": {
     "build": {
-      "env": [
-        "NODE_ENV",
-        "TON_API_KEY",
-        "TELEGRAM_BOT_TOKEN"
-      ],
+      "env": ["NODE_ENV", "TON_API_KEY", "TELEGRAM_BOT_TOKEN"],
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"]
     },
