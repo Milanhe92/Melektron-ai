@@ -23,15 +23,29 @@ const nextConfig = {
     externalDir: true,
     esmExternals: 'loose'
   },
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
       buffer: require.resolve('buffer'),
+      http: require.resolve('stream-http'),
+      https: require.resolve('https-browserify'),
+      os: require.resolve('os-browserify/browser'),
+      path: require.resolve('path-browserify'),
+      net: false,
+      tls: false,
+      zlib: require.resolve('browserify-zlib'),
     };
-    
+
+    config.plugins.push(
+      new webpack.ProvidePlugin({
+        process: 'process/browser',
+        Buffer: ['buffer', 'Buffer'],
+      })
+    );
+
     return config;
   }
 };
