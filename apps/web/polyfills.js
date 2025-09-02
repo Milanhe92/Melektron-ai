@@ -1,5 +1,16 @@
+// apps/web/polyfills.js
 if (typeof window !== 'undefined') {
-  window.global = window;
-  window.Buffer = require('buffer').Buffer;
-  window.process = require('process/browser');
+  // Polyfill za Node.js globale u browseru
+  globalThis.global = globalThis;
+  globalThis.process = require('process/browser');
+  
+  // Buffer polyfill
+  if (typeof Buffer === 'undefined') {
+    globalThis.Buffer = require('buffer').Buffer;
+  }
 }
+
+// Importuj polyfill-ove
+require('crypto-browserify');
+require('stream-browserify');
+require('buffer');
