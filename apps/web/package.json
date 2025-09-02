@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node polyfills.js && next dev",
     "build": "node polyfills.js && next build",
-    "start": "next start",
+    "start": "node polyfills.js && next start",
     "lint": "next lint",
     "deploy": "vercel deploy --prod",
     "postbuild": "cp public/robots.txt .next/static/robots.txt && cp public/tonconnect-manifest.json .next/static/"
@@ -36,7 +36,14 @@
     "buffer": "^6.0.3",
     "process": "^0.11.10",
     "ton-crypto": "^3.2.0",
-    "qrcode.react": "^3.1.0"
+    "qrcode.react": "^3.1.0",
+    "browserify-zlib": "^0.2.0",
+    "stream-http": "^3.2.0",
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "web3": "^4.2.0",
+    "ethers": "^6.8.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
@@ -46,6 +53,7 @@
     "@types/qrcode.react": "^1.0.2",
     "eslint-config-custom": "*",
     "tsconfig": "*",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.2",
+    "webpack": "^5.88.0"
   }
 }
