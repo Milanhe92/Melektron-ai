@@ -6,6 +6,7 @@ import Link from 'next/link';
 import QRCode from 'qrcode.react';
 import MilanSignature from '@/components/MilanSignature';
 import QuantumOrbit from '@/components/QuantumOrbit';
+import Image from 'next/image';
 
 // Dynamic imports za teške komponente
 const VantaEffect = dynamic(() => import('@/components/VantaEffect'), { 
@@ -47,10 +48,12 @@ export default function HomePage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState('hero');
   const [showQuantumEffect, setShowQuantumEffect] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const sectionRefs = useRef<{[key: string]: HTMLElement | null}>({});
 
   useEffect(() => {
     setLoaded(true);
+    setIsMobile(window.innerWidth < 768);
 
     const effects = ['NET', 'GLOBE', 'CELLS', 'WAVES'];
     const interval = setInterval(() => {
@@ -436,7 +439,7 @@ export default function HomePage() {
               </span>
             </h1>
           </div>
-          
+
           <p className="text-2xl md:text-3xl text-gray-300 max-w-6xl mx-auto mb-8 leading-relaxed">
             <span className="text-cyan-400 font-semibold">Kvantna fizika</span> × 
             <span className="text-blue-400 font-semibold"> Blockchain</span> × 
@@ -468,7 +471,7 @@ export default function HomePage() {
                 🚀 24+ Tokova Prihoda
               </span>
             </button>
-            
+
             <button 
               onClick={() => scrollToSection('quantum')}
               className="border-2 border-cyan-500/50 hover:border-cyan-400 text-cyan-400 hover:text-white hover:bg-cyan-500/10 px-12 py-5 rounded-2xl font-semibold text-xl transition-all duration-300 backdrop-blur-sm"
@@ -488,9 +491,11 @@ export default function HomePage() {
           <div className="text-center">
             <div className="inline-flex items-center bg-black/20 backdrop-blur-md rounded-full px-6 py-3 border border-cyan-500/30">
               <div className="w-8 h-8 rounded-full border-2 border-cyan-400 overflow-hidden mr-3">
-                <img 
+                <Image 
                   src="https://www.gravatar.com/avatar/23e6717a6d88f3438a088656a1b26d1e?s=512&d=mp" 
                   alt="Milan He"
+                  width={32}
+                  height={32}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -530,7 +535,7 @@ export default function HomePage() {
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
             24+ Tokova Prihoda
           </h2>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {revenueStreams.map((stream, index) => (
               <div key={index} className="group bg-gradient-to-b from-cyan-900/20 to-cyan-800/10 backdrop-blur-md rounded-3xl p-6 border border-cyan-500/20 hover:border-cyan-400/50 transition-all duration-500 hover:transform hover:scale-105">
@@ -560,7 +565,7 @@ export default function HomePage() {
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
             Kvantna Arhitektura
           </h2>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
             {architectureItems.map((item, index) => (
               <div key={index} className="group bg-gradient-to-b from-blue-900/20 to-blue-800/10 backdrop-blur-md rounded-3xl p-6 border border-blue-500/20 hover:border-blue-400/50 transition-all duration-500 hover:transform hover:scale-105">
