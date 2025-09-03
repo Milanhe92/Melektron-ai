@@ -1,21 +1,12 @@
 /** @type {import('next').NextConfig} */
 const webpack = require('webpack');
 
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  disable: process.env.NODE_ENV === 'development',
-});
-
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-});
-
 const nextConfig = {
   transpilePackages: [
     '@melektron/quantum-core',
     '@melektron/ton-client',
     '@melektron/ai-core',
-    '@melektron/ton-utils',
+    '@melektron/ton-utils'
   ],
   output: 'standalone',
   compress: true,
@@ -32,7 +23,7 @@ const nextConfig = {
   },
   experimental: {
     externalDir: true,
-    esmExternals: 'loose',
+    esmExternals: 'loose'
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
@@ -55,12 +46,12 @@ const nextConfig = {
         new webpack.ProvidePlugin({
           process: 'process/browser',
           Buffer: ['buffer', 'Buffer'],
-        }),
+        })
       );
     }
 
     return config;
-  },
+  }
 };
 
-module.exports = withBundleAnalyzer(withPWA(nextConfig));
+module.exports = nextConfig;
