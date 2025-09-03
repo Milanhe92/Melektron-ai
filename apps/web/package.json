@@ -19,7 +19,7 @@
     "@portabletext/react": "^3.0.10",
     "@sanity/client": "^6.8.0",
     "@sanity/image-url": "^1.0.2",
-    "@ton/ton": "^16.1.0",
+    "@ton/ton": "15.3.1",
     "@tonconnect/ui-react": "^2.3.0",
     "autoprefixer": "^10.4.19",
     "chart.js": "^4.5.0",
