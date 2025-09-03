@@ -6,15 +6,13 @@
     "reset": "rm -rf node_modules apps/web/node_modules package-lock.json.turbo && npm install",
     "install:ci": "npm install --legacy-peer-deps --no-audit --omit=dev",
     "build:ton-client": "turbo run build --filter=@melektron/ton-client",
-    "build:quantum-core": "turbo run build --filter=@melektron/quantum-core", 
+    "build:quantum-core": "turbo run build --filter=@melektron/quantum-core",
     "build:packages": "turbo run build --filter=@melektron/*",
     "build": "turbo run build",
     "build:web": "npm run build:packages && cd apps/web && npm run build",
-
     "render-install": "npm install --legacy-peer-deps --no-audit --include=dev --workspaces",
     "render-build": "npx turbo run build --filter=@melektron/* --force && cd apps/web && npm run build",
     "render-start": "cd apps/web && npm start",
-
     "deploy": "cd apps/web && npm run deploy",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
@@ -25,13 +23,13 @@
     "@ton/core": "0.49.1",
     "@ton/crypto": "^3.2.0",
     "@ton/ton": "15.3.1",
-    "ton-crypto": "^3.2.0", 
+    "ton-crypto": "^3.2.0",
     "three": "^0.158.0",
     "qrcode.react": "^3.1.0"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
-    "turbo": "2.5.6", 
+    "turbo": "2.5.6",
     "typescript": "^5.0.0",
     "@types/node": "^20.0.0"
   },
