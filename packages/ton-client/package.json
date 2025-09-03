@@ -4,7 +4,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "build": "tsc -p tsconfig.json", 
+    "dev": "tsc -w -p tsconfig.json",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "@ton/core": "0.49.1",
