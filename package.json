@@ -10,28 +10,38 @@
     "build:packages": "turbo run build --filter=@melektron/*",
     "build": "turbo run build",
     "build:web": "npm run build:packages && cd apps/web && npm run build",
+    "build:analyze": "cd apps/web && ANALYZE=true npm run build",
     "render-install": "npm install --legacy-peer-deps --no-audit --include=dev --workspaces",
     "render-build": "npx turbo run build --filter=@melektron/* --force && cd apps/web && npm run build",
     "render-start": "cd apps/web && npm start",
     "deploy": "cd apps/web && npm run deploy",
     "dev": "turbo run dev",
+    "dev:web": "cd apps/web && npm run dev",
     "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
     "test": "turbo run test",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "test:web": "cd apps/web && npm run test",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "clean": "turbo run clean"
   },
   "dependencies": {
     "@ton/core": "0.49.1",
     "@ton/crypto": "^3.2.0",
-    "@ton/ton": "15.3.1",
+    "@ton/ton": "^16.0.0",
     "ton-crypto": "^3.2.0",
-    "three": "^0.158.0",
+    "three": "^0.166.1",
     "qrcode.react": "^3.1.0"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
-    "turbo": "2.5.6",
-    "typescript": "^5.0.0",
-    "@types/node": "^20.0.0"
+    "turbo": "^2.5.6",
+    "typescript": "^5.4.5",
+    "@types/node": "^20.12.0",
+    "@types/react": "^18.3.3",
+    "@types/three": "^0.166.0",
+    "eslint": "^8.57.0",
+    "@typescript-eslint/parser": "^7.1.0",
+    "@typescript-eslint/eslint-plugin": "^7.1.0"
   },
   "workspaces": [
     "apps/*",
