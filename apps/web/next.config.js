@@ -1,17 +1,24 @@
 /** @type {import('next').NextConfig} */
 const webpack = require('webpack');
+const path = require('path');
 
 const nextConfig = {
   transpilePackages: [
     '@melektron/quantum-core',
     '@melektron/ton-client',
     '@melektron/ai-core',
-    '@melektron/ton-utils', 
+    '@melektron/ton-utils',
     'three'
   ],
   output: 'standalone',
   compress: true,
   poweredByHeader: false,
+  
+  // Environment variables
+  env: {
+    WALLET_MNEMONIC: process.env.WALLET_MNEMONIC,
+  },
+  
   images: {
     unoptimized: true,
     domains: ['gravatar.com'],
@@ -22,11 +29,23 @@ const nextConfig = {
       },
     ],
   },
+  
   experimental: {
     externalDir: true,
     esmExternals: 'loose'
   },
-  webpack: (config, { isServer }) => {
+  
+  webpack: (config, { isServer, dev }) => {
+    // Resolve aliases for absolute imports
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': path.resolve(__dirname, 'src'),
+      '@/components': path.resolve(__dirname, 'src/components'),
+      '@/utils': path.resolve(__dirname, 'src/utils'),
+      '@/styles': path.resolve(__dirname, 'src/styles'),
+      '@/types': path.resolve(__dirname, 'src/types')
+    };
+
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -49,6 +68,34 @@ const nextConfig = {
           Buffer: ['buffer', 'Buffer'],
         })
       );
+    }
+
+    // Optimization for production
+    if (!dev && !isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            default: false,
+            vendors: false,
+            vendor: {
+              name: 'vendor',
+              chunks: 'all',
+              test: /node_modules/,
+              priority: 20,
+            },
+            common: {
+              name: 'common',
+              minChunks: 2,
+              chunks: 'all',
+              priority: 10,
+              reuseExistingChunk: true,
+              enforce: true,
+            },
+          },
+        },
+      };
     }
 
     return config;
