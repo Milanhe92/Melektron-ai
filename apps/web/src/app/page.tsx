@@ -8,6 +8,18 @@ import MilanSignature from '@/components/MilanSignature';
 import QuantumOrbit from '@/components/QuantumOrbit';
 import Image from 'next/image';
 
+import AIChat from "@/components/AIChat";
+
+export default function HomePage() {
+  return (
+    <main className="p-6">
+      <h1 className="text-3xl font-bold">Dobrodošao u Melektron 🚀</h1>
+      <p className="mb-4">Ovde možeš testirati AI chat.</p>
+      <AIChat />
+    </main>
+  );
+}
+
 // Dynamic imports za teške komponente
 const VantaEffect = dynamic(() => import('@/components/VantaEffect'), { 
   ssr: false,
