@@ -1,0 +1,33 @@
+/* styles/QuantumViz.css */
+.quantum-viz-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.quantum-viz-canvas {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(126, 34, 206, 0.3);
+}
+
+.quantum-state-info {
+  text-align: center;
+  color: #e2e8f0;
+}
+
+.quantum-state-info h3 {
+  color: #7e22ce;
+  margin-bottom: 10px;
+}
+
+.quantum-state-info p {
+  margin: 5px 0;
+  font-size: 14px;
+}
