@@ -6,7 +6,8 @@ const nextConfig = {
     '@melektron/quantum-core',
     '@melektron/ton-client',
     '@melektron/ai-core',
-    '@melektron/ton-utils'
+    '@melektron/ton-utils', 
+    'three'
   ],
   output: 'standalone',
   compress: true,
