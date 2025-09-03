@@ -1,7 +1,5 @@
 {
   "compilerOptions": {
-    "types": ["three"],
-    "skipLibCheck": true, 
     "target": "es5",
     "lib": [
       "dom",
@@ -22,16 +20,19 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/styles/*": ["./src/styles/*"],
+      "@/types/*": ["./src/types/*"]
     },
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "types": ["three", "jest"]
   },
   "include": [
     "next-env.d.ts",
@@ -40,6 +41,8 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/__tests__/**",
+    "**/*.test.ts"
   ]
 }
