@@ -21,29 +21,43 @@ const exo = Exo_2({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://melektron.com'), // 🚀 ispravljeno
   title: 'Melektron - Singularity Core',
   description: 'Kvantna revolucija koju je zasnovao Milan He',
-  keywords: 'kvantna računica, blockchain, AI, veštačka inteligencija, Milan He',
+  keywords: ['kvantna računica', 'blockchain', 'AI', 'veštačka inteligencija', 'Milan He'],
   authors: [{ name: 'Milan He' }],
   openGraph: {
     title: 'Melektron - Singularity Core',
     description: 'Kvantna revolucija koju je zasnovao Milan He',
     type: 'website',
     locale: 'sr_RS',
+    url: 'https://melektron.com',
+    siteName: 'Melektron',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Melektron Preview',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    creator: '@MilanHe', // ako imaš Twitter handle
+  },
+  icons: {
+    icon: '/favicon.ico',
   },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="sr" className={`${orbitron.variable} ${exo.variable}`}>
-      <head>
-        <link rel="icon" href="/favicon.ico" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </head>
       <body className={`${inter.className} antialiased`}>
         <TonProvider>
           {children}
