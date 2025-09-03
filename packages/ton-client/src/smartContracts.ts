@@ -1,13 +1,38 @@
 // packages/ton-client/src/smartContracts.ts
-export class QuantumSmartContracts {
-  static createQuantumContract() {
+import { compile } from './compiler';
+import { initData } from './dataInitializer';
+
+// Asinhrona funkcija za kompilaciju
+export async function compileContract() {
+  try {
+    const compiledCode = await compile();
+    const initializedData = await initData();
+    
     return {
-      code: await compile('func main() impure inline remain after-apply'),
-      data: await initData()
+      code: compiledCode,
+      data: initializedData
     };
-  }
-  
-  static async deployContract(wallet: any, contractCode: any) {
-    // 实现合约部署逻辑
+  } catch (error) {
+    console.error('Greška pri kompilaciji:', error);
+    throw error;
   }
 }
+
+// Glavna asinhrona funkcija
+async function main() {
+  try {
+    const contract = await compileContract();
+    console.log('Kontrakt uspešno kompajliran');
+    return contract;
+  } catch (error) {
+    console.error('Greška u glavnoj funkciji:', error);
+    process.exit(1);
+  }
+}
+
+// Izvršavanje samo ako je fajl direktno pokrenut
+if (require.main === module) {
+  main().catch(console.error);
+}
+
+export default compileContract;
