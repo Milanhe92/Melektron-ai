@@ -1,28 +1,36 @@
+// apps/web/src/utils/tonIntegration.ts
+import { mnemonicToPrivateKey } from '@ton/crypto'; // Ažurirani import
+import { WalletContractV4 } from '@ton/ton';
+
 export async function connectTONWallet() {
   try {
-    // Sigurno proverite postojanje environment variable
     const walletMnemonic = process.env.WALLET_MNEMONIC;
     
     if (!walletMnemonic) {
-      throw new Error('WALLET_MNEMONIC nije postavljen u okruženju');
+      throw new Error('WALLET_MNEMONIC није подешен у окружењу');
     }
 
-    // Dodajte dodatnu validaciju
     if (typeof walletMnemonic !== 'string') {
-      throw new Error('WALLET_MNEMONIC mora biti string');
+      throw new Error('WALLET_MNEMONIC мора бити стринг');
     }
 
-    // Podelite mnemonic sa sigurnosnom proverom
     const mnemonicArray = walletMnemonic.split(' ');
     
     if (mnemonicArray.length < 24) {
-      throw new Error('Mnemonic mora imati najmanje 24 reči');
+      throw new Error('Мнемоник мора имати најмање 24 речи');
     }
 
-    const keyPair = await mnemonicToWalletKey(mnemonicArray);
-    // ... ostatak koda
+    // KORISTITE mnemonicToPrivateKey UMESTO mnemonicToWalletKey
+    const keyPair = await mnemonicToPrivateKey(mnemonicArray);
+    
+    const wallet = WalletContractV4.create({ 
+      publicKey: keyPair.publicKey, 
+      workchain: 0 
+    });
+    
+    return wallet;
   } catch (error) {
-    console.error('Greška pri povezivanju sa TON novčanikom:', error);
-    throw error;
+    console.error('Грешка при повезивању са TON новчаником:', error);
+    throw new Error('Неуспешно повезивање са TON новчаником');
   }
 }
