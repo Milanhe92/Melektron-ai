@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "types": ["three"],
+    "skipLibCheck": true, 
     "target": "es5",
     "lib": [
       "dom",
