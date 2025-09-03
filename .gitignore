@@ -158,3 +158,6 @@ out/
 
 # Turbo cache
 .turbo
+.env
+.env.local
+.env.*
