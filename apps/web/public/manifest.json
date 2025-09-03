@@ -1,0 +1,22 @@
+// public/manifest.json
+{
+  "name": "Melektron AI",
+  "short_name": "Melektron",
+  "description": "Kvantna vizuelizacija i AI platforma",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#7e22ce",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
