@@ -1,4 +1,5 @@
 {
+  "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
   "tasks": {
     "build": {
@@ -7,10 +8,21 @@
       "outputs": ["dist/**", ".next/**"]
     },
     "dev": {
-      "cache": false
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "cache": true
     },
     "test": {
-      "dependsOn": ["build"]
+      "dependsOn": ["^build"]
+    },
+    "go-api#start": {
+      "persistent": true,
+      "cache": false
+    },
+    "contracts#build": {
+      "outputs": ["build/**"]
     }
   }
 }
