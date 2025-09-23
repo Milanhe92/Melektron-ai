@@ -1,7 +1,10 @@
-import { openai } from "../lib/openaiClient";
+// apps/web/src/examples/story.ts
+import OpenAI from "openai";
 
-async function bedtimeStory() {
-  const response = await openai.responses.create({
+const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async function run() {
+  const response = await client.responses.create({
     model: "gpt-5",
     input: "Write a short bedtime story about a unicorn.",
   });
@@ -9,4 +12,4 @@ async function bedtimeStory() {
   console.log(response.output_text);
 }
 
-bedtimeStory();
+run();
