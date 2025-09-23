@@ -1,25 +1,17 @@
-// apps/web/src/examples/promptVars.ts
 import OpenAI from "openai";
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const client = new OpenAI();
 
 async function run() {
+  const customer_name = "Jane Doe";
+  const product = "Kutija soka od 1200 ml";
+
+  // Promenljive se interpoliraju u string
+  const prompt = `Napiši email za korisnika ${customer_name} o proizvodu ${product}.`;
+
   const response = await client.responses.create({
     model: "gpt-5",
-    input: [
-      {
-        role: "user",
-        content: `Write an ad for a product using the provided variables.`,
-      },
-    ],
-    metadata: {
-      prompt_id: "pmpt_abc123",
-      version: "2",
-      variables: {
-        customer_name: "Jane Doe",
-        product: "40oz juice box",
-      },
-    },
+    input: prompt,
   });
 
   console.log(response.output_text);
