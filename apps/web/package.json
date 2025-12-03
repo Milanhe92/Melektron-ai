@@ -46,6 +46,9 @@
     "ethers": "^6.8.0", 
     "openai": "^4.20.1"
   },
+    "engines": {
+  "node": ">=18.17.0"
+}, 
   "devDependencies": {
     "@types/node": "^20.11.0",
     "@types/react": "^18.3.1",
